@@ -1,0 +1,68 @@
+{
+  "pages": [
+    "pages/splash/splash",
+    "pages/login/login",
+    "pages/role-selection/role-selection",
+    "pages/home/home",
+    "pages/my/my",
+    "pages/master-home/master-home",
+    "pages/bind-device-code/bind-device-code",
+    "pages/package-order/package-order",
+    "pages/my-bill/my-bill",
+    "pages/customer-service/customer-service",
+    "pages/pre-recharge/pre-recharge",
+    "pages/business-cancellation/business-cancellation",
+    "pages/service-evaluation/service-evaluation",
+    "pages/self-renewal/self-renewal",
+    "pages/business-application/business-application",
+    "pages/electronic-agreement/electronic-agreement",
+    "pages/invoice/invoice",
+    "pages/payment-collection/payment-collection",
+    "pages/change-transfer/change-transfer",
+    "pages/product-query/product-query",
+    "pages/complaint/complaint"
+  ],
+  "tabBar": {
+    "color": "#999",
+    "selectedColor": "#1d63ff",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "首页",
+        "iconPath": "images/home.png",
+        "selectedIconPath": "images/home-active.png"
+      },
+      {
+        "pagePath": "pages/my/my",
+        "text": "我的",
+        "iconPath": "images/my.png",
+        "selectedIconPath": "images/my-active.png"
+      },
+      {
+        "pagePath": "pages/master-home/master-home",
+        "text": "师傅工作台",
+        "iconPath": "images/master.png",
+        "selectedIconPath": "images/master-active.png"
+      }
+    ]
+  },
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "云网宽带",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f7f8fa"
+  },
+  "sitemapLocation": "sitemap.json",
+  "permission": {
+    "scope.userLocation": {
+      "desc": "您的位置信息将用于为您提供更好的服务"
+    }
+  },
+  "usingComponents": {
+    "van-button": "@vant/weapp/button/index"
+  }
+}
+

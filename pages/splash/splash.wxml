@@ -1,0 +1,42 @@
+<!--pages/splash/splash.wxml-->
+<view class="splash-page">
+  <!-- 背景装饰 -->
+  <view class="background-decoration">
+    <view class="circle circle-1"></view>
+    <view class="circle circle-2"></view>
+    <view class="circle circle-3"></view>
+  </view>
+
+  <!-- 主要内容 -->
+  <view class="splash-content">
+    <!-- Logo区域 -->
+    <view class="logo-container">
+      <view class="logo-wrapper">
+        <image src="/images/logo.png" alt="云网宽带" class="logo-image" />
+        <view class="logo-glow"></view>
+      </view>
+    </view>
+
+    <!-- 品牌信息 -->
+    <view class="brand-info">
+      <text class="brand-title">云网宽带</text>
+      <text class="brand-slogan">便捷安装 · 专业服务 · 全程保障</text>
+    </view>
+
+    <!-- 加载动画 -->
+    <view class="loading-section">
+      <view class="loading-dots">
+        <view class="dot dot-1"></view>
+        <view class="dot dot-2"></view>
+        <view class="dot dot-3"></view>
+      </view>
+      <text class="loading-text">{{loadingText}}</text>
+    </view>
+  </view>
+
+  <!-- 版权信息 -->
+  <view class="copyright">
+    <text>© 2024 云网宽带 All Rights Reserved</text>
+  </view>
+</view>
+

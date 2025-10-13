@@ -1,0 +1,83 @@
+<!--pages/home/home.wxml-->
+<view class="home-page">
+  <!-- 1. 顶部欢迎区域 -->
+  <view class="header-section">
+    <view class="user-info">
+      <text class="welcome-text">欢迎回来,</text>
+      <text class="user-name">王女士</text>
+    </view>
+    <view class="notification-icon" bindtap="showNotifications">
+      <text class="bell-icon">🔔</text>
+      <view class="notification-dot"></view>
+    </view>
+  </view>
+
+  <view class="content-body">
+    <!-- 2. 轮播图广告 -->
+    <view class="swipe-section">
+      <swiper 
+        class="promo-swipe" 
+        autoplay="{{true}}" 
+        interval="5000" 
+        duration="500"
+        indicator-dots="{{true}}"
+        indicator-color="rgba(255,255,255,0.5)"
+        indicator-active-color="white"
+        circular="{{true}}"
+      >
+        <swiper-item wx:for="{{slides}}" wx:key="index">
+          <view class="swipe-item">
+            <image src="{{item.image}}" class="swipe-image" mode="aspectFill" />
+            <view class="swipe-caption">
+              <text class="swipe-title">{{item.title}}</text>
+              <text class="swipe-subtitle">{{item.subtitle}}</text>
+            </view>
+          </view>
+        </swiper-item>
+      </swiper>
+    </view>
+
+    <!-- 3. 常用服务 -->
+    <view class="common-services-section">
+      <text class="section-title">常用服务</text>
+      <view class="services-grid">
+        <view 
+          wx:for="{{commonServices}}" 
+          wx:key="title"
+          class="service-card"
+          style="background-color: {{item.bgColor}}"
+          bindtap="navigateToPage"
+          data-route="{{item.route}}"
+        >
+          <view class="icon-wrapper" style="background-color: {{item.iconBgColor}}">
+            <text class="service-icon">{{item.iconText}}</text>
+          </view>
+          <view class="text-wrapper">
+            <text class="service-title">{{item.title}}</text>
+            <text class="service-subtitle">{{item.subtitle}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 4. 全部功能 -->
+    <view class="all-features-section">
+      <text class="section-title">全部功能</text>
+      <view class="features-grid">
+        <view 
+          wx:for="{{allFeatures}}" 
+          wx:key="text"
+          class="feature-item"
+          bindtap="navigateToPage"
+          data-route="{{item.route}}"
+        >
+          <view class="feature-icon" style="color: {{item.color}}">
+            <text>{{item.iconText}}</text>
+          </view>
+          <text class="feature-text">{{item.text}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+

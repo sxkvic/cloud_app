@@ -1,0 +1,49 @@
+<!--pages/role-selection/role-selection.wxml-->
+<view class="selection-page-wrapper">
+  <!-- 1. 顶部 Logo 和标题 -->
+  <view class="header-section">
+    <view class="logo">
+      <text class="logo-icon">📡</text>
+    </view>
+    <text class="main-title">移动宽带安装</text>
+  </view>
+
+  <!-- 2. 核心内容区 (垂直居中) -->
+  <view class="main-content">
+    <!-- 滑动切换器 (玻璃拟态) -->
+    <view class="role-tabs {{activeRole}}">
+      <view class="tab-item" bindtap="selectRole" data-role="user">我是用户</view>
+      <view class="tab-item" bindtap="selectRole" data-role="worker">我是安装师傅</view>
+      <view class="tab-glider"></view>
+    </view>
+
+    <!-- 动态内容区域 -->
+    <view class="role-content-wrapper">
+      <view class="role-content {{activeRole}}">
+        <text class="role-title">{{currentRole.title}}</text>
+        <text class="role-description">{{currentRole.description}}</text>
+      </view>
+    </view>
+
+    <!-- 动态按钮 -->
+    <button 
+      class="btn-select {{loading ? 'loading' : ''}}" 
+      bindtap="confirmRole" 
+      disabled="{{loading}}"
+    >
+      <text wx:if="{{loading}}" class="loading-icon">⟳</text>
+      {{loading ? '正在进入...' : '进入系统'}}
+    </button>
+  </view>
+  
+  <!-- 3. 底部协议 -->
+  <view class="footer-section">
+    <text class="agreement-text">
+      登录即代表您同意
+      <text class="agreement-link" bindtap="showAgreement">用户协议</text>
+      及
+      <text class="agreement-link" bindtap="showPrivacy">隐私政策</text>
+    </text>
+  </view>
+</view>
+

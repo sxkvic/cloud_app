@@ -1,0 +1,46 @@
+<!--pages/login/login.wxml-->
+<view class="login-page-wrapper">
+  <!-- 主要内容区域 -->
+  <view class="login-container">
+    <!-- 头部标题区域 -->
+    <view class="header-section">
+      <text class="main-title">云网宽带</text>
+      <text class="subtitle">便捷安装 · 专业服务 · 全程保障</text>
+    </view>
+
+    <!-- 登录卡片 -->
+    <view class="login-card">
+      <view class="login-core">
+        <button 
+          class="btn-wechat-login {{loading ? 'loading' : ''}}"
+          bindtap="onWeChatLogin"
+          disabled="{{loading}}"
+          open-type="getUserInfo"
+          bindgetuserinfo="onGetUserInfo"
+        >
+          <text wx:if="{{!loading}}" class="wechat-icon">微</text>
+          <text wx:if="{{loading}}" class="loading-icon">⟳</text>
+          <text class="btn-text">{{loading ? '授权中...' : '微信一键登录'}}</text>
+        </button>
+        
+        <view class="agreement-section">
+          <view class="checkbox-wrapper" bindtap="toggleAgreement">
+            <view class="checkbox {{agreed ? 'checked' : ''}}">
+              <text wx:if="{{agreed}}" class="check-icon">✓</text>
+            </view>
+            <text class="agreement-text">
+              我已阅读并同意
+              <text class="agreement-link" bindtap="showAgreement">用户服务协议</text>
+            </text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 底部帮助链接 -->
+  <view class="footer-links">
+    <text class="help-link" bindtap="contactService">遇到问题？联系客服</text>
+  </view>
+</view>
+

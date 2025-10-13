@@ -1,0 +1,72 @@
+<!--pages/my/my.wxml-->
+<view class="my-account-page">
+  <!-- 1. 顶部个人信息背景 -->
+  <view class="header-bg">
+    <!-- 优化：整个 profile 区域可点击，并带有下拉箭头提示 -->
+    <view class="user-profile clickable" bindtap="showRoleSheet">
+      <image src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=200&q=80" alt="User Avatar" class="avatar" />
+      <view class="user-info">
+        <text class="user-name">
+          王女士
+          <text class="role-chevron">▼</text>
+        </text>
+        <text class="role-tag">{{activeRole === 'user' ? '个人中心' : '师傅中心'}}</text>
+      </view>
+    </view>
+    <view class="membership-tag">五星用户</view>
+  </view>
+
+  <!-- 2. 核心数据悬浮卡片 -->
+  <view class="key-stats-card">
+    <view class="stats-grid">
+      <view wx:for="{{keyStats}}" wx:key="label" class="stat-item">
+        <text class="stat-value">{{item.value}} <text class="stat-unit">{{item.unit}}</text></text>
+        <text class="stat-label">{{item.label}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="main-content">
+    <!-- 3. 我的服务 -->
+    <view class="section-card">
+      <text class="section-title">我的服务</text>
+      <view class="service-grid">
+        <view wx:for="{{mainServices}}" wx:key="text" class="service-item">
+          <view class="service-icon-wrapper" style="background: {{item.color}}">
+            <text class="service-icon">{{item.iconText}}</text>
+          </view>
+          <text class="service-text">{{item.text}}</text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 4. 更多功能列表 -->
+    <view class="section-card">
+      <text class="section-title">更多功能</text>
+      <view class="settings-list">
+        <view wx:for="{{settingsLinks}}" wx:key="text" class="settings-item" bindtap="navigateToPage" data-route="{{item.route}}">
+          <text class="cell-icon">{{item.iconText}}</text>
+          <text class="settings-text">{{item.text}}</text>
+          <text class="arrow-icon">›</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="logout-button-wrapper">
+      <button class="logout-button" bindtap="logout">退出登录</button>
+    </view>
+  </view>
+
+  <!-- 身份切换弹窗 -->
+  <view wx:if="{{showRoleSheet}}" class="role-sheet-overlay" bindtap="onCloseRoleSheet">
+    <view class="role-sheet" catchtap="stopPropagation">
+      <view class="role-sheet-title">请选择您要进入的系统</view>
+      <view wx:for="{{roleActions}}" wx:key="name" class="role-sheet-item" bindtap="onRoleSelect" data-item="{{item}}">
+        <text class="role-item-name">{{item.name}}</text>
+        <text wx:if="{{item.selected}}" class="role-item-check">✓</text>
+      </view>
+      <view class="role-sheet-cancel" bindtap="onCloseRoleSheet">取消</view>
+    </view>
+  </view>
+</view>
+

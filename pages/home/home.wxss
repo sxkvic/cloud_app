@@ -1,0 +1,262 @@
+/* pages/home/home.wxss */
+@import "../../styles/common.wxss";
+
+/* 整体页面样式 */
+.home-page {
+  background-color: #f7f8fa;
+  min-height: 100vh;
+  padding-bottom: 120rpx; /* 为底部导航栏留出空间 */
+}
+
+/* 主体内容区 */
+.content-body {
+  padding: 0 32rpx;
+}
+
+/* 顶部欢迎区域 */
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx 32rpx 24rpx 32rpx;
+  background: white;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.welcome-text {
+  font-size: 28rpx;
+  color: #999;
+  margin-bottom: 8rpx;
+  display: block;
+}
+
+.user-name {
+  font-size: 48rpx;
+  font-weight: 600;
+  color: #333;
+  display: block;
+}
+
+.notification-icon {
+  position: relative;
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f5;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.notification-icon:active {
+  background: #e0e0e0;
+  transform: scale(0.95);
+}
+
+.bell-icon {
+  font-size: 44rpx;
+}
+
+.notification-dot {
+  position: absolute;
+  top: 16rpx;
+  right: 16rpx;
+  width: 16rpx;
+  height: 16rpx;
+  background: #ff4d4f;
+  border-radius: 50%;
+  border: 2rpx solid white;
+}
+
+/* 轮播图区域 */
+.swipe-section {
+  margin: 32rpx 0;
+}
+
+.promo-swipe {
+  height: 360rpx;
+  border-radius: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
+}
+
+.swipe-item {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.swipe-image {
+  width: 100%;
+  height: 100%;
+}
+
+.swipe-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
+  padding: 60rpx 40rpx 40rpx;
+  color: white;
+}
+
+.swipe-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+  display: block;
+}
+
+.swipe-subtitle {
+  font-size: 28rpx;
+  opacity: 0.9;
+  display: block;
+}
+
+/* 常用服务区域 */
+.common-services-section {
+  margin-bottom: 48rpx;
+}
+
+.section-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 32rpx;
+  display: block;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24rpx;
+}
+
+.service-card {
+  background: white;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.service-card:active {
+  transform: scale(0.98);
+}
+
+.icon-wrapper {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.service-icon {
+  font-size: 40rpx;
+  color: white;
+}
+
+.text-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.service-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8rpx;
+  display: block;
+}
+
+.service-subtitle {
+  font-size: 24rpx;
+  color: #666;
+  display: block;
+}
+
+/* 全部功能区域 */
+.all-features-section {
+  margin-bottom: 48rpx;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24rpx;
+  background: white;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.05);
+}
+
+.feature-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24rpx 16rpx;
+  transition: transform 0.2s ease;
+  border-radius: 16rpx;
+}
+
+.feature-item:active {
+  transform: scale(0.95);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.feature-icon {
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16rpx;
+  font-size: 52rpx;
+}
+
+.feature-text {
+  font-size: 24rpx;
+  color: #333;
+  font-weight: 500;
+  display: block;
+}
+
+/* 响应式设计 */
+@media (max-width: 375px) {
+  .content-body {
+    padding: 0 24rpx;
+  }
+  
+  .services-grid {
+    gap: 16rpx;
+  }
+  
+  .service-card {
+    padding: 24rpx;
+  }
+  
+  .features-grid {
+    gap: 16rpx;
+    padding: 24rpx;
+  }
+  
+  .feature-item {
+    padding: 16rpx 8rpx;
+  }
+}
+

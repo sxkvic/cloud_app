@@ -1,0 +1,22 @@
+{
+  "name": "cloud-broadband-miniprogram",
+  "version": "1.0.0",
+  "description": "云网宽带微信小程序",
+  "main": "app.js",
+  "scripts": {
+    "build": "npm run build:npm",
+    "build:npm": "echo '请在微信开发者工具中执行: 工具 -> 构建npm'"
+  },
+  "dependencies": {
+    "@vant/weapp": "^1.11.6"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "miniprogram",
+    "wechat",
+    "vant",
+    "ui"
+  ],
+  "author": "",
+  "license": "MIT"
+}
