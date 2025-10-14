@@ -1,2 +1,51 @@
 <!--pages/customer-service/customer-service.wxml-->
-<text>pages/customer-service/customer-service.wxml</text>
+<view class="service-center-page">
+  <view class="main-content">
+    <!-- 顶部欢迎卡片 -->
+    <view class="hero-card">
+      <image src="/images/logo.png" class="avatar" mode="aspectFill"></image>
+      <view class="welcome-title">您好，有什么可以帮您？</view>
+      <view class="service-time">我们的服务时间为：工作日 9:00 - 21:00</view>
+      <view class="status-tag">
+        <view class="status-dot"></view>
+        当前服务通畅
+      </view>
+    </view>
+
+    <!-- 功能入口 -->
+    <view class="action-cards">
+      <!-- 在线客服 -->
+      <view class="action-card online-chat-card" bindtap="startChat">
+        <view class="icon">💬</view>
+        <view class="text-content">
+          <view class="title">在线客服</view>
+          <view class="subtitle">输入您的问题，我们将尽快为您解答</view>
+        </view>
+      </view>
+      
+      <!-- 客服热线 -->
+      <view class="action-card hotline-card" bindtap="makeCall">
+        <view class="icon">📞</view>
+        <view class="text-content">
+          <view class="title">客服热线</view>
+          <view class="subtitle">拨打 10086-8-1 (宽带专线)</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 常见问题 -->
+    <view class="faq-section">
+      <view class="section-title">常见问题</view>
+      <van-collapse value="{{ activeFaq }}" bind:change="onFaqChange" class="faq-collapse">
+        <van-collapse-item 
+          wx:for="{{ faqList }}" 
+          wx:key="title"
+          title="{{ item.title }}"
+          name="{{ item.title }}"
+        >
+          <view class="faq-content">{{ item.content }}</view>
+        </van-collapse-item>
+      </van-collapse>
+    </view>
+  </view>
+</view>

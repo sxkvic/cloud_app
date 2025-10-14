@@ -1,0 +1,164 @@
+/* pages/customer-service/customer-service.wxss */
+
+/* --- 全局样式 --- */
+.service-center-page {
+  background-color: #f4f7f9;
+  min-height: 100vh;
+}
+
+.main-content {
+  padding: 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 48rpx;
+}
+
+/* --- 欢迎卡片 --- */
+.hero-card {
+  background-color: white;
+  border-radius: 32rpx;
+  padding: 48rpx;
+  text-align: center;
+  box-shadow: 0 8rpx 32rpx rgba(0,0,0,0.06);
+}
+
+.avatar {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  border: 8rpx solid white;
+  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.1);
+  margin: 0 auto;
+  object-fit: cover;
+}
+
+.welcome-title {
+  margin-top: 32rpx;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #1f2937;
+}
+
+.service-time {
+  margin-top: 8rpx;
+  font-size: 26rpx;
+  color: #6b7280;
+}
+
+.status-tag {
+  margin-top: 24rpx;
+  display: inline-flex;
+  align-items: center;
+  background-color: #dcfce7;
+  color: #166534;
+  font-size: 24rpx;
+  font-weight: 500;
+  padding: 8rpx 24rpx;
+  border-radius: 999rpx;
+}
+
+.status-dot {
+  width: 16rpx;
+  height: 16rpx;
+  background-color: #22c55e;
+  border-radius: 50%;
+  margin-right: 12rpx;
+}
+
+/* --- 功能卡片 --- */
+.action-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+}
+
+.action-card {
+  display: flex;
+  align-items: center;
+  padding: 48rpx;
+  border-radius: 32rpx;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.action-card:active {
+  transform: translateY(-8rpx);
+}
+
+.action-card .icon {
+  font-size: 64rpx;
+  margin-right: 40rpx;
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-card .text-content {
+  flex: 1;
+}
+
+.action-card .text-content .title {
+  font-size: 36rpx;
+  font-weight: bold;
+}
+
+.action-card .text-content .subtitle {
+  font-size: 26rpx;
+  margin-top: 8rpx;
+}
+
+.online-chat-card {
+  background: linear-gradient(90deg, #2563eb, #1cb0f6);
+  color: white;
+  box-shadow: 0 16rpx 32rpx rgba(59, 130, 246, 0.25);
+}
+
+.online-chat-card:active {
+  box-shadow: 0 24rpx 48rpx rgba(59, 130, 246, 0.3);
+}
+
+.online-chat-card .subtitle {
+  color: rgba(255,255,255,0.9);
+}
+
+.hotline-card {
+  background-color: white;
+  box-shadow: 0 8rpx 32rpx rgba(0,0,0,0.06);
+}
+
+.hotline-card:active {
+  box-shadow: 0 12rpx 40rpx rgba(0,0,0,0.08);
+}
+
+.hotline-card .icon {
+  color: #2563eb;
+}
+
+.hotline-card .title {
+  color: #1f2937;
+}
+
+.hotline-card .subtitle {
+  color: #6b7280;
+}
+
+/* --- 常见问题 --- */
+.faq-section .section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 24rpx;
+}
+
+.faq-collapse {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.faq-content {
+  font-size: 28rpx;
+  color: #6b7280;
+  line-height: 1.7;
+}
