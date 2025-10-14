@@ -1,68 +1,47 @@
 <!--pages/bind-device-code/bind-device-code.wxml-->
 <view class="bind-device-page">
-  <!-- 1. 顶部波浪背景 -->
-  <view class="header-bg">
-    <view class="wave"></view>
-    <view class="wave"></view>
-    <view class="header-content">
-      <text class="title">绑定您的设备</text>
-      <text class="subtitle">扫描或手动输入设备绑定码</text>
-    </view>
+  <!-- 顶部标题区域 -->
+  <view class="header-section">
+    <text class="title">绑定您的设备</text>
+    <text class="subtitle">请输入您的设备绑定码</text>
   </view>
 
-  <!-- 2. 内容区域 -->
+  <!-- 主内容区域 -->
   <view class="content-wrapper">
-    <!-- 二维码引导 -->
-    <view class="qr-guide">
-      <view class="qr-code-wrapper">
-        <image src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=ExampleDeviceID12345" alt="QR Code" class="qr-code-img" />
+    <view class="bind-card">
+      <!-- 输入表单 -->
+      <view class="input-section">
+        <view class="input-wrapper">
+          <text class="input-icon">📱</text>
+          <input
+            type="text"
+            value="{{deviceCode}}"
+            bindinput="onInputChange"
+            class="custom-input"
+            placeholder="请输入16位设备绑定码"
+            maxlength="16"
+            placeholder-style="color: #9ca3af"
+          />
+        </view>
+        
+        <button 
+          class="submit-button {{isLoading ? 'loading' : ''}}" 
+          bindtap="onManualSubmit"
+          disabled="{{isLoading}}"
+        >
+          <text wx:if="{{!isLoading}}" class="button-icon">✓</text>
+          <text wx:if="{{isLoading}}" class="loading-icon">⟳</text>
+          {{isLoading ? '绑定中...' : '确认绑定'}}
+        </button>
       </view>
-      <text class="guide-text">请找到您设备背面的二维码标签，并将其置于扫描框内。</text>
-    </view>
-
-    <!-- 扫码按钮 -->
-    <button class="action-button scan-button" bindtap="onScan">
-      <text class="button-icon">📷</text>
-      扫码绑定
-    </button>
-
-    <!-- 分割线 -->
-    <view class="divider">
-      <view class="divider-line"></view>
-      <text class="divider-text">或手动输入</text>
-      <view class="divider-line"></view>
-    </view>
-
-    <!-- 手动输入表单 -->
-    <view class="manual-form">
-      <view class="input-wrapper">
-        <text class="input-icon">⌨️</text>
-        <input
-          type="text"
-          value="{{deviceCode}}"
-          bindinput="onInputChange"
-          class="custom-input"
-          placeholder="请输入16位设备绑定码"
-          maxlength="16"
-        />
+      
+      <!-- 帮助信息 -->
+      <view class="help-section">
+        <text class="help-text" bindtap="showHelp">
+          找不到绑定码？点击查看帮助
+        </text>
       </view>
-      <button 
-        class="action-button confirm-button {{isLoading ? 'loading' : ''}}" 
-        bindtap="onManualSubmit"
-        disabled="{{isLoading}}"
-      >
-        <text wx:if="{{!isLoading}}" class="button-icon">✓</text>
-        <text wx:if="{{isLoading}}" class="loading-icon">⟳</text>
-        {{isLoading ? '绑定中...' : '确认绑定'}}
-      </button>
     </view>
-  </view>
-  
-  <!-- 帮助链接 -->
-  <view class="footer-wrapper">
-    <text class="help-link" bindtap="showHelp">
-      找不到绑定码？
-    </text>
   </view>
 </view>
 

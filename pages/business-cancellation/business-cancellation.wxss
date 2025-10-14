@@ -1,0 +1,362 @@
+/* pages/business-cancellation/business-cancellation.wxss */
+
+/* 页面整体样式 */
+.business-cancellation-page {
+  background-color: #f8fafc;
+  min-height: 100vh;
+  padding: 32rpx;
+  padding-bottom: 120rpx;
+}
+
+/* 页面头部 */
+.page-header {
+  text-align: center;
+  margin-bottom: 40rpx;
+}
+
+.page-title {
+  display: block;
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 16rpx;
+}
+
+.page-subtitle {
+  display: block;
+  font-size: 28rpx;
+  color: #6b7280;
+}
+
+/* 当前服务 */
+.current-service {
+  background: white;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.service-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.service-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #1f2937;
+}
+
+.service-status {
+  padding: 8rpx 16rpx;
+  border-radius: 16rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.service-status.active {
+  background: #d1fae5;
+  color: #10b981;
+}
+
+.service-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.service-info {
+  flex: 1;
+}
+
+.service-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 12rpx;
+}
+
+.service-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.detail-item {
+  font-size: 26rpx;
+  color: #6b7280;
+}
+
+.service-icon {
+  font-size: 64rpx;
+  opacity: 0.8;
+}
+
+/* 退订选项 */
+.cancellation-options {
+  background: white;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 24rpx;
+}
+
+.option-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.option-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 16rpx;
+  transition: all 0.3s ease;
+}
+
+.option-item:active {
+  border-color: #2563eb;
+  background: #f8fafc;
+}
+
+.option-info {
+  flex: 1;
+}
+
+.option-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 8rpx;
+}
+
+.option-description {
+  font-size: 26rpx;
+  color: #374151;
+  margin-bottom: 4rpx;
+}
+
+.option-note {
+  font-size: 24rpx;
+  color: #f59e0b;
+}
+
+.option-radio {
+  width: 40rpx;
+  height: 40rpx;
+  border: 3rpx solid #d1d5db;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.option-radio.selected {
+  border-color: #2563eb;
+  background: #2563eb;
+}
+
+.radio-inner {
+  width: 16rpx;
+  height: 16rpx;
+  background: white;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.option-radio.selected .radio-inner {
+  opacity: 1;
+}
+
+/* 退订原因 */
+.cancellation-reason {
+  background: white;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.reason-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+}
+
+.reason-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+}
+
+.reason-item:active {
+  border-color: #2563eb;
+  background: #f8fafc;
+}
+
+.reason-text {
+  font-size: 28rpx;
+  color: #374151;
+}
+
+.reason-radio {
+  width: 36rpx;
+  height: 36rpx;
+  border: 2rpx solid #d1d5db;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.reason-radio.selected {
+  border-color: #2563eb;
+  background: #2563eb;
+}
+
+.reason-radio .radio-inner {
+  width: 14rpx;
+  height: 14rpx;
+}
+
+/* 其他原因输入框 */
+.other-reason {
+  margin-top: 24rpx;
+}
+
+.reason-input {
+  width: 100%;
+  min-height: 160rpx;
+  padding: 20rpx;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  color: #374151;
+  background: #f9fafb;
+  box-sizing: border-box;
+}
+
+.reason-input:focus {
+  border-color: #2563eb;
+  background: white;
+}
+
+.input-counter {
+  text-align: right;
+  font-size: 24rpx;
+  color: #9ca3af;
+  margin-top: 8rpx;
+}
+
+/* 注意事项 */
+.notice-section {
+  background: white;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.notice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.notice-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12rpx;
+}
+
+.notice-icon {
+  font-size: 32rpx;
+  margin-top: 4rpx;
+}
+
+.notice-text {
+  font-size: 26rpx;
+  color: #6b7280;
+  line-height: 1.5;
+  flex: 1;
+}
+
+/* 底部操作 */
+.bottom-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  padding: 32rpx;
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.1);
+  border-top: 1rpx solid #e5e7eb;
+  display: flex;
+  gap: 24rpx;
+}
+
+.action-button {
+  flex: 1;
+  height: 88rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  border: none;
+  border-radius: 24rpx;
+  transition: all 0.3s ease;
+}
+
+.action-button.secondary {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.action-button.primary {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  box-shadow: 0 8rpx 24rpx rgba(239, 68, 68, 0.3);
+}
+
+.action-button:disabled {
+  background: #d1d5db;
+  color: #9ca3af;
+  box-shadow: none;
+}
+
+.action-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* 响应式设计 */
+@media (max-width: 375px) {
+  .business-cancellation-page {
+    padding: 24rpx;
+  }
+  
+  .current-service,
+  .cancellation-options,
+  .cancellation-reason,
+  .notice-section {
+    padding: 24rpx;
+  }
+}

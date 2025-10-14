@@ -1,2 +1,60 @@
 <!--pages/package-order/package-order.wxml-->
-<text>pages/package-order/package-order.wxml</text>
+<view class="package-order-page">
+  <!-- 头部标题 -->
+  <view class="page-header">
+    <text class="page-title">套餐订购</text>
+    <text class="page-subtitle">选择适合您的宽带套餐</text>
+  </view>
+
+  <!-- 套餐列表 -->
+  <view class="package-list">
+    <view 
+      wx:for="{{ packages }}" 
+      wx:key="id" 
+      class="package-item {{ selectedPackage === item.id ? 'selected' : '' }}"
+      bindtap="selectPackage"
+      data-id="{{ item.id }}"
+    >
+      <view class="package-header">
+        <view class="package-name">{{ item.name }}</view>
+        <view class="package-badge" wx:if="{{ item.isPopular }}">热门</view>
+      </view>
+      
+      <view class="package-content">
+        <view class="package-speed">
+          <text class="speed-value">{{ item.speed }}</text>
+          <text class="speed-unit">Mbps</text>
+        </view>
+        
+        <view class="package-features">
+          <view wx:for="{{ item.features }}" wx:key="*this" class="feature-item">
+            <text class="feature-icon">✓</text>
+            <text class="feature-text">{{ item }}</text>
+          </view>
+        </view>
+        
+        <view class="package-price">
+          <text class="price-symbol">¥</text>
+          <text class="price-value">{{ item.price }}</text>
+          <text class="price-unit">/月</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 订购按钮 -->
+  <view class="order-section">
+    <view class="order-summary">
+      <text class="summary-label">选择套餐：</text>
+      <text class="summary-value">{{ selectedPackageName }}</text>
+    </view>
+    
+    <button 
+      class="order-button"
+      disabled="{{ !selectedPackage }}"
+      bindtap="confirmOrder"
+    >
+      {{ selectedPackage ? '立即订购' : '请选择套餐' }}
+    </button>
+  </view>
+</view>

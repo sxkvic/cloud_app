@@ -1,0 +1,211 @@
+/* pages/package-order/package-order.wxss */
+
+/* 页面整体样式 */
+.package-order-page {
+  background-color: #f8fafc;
+  min-height: 100vh;
+  padding: 32rpx;
+}
+
+/* 页面头部 */
+.page-header {
+  text-align: center;
+  margin-bottom: 48rpx;
+}
+
+.page-title {
+  display: block;
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 16rpx;
+}
+
+.page-subtitle {
+  display: block;
+  font-size: 28rpx;
+  color: #6b7280;
+}
+
+/* 套餐列表 */
+.package-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  margin-bottom: 60rpx;
+}
+
+.package-item {
+  background: white;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+  border: 3rpx solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.package-item.selected {
+  border-color: #2563eb;
+  box-shadow: 0 8rpx 32rpx rgba(37, 99, 235, 0.15);
+  transform: translateY(-4rpx);
+}
+
+.package-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.package-name {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #1f2937;
+}
+
+.package-badge {
+  background: linear-gradient(135deg, #f59e0b, #f97316);
+  color: white;
+  font-size: 24rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 16rpx;
+  font-weight: 500;
+}
+
+.package-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.package-speed {
+  text-align: center;
+  margin-bottom: 16rpx;
+}
+
+.speed-value {
+  font-size: 64rpx;
+  font-weight: bold;
+  color: #2563eb;
+}
+
+.speed-unit {
+  font-size: 28rpx;
+  color: #6b7280;
+  margin-left: 8rpx;
+}
+
+.package-features {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.feature-icon {
+  color: #10b981;
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+.feature-text {
+  font-size: 28rpx;
+  color: #374151;
+}
+
+.package-price {
+  text-align: center;
+  margin-top: 16rpx;
+}
+
+.price-symbol {
+  font-size: 32rpx;
+  color: #ef4444;
+  font-weight: 500;
+}
+
+.price-value {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #ef4444;
+}
+
+.price-unit {
+  font-size: 28rpx;
+  color: #6b7280;
+}
+
+/* 订购区域 */
+.order-section {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  padding: 32rpx;
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.1);
+  border-top: 1rpx solid #e5e7eb;
+}
+
+.order-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.summary-label {
+  font-size: 32rpx;
+  color: #374151;
+}
+
+.summary-value {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #2563eb;
+}
+
+.order-button {
+  width: 100%;
+  height: 88rpx;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+  font-size: 32rpx;
+  font-weight: 600;
+  border: none;
+  border-radius: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(37, 99, 235, 0.3);
+  transition: all 0.3s ease;
+}
+
+.order-button:disabled {
+  background: #d1d5db;
+  color: #9ca3af;
+  box-shadow: none;
+}
+
+.order-button:active:not(:disabled) {
+  transform: translateY(-2rpx);
+  box-shadow: 0 12rpx 32rpx rgba(37, 99, 235, 0.4);
+}
+
+/* 响应式设计 */
+@media (max-width: 375px) {
+  .package-order-page {
+    padding: 24rpx;
+  }
+  
+  .package-item {
+    padding: 24rpx;
+  }
+  
+  .speed-value {
+    font-size: 56rpx;
+  }
+}

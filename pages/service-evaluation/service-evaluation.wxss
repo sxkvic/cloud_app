@@ -1,0 +1,332 @@
+/* pages/service-evaluation/service-evaluation.wxss */
+
+/* 页面整体样式 */
+.service-evaluation-page {
+  background-color: #f8fafc;
+  min-height: 100vh;
+  padding: 32rpx;
+  padding-bottom: 120rpx;
+}
+
+/* 页面头部 */
+.page-header {
+  text-align: center;
+  margin-bottom: 40rpx;
+}
+
+.page-title {
+  display: block;
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 16rpx;
+}
+
+.page-subtitle {
+  display: block;
+  font-size: 28rpx;
+  color: #6b7280;
+}
+
+/* 服务信息 */
+.service-info {
+  background: white;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.service-header {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.service-icon {
+  font-size: 64rpx;
+  opacity: 0.8;
+}
+
+.service-details {
+  flex: 1;
+}
+
+.service-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 8rpx;
+}
+
+.service-date,
+.service-engineer {
+  font-size: 26rpx;
+  color: #6b7280;
+  margin-bottom: 4rpx;
+}
+
+/* 整体评分 */
+.overall-rating {
+  background: white;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 24rpx;
+}
+
+.rating-container {
+  display: flex;
+  justify-content: center;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.star-item {
+  padding: 8rpx;
+  transition: transform 0.2s ease;
+}
+
+.star-item:active {
+  transform: scale(1.2);
+}
+
+.star-icon {
+  font-size: 48rpx;
+  opacity: 0.3;
+  transition: all 0.3s ease;
+}
+
+.star-icon.active {
+  opacity: 1;
+  filter: drop-shadow(0 0 8rpx rgba(255, 193, 7, 0.5));
+}
+
+.rating-text {
+  font-size: 28rpx;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* 详细评价 */
+.detailed-rating {
+  background: white;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.rating-items {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.rating-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rating-label {
+  font-size: 28rpx;
+  color: #374151;
+  font-weight: 500;
+}
+
+.star-group {
+  display: flex;
+  gap: 8rpx;
+}
+
+.star-item.small {
+  padding: 4rpx;
+}
+
+.star-item.small .star-icon {
+  font-size: 32rpx;
+}
+
+/* 文字评价 */
+.text-evaluation {
+  background: white;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.evaluation-input {
+  width: 100%;
+  min-height: 180rpx;
+  padding: 20rpx;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  color: #374151;
+  background: #f9fafb;
+  box-sizing: border-box;
+  line-height: 1.5;
+}
+
+.evaluation-input:focus {
+  border-color: #2563eb;
+  background: white;
+}
+
+.input-counter {
+  text-align: right;
+  font-size: 24rpx;
+  color: #9ca3af;
+  margin-top: 8rpx;
+}
+
+/* 标签评价 */
+.tag-evaluation {
+  background: white;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.tag-item {
+  padding: 12rpx 20rpx;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 20rpx;
+  font-size: 26rpx;
+  color: #6b7280;
+  background: #f9fafb;
+  transition: all 0.3s ease;
+}
+
+.tag-item.selected {
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.tag-item:active {
+  transform: scale(0.95);
+}
+
+/* 匿名选项 */
+.anonymous-option {
+  background: white;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.option-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.option-info {
+  flex: 1;
+}
+
+.option-label {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 8rpx;
+}
+
+.option-desc {
+  display: block;
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+
+.switch-container {
+  margin-left: 20rpx;
+}
+
+/* 底部操作 */
+.bottom-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  padding: 32rpx;
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.1);
+  border-top: 1rpx solid #e5e7eb;
+  display: flex;
+  gap: 24rpx;
+}
+
+.action-button {
+  flex: 1;
+  height: 88rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  border: none;
+  border-radius: 24rpx;
+  transition: all 0.3s ease;
+}
+
+.action-button.secondary {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.action-button.primary {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+  box-shadow: 0 8rpx 24rpx rgba(37, 99, 235, 0.3);
+}
+
+.action-button:disabled {
+  background: #d1d5db;
+  color: #9ca3af;
+  box-shadow: none;
+}
+
+.action-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* 响应式设计 */
+@media (max-width: 375px) {
+  .service-evaluation-page {
+    padding: 24rpx;
+  }
+  
+  .service-info,
+  .overall-rating,
+  .detailed-rating,
+  .text-evaluation,
+  .tag-evaluation,
+  .anonymous-option {
+    padding: 24rpx;
+  }
+  
+  .star-icon {
+    font-size: 40rpx;
+  }
+  
+  .star-item.small .star-icon {
+    font-size: 28rpx;
+  }
+}

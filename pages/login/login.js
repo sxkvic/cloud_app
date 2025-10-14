@@ -30,7 +30,7 @@ Page({
       this.setData({ loading: false });
       message.success("授权成功！即将跳转...");
       setTimeout(() => {
-        navigation.navigateTo('/pages/role-selection/role-selection');
+        navigation.switchTab('/pages/home/home');
       }, 800);
     }, 1500);
   },

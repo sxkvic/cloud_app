@@ -1,2 +1,116 @@
 <!--pages/business-cancellation/business-cancellation.wxml-->
-<text>pages/business-cancellation/business-cancellation.wxml</text>
+<view class="business-cancellation-page">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <text class="page-title">业务退订</text>
+    <text class="page-subtitle">管理您的宽带服务</text>
+  </view>
+
+  <!-- 当前服务 -->
+  <view class="current-service">
+    <view class="service-header">
+      <text class="service-title">当前服务</text>
+      <view class="service-status active">使用中</view>
+    </view>
+    
+    <view class="service-card">
+      <view class="service-info">
+        <view class="service-name">标准套餐 (200Mbps)</view>
+        <view class="service-details">
+          <text class="detail-item">月费：¥128</text>
+          <text class="detail-item">到期：2025-01-01</text>
+          <text class="detail-item">状态：正常使用</text>
+        </view>
+      </view>
+      <view class="service-icon">📡</view>
+    </view>
+  </view>
+
+  <!-- 退订选项 -->
+  <view class="cancellation-options">
+    <view class="section-title">退订选项</view>
+    
+    <view class="option-list">
+      <view 
+        class="option-item"
+        wx:for="{{ cancellationOptions }}"
+        wx:key="id"
+        bindtap="selectOption"
+        data-id="{{ item.id }}"
+      >
+        <view class="option-info">
+          <view class="option-title">{{ item.title }}</view>
+          <view class="option-description">{{ item.description }}</view>
+          <view class="option-note">{{ item.note }}</view>
+        </view>
+        <view class="option-radio {{ selectedOption === item.id ? 'selected' : '' }}">
+          <view class="radio-inner"></view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 退订原因 -->
+  <view class="cancellation-reason" wx:if="{{ selectedOption }}">
+    <view class="section-title">退订原因</view>
+    <view class="reason-list">
+      <view 
+        class="reason-item"
+        wx:for="{{ reasons }}"
+        wx:key="id"
+        bindtap="selectReason"
+        data-id="{{ item.id }}"
+      >
+        <text class="reason-text">{{ item.text }}</text>
+        <view class="reason-radio {{ selectedReason === item.id ? 'selected' : '' }}">
+          <view class="radio-inner"></view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 其他原因输入框 -->
+    <view class="other-reason" wx:if="{{ selectedReason === 'other' }}">
+      <textarea
+        class="reason-input"
+        placeholder="请详细说明退订原因..."
+        value="{{ customReason }}"
+        bindinput="onReasonInput"
+        maxlength="200"
+      ></textarea>
+      <view class="input-counter">{{ customReason.length }}/200</view>
+    </view>
+  </view>
+
+  <!-- 注意事项 -->
+  <view class="notice-section">
+    <view class="section-title">注意事项</view>
+    <view class="notice-list">
+      <view class="notice-item">
+        <text class="notice-icon">⚠️</text>
+        <text class="notice-text">退订后立即生效，无法恢复</text>
+      </view>
+      <view class="notice-item">
+        <text class="notice-icon">💰</text>
+        <text class="notice-text">已缴纳费用按实际使用天数计算退款</text>
+      </view>
+      <view class="notice-item">
+        <text class="notice-icon">📞</text>
+        <text class="notice-text">退订后如需重新开通，请联系客服</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作 -->
+  <view class="bottom-actions">
+    <button class="action-button secondary" bindtap="contactService">
+      联系客服
+    </button>
+    <button 
+      class="action-button primary" 
+      disabled="{{ !canSubmit }}"
+      bindtap="confirmCancellation"
+    >
+      确认退订
+    </button>
+  </view>
+</view>

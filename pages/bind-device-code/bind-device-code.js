@@ -13,20 +13,17 @@ Page({
     // 检查是否已经绑定过设备
     const deviceBound = wx.getStorageSync('deviceBound');
     if (deviceBound) {
-      wx.showModal({
+      // 设备已绑定，直接跳转到首页
+      wx.showToast({
         title: '设备已绑定',
-        content: '您已经绑定过设备，是否要重新绑定？',
-        showCancel: true,
-        cancelText: '返回首页',
-        confirmText: '重新绑定',
-        success: (res) => {
-          if (res.cancel) {
-            // 用户选择返回首页
-            navigation.switchTab('/pages/home/home');
-          }
-          // 如果用户选择重新绑定，继续留在当前页面
-        }
+        icon: 'success',
+        duration: 1500
       });
+      
+      setTimeout(() => {
+        navigation.switchTab('/pages/home/home');
+      }, 1500);
+      return;
     }
   },
 
@@ -34,25 +31,6 @@ Page({
     console.log('绑定设备码页面显示');
   },
 
-  // 扫码绑定
-  onScan() {
-    message.loading('启动摄像头扫描...');
-    
-    // 模拟扫码过程
-    setTimeout(() => {
-      message.hideLoading();
-      message.success('扫码绑定成功！');
-      
-      // 保存绑定状态
-      wx.setStorageSync('deviceBound', true);
-      wx.setStorageSync('deviceCode', 'SCANNED_DEVICE_12345');
-      
-      setTimeout(() => {
-        // 使用switchTab跳转到tabBar页面
-        navigation.switchTab('/pages/home/home');
-      }, 800);
-    }, 2000);
-  },
 
   // 输入框内容变化
   onInputChange(e) {

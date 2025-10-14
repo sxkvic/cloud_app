@@ -1,2 +1,42 @@
 <!--pages/product-query/product-query.wxml-->
-<text>pages/product-query/product-query.wxml</text>
+<view class="product-query-page">
+  <view class="main-content">
+    <view class="query-card">
+      <view class="card-title">查询您的宽带产品信息</view>
+      
+      <form bindsubmit="onSubmit" class="query-form">
+        <!-- 输入框 -->
+        <view class="input-wrapper">
+          <input
+            type="text"
+            value="{{ queryInput }}"
+            bindinput="onInputChange"
+            class="custom-input"
+            placeholder="输入设备码 / 宽带账号"
+            placeholder-style="color: #9ca3af"
+          />
+        </view>
+
+        <!-- 查询按钮 -->
+        <view class="button-wrapper">
+          <button
+            form-type="submit"
+            class="submit-button"
+            disabled="{{ isLoading }}"
+          >
+            <text wx:if="{{ isLoading }}" class="loading-icon">⟳</text>
+            <text wx:else class="button-icon">🔍</text>
+            {{ isLoading ? '查询中...' : '立即查询' }}
+          </button>
+        </view>
+      </form>
+      
+      <view class="help-link-wrapper">
+        <view class="help-link" bindtap="showHelp">
+          <text class="help-icon">❓</text>
+          如何找到我的设备码？
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

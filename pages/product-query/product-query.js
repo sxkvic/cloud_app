@@ -5,7 +5,8 @@ Page({
      * 页面的初始数据
      */
     data: {
-
+        queryInput: '',
+        isLoading: false
     },
 
     /**
@@ -62,5 +63,57 @@ Page({
      */
     onShareAppMessage() {
 
+    },
+
+    /**
+     * 输入框内容变化
+     */
+    onInputChange(event) {
+        this.setData({
+            queryInput: event.detail.value
+        });
+    },
+
+    /**
+     * 提交查询表单
+     */
+    onSubmit() {
+        if (!this.data.queryInput.trim()) {
+            wx.showToast({
+                title: '请输入设备码或宽带账号',
+                icon: 'none'
+            });
+            return;
+        }
+        
+        this.setData({
+            isLoading: true
+        });
+
+        console.log('Querying for:', this.data.queryInput);
+
+        // 模拟查询请求
+        setTimeout(() => {
+            this.setData({
+                isLoading: false
+            });
+            
+            wx.showToast({
+                title: '查询成功！',
+                icon: 'success'
+            });
+        }, 1500);
+    },
+
+    /**
+     * 显示帮助信息
+     */
+    showHelp() {
+        wx.showModal({
+            title: '如何找到我的设备码？',
+            content: '1. 查看光猫设备上的标签\n2. 查看路由器背面的标识\n3. 查看宽带安装时提供的单据\n4. 联系客服获取设备码',
+            showCancel: false,
+            confirmText: '知道了'
+        });
     }
 })

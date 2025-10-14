@@ -2,7 +2,6 @@
   "pages": [
     "pages/splash/splash",
     "pages/login/login",
-    "pages/role-selection/role-selection",
     "pages/home/home",
     "pages/my/my",
     "pages/master-home/master-home",

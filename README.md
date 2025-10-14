@@ -33,7 +33,6 @@ cloud_app/
 ├── pages/                   # 页面目录
 │   ├── splash/              # 启动页 ✅
 │   ├── login/               # 登录页 ✅
-│   ├── role-selection/      # 角色选择 ✅
 │   ├── bind-device-code/    # 绑定设备 ✅
 │   ├── home/                # 首页 ✅
 │   ├── my/                  # 我的 (部分完成)
@@ -66,7 +65,6 @@ cloud_app/
 ### ✅ 核心页面
 - [x] **启动页(splash)** - 品牌展示+动画效果
 - [x] **登录页(login)** - 微信一键登录+毛玻璃效果
-- [x] **角色选择(role-selection)** - 滑块切换+动画
 - [x] **绑定设备码(bind-device-code)** - 扫码+手动输入
 - [x] **首页(home)** - 轮播图+服务网格+功能列表
 - [x] **我的页面(my)** - 个人信息+服务入口(部分)
