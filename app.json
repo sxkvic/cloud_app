@@ -4,7 +4,6 @@
     "pages/login/login",
     "pages/home/home",
     "pages/my/my",
-    "pages/master-home/master-home",
     "pages/bind-device-code/bind-device-code",
     "pages/package-order/package-order",
     "pages/my-bill/my-bill",
@@ -38,12 +37,6 @@
         "text": "我的",
         "iconPath": "images/my.png",
         "selectedIconPath": "images/my-active.png"
-      },
-      {
-        "pagePath": "pages/master-home/master-home",
-        "text": "师傅工作台",
-        "iconPath": "images/master.png",
-        "selectedIconPath": "images/master-active.png"
       }
     ]
   },

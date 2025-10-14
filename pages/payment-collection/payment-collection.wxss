@@ -1,0 +1,524 @@
+/* pages/payment-collection/payment-collection.wxss */
+
+/* 页面整体样式 */
+.payment-collection-page {
+  background-color: #f8fafc;
+  min-height: 100vh;
+  padding: 32rpx;
+  padding-bottom: 120rpx;
+}
+
+/* 页面头部 */
+.page-header {
+  text-align: center;
+  margin-bottom: 40rpx;
+}
+
+.page-title {
+  display: block;
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 16rpx;
+}
+
+.page-subtitle {
+  display: block;
+  font-size: 28rpx;
+  color: #6b7280;
+}
+
+/* 服务状态 */
+.service-status {
+  margin-bottom: 32rpx;
+}
+
+.status-card {
+  background: white;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+  border: 2rpx solid transparent;
+  transition: all 0.3s ease;
+}
+
+.status-card.active {
+  border-color: #10b981;
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+}
+
+.status-card.inactive {
+  border-color: #6b7280;
+  background: linear-gradient(135deg, #f9fafb, #f3f4f6);
+}
+
+.status-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.status-icon {
+  font-size: 48rpx;
+  margin-right: 20rpx;
+}
+
+.status-text {
+  flex: 1;
+}
+
+.status-title {
+  display: block;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 8rpx;
+}
+
+.status-description {
+  display: block;
+  font-size: 26rpx;
+  color: #6b7280;
+}
+
+.status-switch {
+  display: flex;
+  justify-content: center;
+}
+
+.switch {
+  width: 100rpx;
+  height: 56rpx;
+  background: #d1d5db;
+  border-radius: 28rpx;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.switch.on {
+  background: #10b981;
+}
+
+.switch-thumb {
+  width: 48rpx;
+  height: 48rpx;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 4rpx;
+  left: 4rpx;
+  transition: all 0.3s ease;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.2);
+}
+
+.switch.on .switch-thumb {
+  left: 48rpx;
+}
+
+/* 代扣设置 */
+.payment-settings {
+  background: white;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 24rpx;
+}
+
+.form-section {
+  margin-bottom: 32rpx;
+}
+
+.form-section:last-child {
+  margin-bottom: 0;
+}
+
+.form-item {
+  margin-bottom: 24rpx;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 16rpx;
+}
+
+/* 代扣方式 */
+.payment-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.method-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+}
+
+.method-item.selected {
+  border-color: #2563eb;
+  background: #f8fafc;
+}
+
+.method-item:active {
+  transform: translateX(4rpx);
+}
+
+.method-icon {
+  font-size: 40rpx;
+  margin-right: 16rpx;
+}
+
+.method-info {
+  flex: 1;
+}
+
+.method-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 4rpx;
+}
+
+.method-description {
+  font-size: 24rpx;
+  color: #6b7280;
+}
+
+.method-radio {
+  width: 36rpx;
+  height: 36rpx;
+  border: 3rpx solid #d1d5db;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.method-radio.selected {
+  border-color: #2563eb;
+  background: #2563eb;
+}
+
+.radio-inner {
+  width: 14rpx;
+  height: 14rpx;
+  background: white;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.method-radio.selected .radio-inner {
+  opacity: 1;
+}
+
+/* 代扣金额 */
+.amount-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+}
+
+.amount-option {
+  padding: 16rpx 24rpx;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 20rpx;
+  background: #f9fafb;
+  transition: all 0.3s ease;
+}
+
+.amount-option.selected {
+  border-color: #2563eb;
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.amount-option:active {
+  transform: scale(0.95);
+}
+
+.option-text {
+  font-size: 26rpx;
+  font-weight: 500;
+}
+
+.custom-amount {
+  margin-top: 16rpx;
+}
+
+.amount-input-group {
+  display: flex;
+  align-items: center;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 12rpx;
+  background: #f9fafb;
+  transition: all 0.3s ease;
+}
+
+.amount-input-group:focus-within {
+  border-color: #2563eb;
+  background: white;
+}
+
+.currency-symbol {
+  font-size: 28rpx;
+  color: #6b7280;
+  padding: 0 16rpx;
+  font-weight: 600;
+}
+
+.amount-input {
+  flex: 1;
+  height: 72rpx;
+  font-size: 28rpx;
+  color: #374151;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+}
+
+.date-tips {
+  margin-top: 8rpx;
+}
+
+.tip-text {
+  font-size: 24rpx;
+  color: #6b7280;
+}
+
+/* 余额不足处理 */
+.insufficient-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+}
+
+.option-item.selected {
+  border-color: #2563eb;
+  background: #f8fafc;
+}
+
+.option-item:active {
+  transform: translateX(4rpx);
+}
+
+.option-icon {
+  font-size: 40rpx;
+  margin-right: 16rpx;
+}
+
+.option-info {
+  flex: 1;
+}
+
+.option-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 4rpx;
+}
+
+.option-description {
+  font-size: 24rpx;
+  color: #6b7280;
+}
+
+.option-radio {
+  width: 36rpx;
+  height: 36rpx;
+  border: 3rpx solid #d1d5db;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.option-radio.selected {
+  border-color: #2563eb;
+  background: #2563eb;
+}
+
+/* 代扣记录 */
+.payment-history {
+  background: white;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx;
+  background: #f9fafb;
+  border-radius: 12rpx;
+}
+
+.history-info {
+  flex: 1;
+}
+
+.history-date {
+  font-size: 26rpx;
+  color: #6b7280;
+  margin-bottom: 4rpx;
+}
+
+.history-amount {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.history-status {
+  padding: 6rpx 12rpx;
+  border-radius: 12rpx;
+  font-size: 22rpx;
+  font-weight: 500;
+}
+
+.history-status.success {
+  background: #d1fae5;
+  color: #10b981;
+}
+
+.history-status.failed {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+.history-status.pending {
+  background: #fef3c7;
+  color: #f59e0b;
+}
+
+/* 服务说明 */
+.service-notice {
+  background: white;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.notice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.notice-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12rpx;
+}
+
+.notice-icon {
+  font-size: 32rpx;
+  margin-top: 4rpx;
+}
+
+.notice-text {
+  font-size: 26rpx;
+  color: #6b7280;
+  line-height: 1.5;
+  flex: 1;
+}
+
+/* 底部操作 */
+.bottom-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  padding: 32rpx;
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.1);
+  border-top: 1rpx solid #e5e7eb;
+  display: flex;
+  gap: 24rpx;
+}
+
+.action-button {
+  flex: 1;
+  height: 88rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  border: none;
+  border-radius: 24rpx;
+  transition: all 0.3s ease;
+}
+
+.action-button.secondary {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.action-button.primary {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+  box-shadow: 0 8rpx 24rpx rgba(37, 99, 235, 0.3);
+}
+
+.action-button:disabled {
+  background: #d1d5db;
+  color: #9ca3af;
+  box-shadow: none;
+}
+
+.action-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* 响应式设计 */
+@media (max-width: 375px) {
+  .payment-collection-page {
+    padding: 24rpx;
+  }
+  
+  .service-status,
+  .payment-settings,
+  .payment-history,
+  .service-notice {
+    padding: 24rpx;
+  }
+}
+
+

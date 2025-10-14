@@ -1,2 +1,173 @@
 <!--pages/business-application/business-application.wxml-->
-<text>pages/business-application/business-application.wxml</text>
+<view class="business-application-page">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <text class="page-title">业务申请</text>
+    <text class="page-subtitle">申请办理宽带相关业务</text>
+  </view>
+
+  <!-- 业务类型选择 -->
+  <view class="business-types">
+    <view class="section-title">业务类型</view>
+    <view class="type-list">
+      <view 
+        class="type-item"
+        wx:for="{{ businessTypes }}"
+        wx:key="id"
+        bindtap="selectBusinessType"
+        data-id="{{ item.id }}"
+      >
+        <view class="type-icon">{{ item.icon }}</view>
+        <view class="type-info">
+          <view class="type-name">{{ item.name }}</view>
+          <view class="type-description">{{ item.description }}</view>
+          <view class="type-price" wx:if="{{ item.price }}">费用：{{ item.price }}</view>
+        </view>
+        <view class="type-arrow">></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 申请表单 -->
+  <view class="application-form" wx:if="{{ selectedType }}">
+    <view class="section-title">申请信息</view>
+    
+    <!-- 基本信息 -->
+    <view class="form-section">
+      <view class="form-item">
+        <text class="form-label">申请人姓名</text>
+        <input 
+          class="form-input"
+          type="text"
+          placeholder="请输入您的真实姓名"
+          value="{{ formData.name }}"
+          bindinput="onNameInput"
+        />
+      </view>
+      
+      <view class="form-item">
+        <text class="form-label">身份证号</text>
+        <input 
+          class="form-input"
+          type="text"
+          placeholder="请输入18位身份证号码"
+          value="{{ formData.idCard }}"
+          bindinput="onIdCardInput"
+          maxlength="18"
+        />
+      </view>
+      
+      <view class="form-item">
+        <text class="form-label">联系电话</text>
+        <input 
+          class="form-input"
+          type="text"
+          placeholder="请输入11位手机号码"
+          value="{{ formData.phone }}"
+          bindinput="onPhoneInput"
+          maxlength="11"
+        />
+      </view>
+      
+      <view class="form-item">
+        <text class="form-label">联系地址</text>
+        <input 
+          class="form-input"
+          type="text"
+          placeholder="请输入详细地址"
+          value="{{ formData.address }}"
+          bindinput="onAddressInput"
+        />
+      </view>
+    </view>
+
+    <!-- 业务相关信息 -->
+    <view class="form-section" wx:if="{{ selectedType === 'new_installation' || selectedType === 'upgrade' }}">
+      <view class="form-item">
+        <text class="form-label">安装地址</text>
+        <input 
+          class="form-input"
+          type="text"
+          placeholder="请输入宽带安装地址"
+          value="{{ formData.installAddress }}"
+          bindinput="onInstallAddressInput"
+        />
+      </view>
+      
+      <view class="form-item">
+        <text class="form-label">预约时间</text>
+        <picker 
+          mode="date"
+          value="{{ formData.appointmentDate }}"
+          bindchange="onDateChange"
+        >
+          <view class="picker-input">
+            {{ formData.appointmentDate || '请选择预约日期' }}
+          </view>
+        </picker>
+      </view>
+      
+      <view class="form-item">
+        <text class="form-label">时间段</text>
+        <picker 
+          mode="selector"
+          range="{{ timeSlots }}"
+          value="{{ formData.timeSlotIndex }}"
+          bindchange="onTimeSlotChange"
+        >
+          <view class="picker-input">
+            {{ timeSlots[formData.timeSlotIndex] || '请选择时间段' }}
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 备注信息 -->
+    <view class="form-section">
+      <view class="form-item">
+        <text class="form-label">备注说明</text>
+        <textarea
+          class="form-textarea"
+          placeholder="如有特殊需求请在此说明..."
+          value="{{ formData.remark }}"
+          bindinput="onRemarkInput"
+          maxlength="200"
+        ></textarea>
+        <view class="input-counter">{{ formData.remark.length }}/200</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 申请须知 -->
+  <view class="application-notice">
+    <view class="section-title">申请须知</view>
+    <view class="notice-list">
+      <view class="notice-item">
+        <text class="notice-icon">📋</text>
+        <text class="notice-text">请确保填写信息真实有效</text>
+      </view>
+      <view class="notice-item">
+        <text class="notice-icon">⏰</text>
+        <text class="notice-text">我们将在24小时内联系您确认申请</text>
+      </view>
+      <view class="notice-item">
+        <text class="notice-icon">📞</text>
+        <text class="notice-text">请保持电话畅通以便及时沟通</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作 -->
+  <view class="bottom-actions">
+    <button class="action-button secondary" bindtap="contactService">
+      联系客服
+    </button>
+    <button 
+      class="action-button primary" 
+      disabled="{{ !canSubmit }}"
+      bindtap="submitApplication"
+    >
+      提交申请
+    </button>
+  </view>
+</view>

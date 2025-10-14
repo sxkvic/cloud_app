@@ -1,2 +1,187 @@
 <!--pages/payment-collection/payment-collection.wxml-->
-<text>pages/payment-collection/payment-collection.wxml</text>
+<view class="payment-collection-page">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <text class="page-title">代缴代扣</text>
+    <text class="page-subtitle">自动代缴宽带费用服务</text>
+  </view>
+
+  <!-- 服务状态 -->
+  <view class="service-status">
+    <view class="status-card {{ serviceStatus === 'active' ? 'active' : 'inactive' }}">
+      <view class="status-info">
+        <view class="status-icon">{{ serviceStatus === 'active' ? '✅' : '⏸️' }}</view>
+        <view class="status-text">
+          <text class="status-title">{{ serviceStatus === 'active' ? '服务已开启' : '服务已关闭' }}</text>
+          <text class="status-description">{{ serviceStatus === 'active' ? '系统将自动代缴宽带费用' : '需要手动缴费' }}</text>
+        </view>
+      </view>
+      <view class="status-switch" bindtap="toggleService">
+        <view class="switch {{ serviceStatus === 'active' ? 'on' : 'off' }}">
+          <view class="switch-thumb"></view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 代扣设置 -->
+  <view class="payment-settings" wx:if="{{ serviceStatus === 'active' }}">
+    <view class="section-title">代扣设置</view>
+    
+    <!-- 代扣方式 -->
+    <view class="form-section">
+      <view class="form-item">
+        <text class="form-label">代扣方式</text>
+        <view class="payment-methods">
+          <view 
+            class="method-item {{ selectedMethod === item.id ? 'selected' : '' }}"
+            wx:for="{{ paymentMethods }}"
+            wx:key="id"
+            bindtap="selectPaymentMethod"
+            data-id="{{ item.id }}"
+          >
+            <view class="method-icon">{{ item.icon }}</view>
+            <view class="method-info">
+              <view class="method-name">{{ item.name }}</view>
+              <view class="method-description">{{ item.description }}</view>
+            </view>
+            <view class="method-radio {{ selectedMethod === item.id ? 'selected' : '' }}">
+              <view class="radio-inner"></view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 代扣金额 -->
+    <view class="form-section">
+      <view class="form-item">
+        <text class="form-label">代扣金额</text>
+        <view class="amount-options">
+          <view 
+            class="amount-option {{ selectedAmount === item.value ? 'selected' : '' }}"
+            wx:for="{{ amountOptions }}"
+            wx:key="value"
+            bindtap="selectAmount"
+            data-value="{{ item.value }}"
+          >
+            <text class="option-text">{{ item.label }}</text>
+          </view>
+        </view>
+        <view class="custom-amount" wx:if="{{ selectedAmount === 'custom' }}">
+          <view class="amount-input-group">
+            <text class="currency-symbol">¥</text>
+            <input 
+              class="amount-input"
+              type="digit"
+              placeholder="0.00"
+              value="{{ customAmount }}"
+              bindinput="onCustomAmountInput"
+            />
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 代扣时间 -->
+    <view class="form-section">
+      <view class="form-item">
+        <text class="form-label">代扣时间</text>
+        <picker 
+          mode="date"
+          value="{{ paymentDate }}"
+          bindchange="onPaymentDateChange"
+        >
+          <view class="picker-input">
+            {{ paymentDate || '请选择代扣日期' }}
+          </view>
+        </picker>
+        <view class="date-tips">
+          <text class="tip-text">建议选择账单到期前3-5天</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 余额不足处理 -->
+    <view class="form-section">
+      <view class="form-item">
+        <text class="form-label">余额不足处理</text>
+        <view class="insufficient-options">
+          <view 
+            class="option-item {{ insufficientAction === item.id ? 'selected' : '' }}"
+            wx:for="{{ insufficientActions }}"
+            wx:key="id"
+            bindtap="selectInsufficientAction"
+            data-id="{{ item.id }}"
+          >
+            <view class="option-icon">{{ item.icon }}</view>
+            <view class="option-info">
+              <view class="option-name">{{ item.name }}</view>
+              <view class="option-description">{{ item.description }}</view>
+            </view>
+            <view class="option-radio {{ insufficientAction === item.id ? 'selected' : '' }}">
+              <view class="radio-inner"></view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 代扣记录 -->
+  <view class="payment-history">
+    <view class="section-title">代扣记录</view>
+    <view class="history-list">
+      <view 
+        class="history-item"
+        wx:for="{{ paymentHistory }}"
+        wx:key="id"
+      >
+        <view class="history-info">
+          <view class="history-date">{{ item.date }}</view>
+          <view class="history-amount">¥{{ item.amount }}</view>
+        </view>
+        <view class="history-status {{ item.status }}">
+          {{ item.statusText }}
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 服务说明 -->
+  <view class="service-notice">
+    <view class="section-title">服务说明</view>
+    <view class="notice-list">
+      <view class="notice-item">
+        <text class="notice-icon">💳</text>
+        <text class="notice-text">代扣服务免费，仅收取正常宽带费用</text>
+      </view>
+      <view class="notice-item">
+        <text class="notice-icon">⏰</text>
+        <text class="notice-text">代扣将在指定日期自动执行</text>
+      </view>
+      <view class="notice-item">
+        <text class="notice-icon">📱</text>
+        <text class="notice-text">代扣结果将通过短信通知</text>
+      </view>
+      <view class="notice-item">
+        <text class="notice-icon">🔄</text>
+        <text class="notice-text">可随时开启或关闭代扣服务</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作 -->
+  <view class="bottom-actions">
+    <button class="action-button secondary" bindtap="contactService">
+      联系客服
+    </button>
+    <button 
+      class="action-button primary" 
+      disabled="{{ !canSave }}"
+      bindtap="saveSettings"
+    >
+      保存设置
+    </button>
+  </view>
+</view>

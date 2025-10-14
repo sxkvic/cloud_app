@@ -1,2 +1,136 @@
 <!--pages/electronic-agreement/electronic-agreement.wxml-->
-<text>pages/electronic-agreement/electronic-agreement.wxml</text>
+<view class="electronic-agreement-page">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <text class="page-title">电子协议</text>
+    <text class="page-subtitle">查看和签署相关协议</text>
+  </view>
+
+  <!-- 协议类型选择 -->
+  <view class="agreement-types">
+    <view class="section-title">协议类型</view>
+    <view class="type-list">
+      <view 
+        class="type-item {{ selectedType === item.id ? 'selected' : '' }}"
+        wx:for="{{ agreementTypes }}"
+        wx:key="id"
+        bindtap="selectAgreementType"
+        data-id="{{ item.id }}"
+      >
+        <view class="type-icon">{{ item.icon }}</view>
+        <view class="type-info">
+          <view class="type-name">{{ item.name }}</view>
+          <view class="type-description">{{ item.description }}</view>
+          <view class="type-status {{ item.status }}">{{ item.statusText }}</view>
+        </view>
+        <view class="type-arrow">></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 协议内容 -->
+  <view class="agreement-content" wx:if="{{ selectedType }}">
+    <view class="content-header">
+      <text class="agreement-title">{{ currentAgreement.title }}</text>
+      <text class="agreement-version">版本：{{ currentAgreement.version }}</text>
+      <text class="agreement-date">更新时间：{{ currentAgreement.updateDate }}</text>
+    </view>
+
+    <!-- 协议条款 -->
+    <view class="agreement-clauses">
+      <view 
+        class="clause-item"
+        wx:for="{{ currentAgreement.clauses }}"
+        wx:key="index"
+      >
+        <view class="clause-title">{{ item.title }}</view>
+        <view class="clause-content">{{ item.content }}</view>
+      </view>
+    </view>
+
+    <!-- 重要提示 -->
+    <view class="important-notice">
+      <view class="notice-title">⚠️ 重要提示</view>
+      <view class="notice-content">
+        <text class="notice-item">• 请仔细阅读协议条款，如有疑问请联系客服</text>
+        <text class="notice-item">• 签署后即表示您同意并遵守协议内容</text>
+        <text class="notice-item">• 协议具有法律效力，请慎重考虑</text>
+      </view>
+    </view>
+
+    <!-- 签署操作 -->
+    <view class="signature-section">
+      <view class="signature-info">
+        <view class="signature-item">
+          <text class="signature-label">签署人</text>
+          <text class="signature-value">王女士</text>
+        </view>
+        <view class="signature-item">
+          <text class="signature-label">身份证号</text>
+          <text class="signature-value">138****8888</text>
+        </view>
+        <view class="signature-item">
+          <text class="signature-label">签署时间</text>
+          <text class="signature-value">{{ currentTime }}</text>
+        </view>
+      </view>
+
+      <!-- 同意条款 -->
+      <view class="agreement-checkbox">
+        <view class="checkbox-item" bindtap="toggleAgreement">
+          <view class="checkbox {{ isAgreed ? 'checked' : '' }}">
+            <text class="checkbox-icon">{{ isAgreed ? '✓' : '' }}</text>
+          </view>
+          <text class="checkbox-text">我已阅读并同意《{{ currentAgreement.title }}》的所有条款</text>
+        </view>
+      </view>
+
+      <!-- 签署按钮 -->
+      <view class="signature-actions">
+        <button 
+          class="action-button secondary" 
+          bindtap="downloadAgreement"
+        >
+          下载协议
+        </button>
+        <button 
+          class="action-button primary" 
+          disabled="{{ !canSign }}"
+          bindtap="signAgreement"
+        >
+          确认签署
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 签署历史 -->
+  <view class="signature-history">
+    <view class="section-title">签署历史</view>
+    <view class="history-list">
+      <view 
+        class="history-item"
+        wx:for="{{ signatureHistory }}"
+        wx:key="id"
+      >
+        <view class="history-info">
+          <view class="history-name">{{ item.name }}</view>
+          <view class="history-date">{{ item.signDate }}</view>
+        </view>
+        <view class="history-status {{ item.status }}">
+          {{ item.statusText }}
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作 -->
+  <view class="bottom-actions">
+    <button class="action-button secondary" bindtap="contactService">
+      联系客服
+    </button>
+    <button class="action-button primary" bindtap="viewAllAgreements">
+      查看全部
+    </button>
+  </view>
+</view>

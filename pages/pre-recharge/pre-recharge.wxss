@@ -1,0 +1,477 @@
+/* pages/pre-recharge/pre-recharge.wxss */
+
+/* 页面整体样式 */
+.pre-recharge-page {
+  background-color: #f8fafc;
+  min-height: 100vh;
+  padding: 32rpx;
+  padding-bottom: 300rpx; /* 增加底部内边距，避免被底部按钮遮挡 */
+}
+
+/* 页面头部 */
+.page-header {
+  text-align: center;
+  margin-bottom: 40rpx;
+}
+
+.page-title {
+  display: block;
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 16rpx;
+}
+
+.page-subtitle {
+  display: block;
+  font-size: 28rpx;
+  color: #6b7280;
+}
+
+/* 账户余额 */
+.account-balance {
+  margin-bottom: 32rpx;
+}
+
+.balance-card {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  border-radius: 20rpx;
+  padding: 32rpx;
+  color: white;
+  box-shadow: 0 8rpx 24rpx rgba(37, 99, 235, 0.3);
+}
+
+.balance-info {
+  text-align: center;
+  margin-bottom: 16rpx;
+}
+
+.balance-label {
+  display: block;
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 8rpx;
+}
+
+.balance-amount {
+  display: block;
+  font-size: 48rpx;
+  font-weight: bold;
+  color: white;
+}
+
+.balance-tips {
+  text-align: center;
+}
+
+.tip-text {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* 充值金额 */
+.recharge-amount {
+  background: white;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 24rpx;
+}
+
+.amount-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+}
+
+.amount-item {
+  padding: 24rpx 16rpx;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 16rpx;
+  text-align: center;
+  transition: all 0.3s ease;
+  background: #f9fafb;
+}
+
+.amount-item.selected {
+  border-color: #2563eb;
+  background: #dbeafe;
+  transform: scale(1.02);
+}
+
+.amount-item:active {
+  transform: scale(0.98);
+}
+
+.amount-value {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 4rpx;
+}
+
+.amount-item.selected .amount-value {
+  color: #2563eb;
+}
+
+.amount-bonus {
+  font-size: 22rpx;
+  color: #ef4444;
+  font-weight: 500;
+}
+
+/* 自定义金额 */
+.custom-amount {
+  border-top: 1rpx solid #e5e7eb;
+  padding-top: 24rpx;
+}
+
+.custom-label {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 16rpx;
+}
+
+.amount-input-group {
+  display: flex;
+  align-items: center;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 12rpx;
+  background: #f9fafb;
+  transition: all 0.3s ease;
+}
+
+.amount-input-group:focus-within {
+  border-color: #2563eb;
+  background: white;
+}
+
+.currency-symbol {
+  font-size: 32rpx;
+  color: #6b7280;
+  padding: 0 20rpx;
+  font-weight: 600;
+}
+
+.amount-input {
+  flex: 1;
+  height: 80rpx;
+  font-size: 32rpx;
+  color: #374151;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+}
+
+/* 支付方式 */
+.payment-methods {
+  background: white;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.method-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.method-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+}
+
+.method-item.selected {
+  border-color: #2563eb;
+  background: #f8fafc;
+}
+
+.method-item:active {
+  transform: translateX(4rpx);
+}
+
+.method-icon {
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.payment-icon {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.payment-emoji {
+  font-size: 40rpx;
+}
+
+.method-info {
+  flex: 1;
+}
+
+.method-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 4rpx;
+}
+
+.method-description {
+  font-size: 24rpx;
+  color: #6b7280;
+}
+
+.method-radio {
+  width: 36rpx;
+  height: 36rpx;
+  border: 3rpx solid #d1d5db;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.method-radio.selected {
+  border-color: #2563eb;
+  background: #2563eb;
+}
+
+.radio-inner {
+  width: 14rpx;
+  height: 14rpx;
+  background: white;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.method-radio.selected .radio-inner {
+  opacity: 1;
+}
+
+/* 充值说明 */
+.recharge-notice {
+  background: white;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.notice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.notice-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12rpx;
+}
+
+.notice-icon {
+  font-size: 32rpx;
+  margin-top: 4rpx;
+}
+
+.notice-text {
+  font-size: 26rpx;
+  color: #6b7280;
+  line-height: 1.5;
+  flex: 1;
+}
+
+/* 充值记录 */
+.recharge-history {
+  background: white;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx;
+  background: #f9fafb;
+  border-radius: 12rpx;
+}
+
+.history-info {
+  flex: 1;
+}
+
+.history-date {
+  font-size: 26rpx;
+  color: #6b7280;
+  margin-bottom: 4rpx;
+}
+
+.history-amount {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #10b981;
+}
+
+.history-status {
+  padding: 6rpx 12rpx;
+  border-radius: 12rpx;
+  font-size: 22rpx;
+  font-weight: 500;
+}
+
+.history-status.success {
+  background: #d1fae5;
+  color: #10b981;
+}
+
+.history-status.failed {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+.history-status.pending {
+  background: #fef3c7;
+  color: #f59e0b;
+}
+
+/* 底部操作 */
+.bottom-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  padding: 32rpx;
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.1);
+  border-top: 1rpx solid #e5e7eb;
+}
+
+.payment-summary {
+  background: #f8fafc;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+
+.summary-item:last-child {
+  margin-bottom: 0;
+}
+
+.summary-item.total {
+  border-top: 1rpx solid #e5e7eb;
+  padding-top: 12rpx;
+  margin-top: 8rpx;
+}
+
+.summary-label {
+  font-size: 26rpx;
+  color: #6b7280;
+}
+
+.summary-value {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.summary-value.bonus {
+  color: #10b981;
+}
+
+.summary-item.total .summary-value {
+  font-size: 32rpx;
+  color: #2563eb;
+  font-weight: bold;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 24rpx;
+}
+
+.action-button {
+  flex: 1;
+  height: 88rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  border: none;
+  border-radius: 24rpx;
+  transition: all 0.3s ease;
+}
+
+.action-button.secondary {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.action-button.primary {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+  box-shadow: 0 8rpx 24rpx rgba(37, 99, 235, 0.3);
+}
+
+.action-button:disabled {
+  background: #d1d5db;
+  color: #9ca3af;
+  box-shadow: none;
+}
+
+.action-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* 响应式设计 */
+@media (max-width: 375px) {
+  .pre-recharge-page {
+    padding: 24rpx;
+  }
+  
+  .recharge-amount,
+  .payment-methods,
+  .recharge-notice,
+  .recharge-history {
+    padding: 24rpx;
+  }
+  
+  .amount-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+

@@ -1,0 +1,287 @@
+/* pages/business-application/business-application.wxss */
+
+/* 页面整体样式 */
+.business-application-page {
+  background-color: #f8fafc;
+  min-height: 100vh;
+  padding: 32rpx;
+  padding-bottom: 120rpx;
+}
+
+/* 页面头部 */
+.page-header {
+  text-align: center;
+  margin-bottom: 40rpx;
+}
+
+.page-title {
+  display: block;
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 16rpx;
+}
+
+.page-subtitle {
+  display: block;
+  font-size: 28rpx;
+  color: #6b7280;
+}
+
+/* 业务类型 */
+.business-types {
+  background: white;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 24rpx;
+}
+
+.type-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.type-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 16rpx;
+  transition: all 0.3s ease;
+}
+
+.type-item:active {
+  border-color: #2563eb;
+  background: #f8fafc;
+  transform: translateX(8rpx);
+}
+
+.type-icon {
+  font-size: 48rpx;
+  margin-right: 20rpx;
+}
+
+.type-info {
+  flex: 1;
+}
+
+.type-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 8rpx;
+}
+
+.type-description {
+  font-size: 26rpx;
+  color: #6b7280;
+  margin-bottom: 4rpx;
+}
+
+.type-price {
+  font-size: 24rpx;
+  color: #ef4444;
+  font-weight: 500;
+}
+
+.type-arrow {
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+
+/* 申请表单 */
+.application-form {
+  background: white;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.form-section {
+  margin-bottom: 32rpx;
+}
+
+.form-section:last-child {
+  margin-bottom: 0;
+}
+
+.form-item {
+  margin-bottom: 24rpx;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 12rpx;
+}
+
+.form-input {
+  width: 100%;
+  height: 80rpx;
+  padding: 0 20rpx;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  color: #374151;
+  background: #f9fafb;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  border-color: #2563eb;
+  background: white;
+}
+
+.picker-input {
+  width: 100%;
+  height: 80rpx;
+  padding: 0 20rpx;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  color: #374151;
+  background: #f9fafb;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.picker-input:active {
+  border-color: #2563eb;
+  background: white;
+}
+
+.form-textarea {
+  width: 100%;
+  min-height: 160rpx;
+  padding: 20rpx;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  color: #374151;
+  background: #f9fafb;
+  box-sizing: border-box;
+  line-height: 1.5;
+}
+
+.form-textarea:focus {
+  border-color: #2563eb;
+  background: white;
+}
+
+.input-counter {
+  text-align: right;
+  font-size: 24rpx;
+  color: #9ca3af;
+  margin-top: 8rpx;
+}
+
+/* 申请须知 */
+.application-notice {
+  background: white;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.notice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.notice-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12rpx;
+}
+
+.notice-icon {
+  font-size: 32rpx;
+  margin-top: 4rpx;
+}
+
+.notice-text {
+  font-size: 26rpx;
+  color: #6b7280;
+  line-height: 1.5;
+  flex: 1;
+}
+
+/* 底部操作 */
+.bottom-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  padding: 32rpx;
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.1);
+  border-top: 1rpx solid #e5e7eb;
+  display: flex;
+  gap: 24rpx;
+}
+
+.action-button {
+  flex: 1;
+  height: 88rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  border: none;
+  border-radius: 24rpx;
+  transition: all 0.3s ease;
+}
+
+.action-button.secondary {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.action-button.primary {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+  box-shadow: 0 8rpx 24rpx rgba(37, 99, 235, 0.3);
+}
+
+.action-button:disabled {
+  background: #d1d5db;
+  color: #9ca3af;
+  box-shadow: none;
+}
+
+.action-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* 响应式设计 */
+@media (max-width: 375px) {
+  .business-application-page {
+    padding: 24rpx;
+  }
+  
+  .business-types,
+  .application-form,
+  .application-notice {
+    padding: 24rpx;
+  }
+}
+
+

@@ -1,2 +1,227 @@
 <!--pages/change-transfer/change-transfer.wxml-->
-<text>pages/change-transfer/change-transfer.wxml</text>
+<view class="change-transfer-page">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <text class="page-title">变更过户</text>
+    <text class="page-subtitle">宽带账户信息变更服务</text>
+  </view>
+
+  <!-- 操作类型选择 -->
+  <view class="operation-types">
+    <view class="section-title">操作类型</view>
+    <view class="type-list">
+      <view 
+        class="type-item {{ selectedOperation === item.id ? 'selected' : '' }}"
+        wx:for="{{ operationTypes }}"
+        wx:key="id"
+        bindtap="selectOperation"
+        data-id="{{ item.id }}"
+      >
+        <view class="type-icon">{{ item.icon }}</view>
+        <view class="type-info">
+          <view class="type-name">{{ item.name }}</view>
+          <view class="type-description">{{ item.description }}</view>
+          <view class="type-fee">费用：{{ item.fee }}</view>
+        </view>
+        <view class="type-radio {{ selectedOperation === item.id ? 'selected' : '' }}">
+          <view class="radio-inner"></view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 当前账户信息 -->
+  <view class="current-account">
+    <view class="section-title">当前账户信息</view>
+    <view class="account-card">
+      <view class="account-info">
+        <view class="info-item">
+          <text class="info-label">账户名称</text>
+          <text class="info-value">王女士</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">身份证号</text>
+          <text class="info-value">138****8888</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">联系电话</text>
+          <text class="info-value">138****8888</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">服务地址</text>
+          <text class="info-value">北京市朝阳区xxx街道xxx号</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 变更表单 -->
+  <view class="change-form" wx:if="{{ selectedOperation }}">
+    <view class="section-title">
+      {{ selectedOperation === 'change_info' ? '信息变更' : '过户信息' }}
+    </view>
+    
+    <!-- 基本信息变更 -->
+    <view class="form-section" wx:if="{{ selectedOperation === 'change_info' }}">
+      <view class="form-item">
+        <text class="form-label">新姓名</text>
+        <input 
+          class="form-input"
+          type="text"
+          placeholder="请输入新的姓名"
+          value="{{ formData.newName }}"
+          bindinput="onNewNameInput"
+        />
+      </view>
+      
+      <view class="form-item">
+        <text class="form-label">新身份证号</text>
+        <input 
+          class="form-input"
+          type="text"
+          placeholder="请输入新的身份证号"
+          value="{{ formData.newIdCard }}"
+          bindinput="onNewIdCardInput"
+          maxlength="18"
+        />
+      </view>
+      
+      <view class="form-item">
+        <text class="form-label">新联系电话</text>
+        <input 
+          class="form-input"
+          type="text"
+          placeholder="请输入新的联系电话"
+          value="{{ formData.newPhone }}"
+          bindinput="onNewPhoneInput"
+          maxlength="11"
+        />
+      </view>
+    </view>
+
+    <!-- 过户信息 -->
+    <view class="form-section" wx:if="{{ selectedOperation === 'transfer' }}">
+      <view class="form-item">
+        <text class="form-label">接收方姓名</text>
+        <input 
+          class="form-input"
+          type="text"
+          placeholder="请输入接收方姓名"
+          value="{{ formData.receiverName }}"
+          bindinput="onReceiverNameInput"
+        />
+      </view>
+      
+      <view class="form-item">
+        <text class="form-label">接收方身份证号</text>
+        <input 
+          class="form-input"
+          type="text"
+          placeholder="请输入接收方身份证号"
+          value="{{ formData.receiverIdCard }}"
+          bindinput="onReceiverIdCardInput"
+          maxlength="18"
+        />
+      </view>
+      
+      <view class="form-item">
+        <text class="form-label">接收方联系电话</text>
+        <input 
+          class="form-input"
+          type="text"
+          placeholder="请输入接收方联系电话"
+          value="{{ formData.receiverPhone }}"
+          bindinput="onReceiverPhoneInput"
+          maxlength="11"
+        />
+      </view>
+      
+      <view class="form-item">
+        <text class="form-label">接收方地址</text>
+        <input 
+          class="form-input"
+          type="text"
+          placeholder="请输入接收方地址"
+          value="{{ formData.receiverAddress }}"
+          bindinput="onReceiverAddressInput"
+        />
+      </view>
+    </view>
+
+    <!-- 地址变更 -->
+    <view class="form-section" wx:if="{{ selectedOperation === 'change_address' }}">
+      <view class="form-item">
+        <text class="form-label">新服务地址</text>
+        <input 
+          class="form-input"
+          type="text"
+          placeholder="请输入新的服务地址"
+          value="{{ formData.newAddress }}"
+          bindinput="onNewAddressInput"
+        />
+      </view>
+      
+      <view class="form-item">
+        <text class="form-label">变更原因</text>
+        <picker 
+          mode="selector"
+          range="{{ changeReasons }}"
+          value="{{ formData.reasonIndex }}"
+          bindchange="onReasonChange"
+        >
+          <view class="picker-input">
+            {{ changeReasons[formData.reasonIndex] || '请选择变更原因' }}
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 备注信息 -->
+    <view class="form-section">
+      <view class="form-item">
+        <text class="form-label">备注说明</text>
+        <textarea
+          class="form-textarea"
+          placeholder="如有特殊需求请在此说明..."
+          value="{{ formData.remark }}"
+          bindinput="onRemarkInput"
+          maxlength="200"
+        ></textarea>
+        <view class="input-counter">{{ formData.remark.length }}/200</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 注意事项 -->
+  <view class="notice-section">
+    <view class="section-title">注意事项</view>
+    <view class="notice-list">
+      <view class="notice-item">
+        <text class="notice-icon">📋</text>
+        <text class="notice-text">请确保填写信息真实有效，变更后无法撤销</text>
+      </view>
+      <view class="notice-item">
+        <text class="notice-icon">💳</text>
+        <text class="notice-text">过户需要双方身份证原件和相关费用</text>
+      </view>
+      <view class="notice-item">
+        <text class="notice-icon">⏰</text>
+        <text class="notice-text">变更申请将在3-5个工作日内处理完成</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作 -->
+  <view class="bottom-actions">
+    <button class="action-button secondary" bindtap="contactService">
+      联系客服
+    </button>
+    <button 
+      class="action-button primary" 
+      disabled="{{ !canSubmit }}"
+      bindtap="submitChange"
+    >
+      提交申请
+    </button>
+  </view>
+</view>

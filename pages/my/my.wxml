@@ -1,72 +1,154 @@
 <!--pages/my/my.wxml-->
-<view class="my-account-page">
-  <!-- 1. 顶部个人信息背景 -->
-  <view class="header-bg">
-    <!-- 优化：整个 profile 区域可点击，并带有下拉箭头提示 -->
-    <view class="user-profile clickable" bindtap="showRoleSheet">
-      <image src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=200&q=80" alt="User Avatar" class="avatar" />
-      <view class="user-info">
-        <text class="user-name">
-          王女士
-          <text class="role-chevron">▼</text>
-        </text>
-        <text class="role-tag">{{activeRole === 'user' ? '个人中心' : '师傅中心'}}</text>
-      </view>
-    </view>
-    <view class="membership-tag">五星用户</view>
-  </view>
-
-  <!-- 2. 核心数据悬浮卡片 -->
-  <view class="key-stats-card">
-    <view class="stats-grid">
-      <view wx:for="{{keyStats}}" wx:key="label" class="stat-item">
-        <text class="stat-value">{{item.value}} <text class="stat-unit">{{item.unit}}</text></text>
-        <text class="stat-label">{{item.label}}</text>
-      </view>
-    </view>
-  </view>
-
-  <view class="main-content">
-    <!-- 3. 我的服务 -->
-    <view class="section-card">
-      <text class="section-title">我的服务</text>
-      <view class="service-grid">
-        <view wx:for="{{mainServices}}" wx:key="text" class="service-item">
-          <view class="service-icon-wrapper" style="background: {{item.color}}">
-            <text class="service-icon">{{item.iconText}}</text>
-          </view>
-          <text class="service-text">{{item.text}}</text>
+<view class="my-page">
+  <!-- 用户信息头部 -->
+  <view class="user-header">
+    <view class="user-info">
+      <image class="user-avatar" src="{{ userInfo.avatar }}" mode="aspectFill"></image>
+      <view class="user-details">
+        <view class="user-name">{{ userInfo.name }}</view>
+        <view class="user-phone">{{ userInfo.phone }}</view>
+        <view class="user-level">
+          <text class="level-text">{{ userInfo.level }}</text>
+          <text class="level-badge">{{ userInfo.levelText }}</text>
         </view>
       </view>
     </view>
-    
-    <!-- 4. 更多功能列表 -->
-    <view class="section-card">
-      <text class="section-title">更多功能</text>
-      <view class="settings-list">
-        <view wx:for="{{settingsLinks}}" wx:key="text" class="settings-item" bindtap="navigateToPage" data-route="{{item.route}}">
-          <text class="cell-icon">{{item.iconText}}</text>
-          <text class="settings-text">{{item.text}}</text>
-          <text class="arrow-icon">›</text>
-        </view>
+    <view class="user-actions">
+      <view class="action-item" bindtap="editProfile">
+        <text class="action-icon">✏️</text>
+        <text class="action-text">编辑</text>
       </view>
-    </view>
-
-    <view class="logout-button-wrapper">
-      <button class="logout-button" bindtap="logout">退出登录</button>
     </view>
   </view>
 
-  <!-- 身份切换弹窗 -->
-  <view wx:if="{{showRoleSheet}}" class="role-sheet-overlay" bindtap="onCloseRoleSheet">
-    <view class="role-sheet" catchtap="stopPropagation">
-      <view class="role-sheet-title">请选择您要进入的系统</view>
-      <view wx:for="{{roleActions}}" wx:key="name" class="role-sheet-item" bindtap="onRoleSelect" data-item="{{item}}">
-        <text class="role-item-name">{{item.name}}</text>
-        <text wx:if="{{item.selected}}" class="role-item-check">✓</text>
+  <!-- 账户信息 -->
+  <view class="account-info">
+    <view class="info-card">
+      <view class="info-item">
+        <text class="info-label">账户余额</text>
+        <text class="info-value">¥{{ accountInfo.balance }}</text>
       </view>
-      <view class="role-sheet-cancel" bindtap="onCloseRoleSheet">取消</view>
+      <view class="info-item">
+        <text class="info-label">积分</text>
+        <text class="info-value">{{ accountInfo.points }}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">优惠券</text>
+        <text class="info-value">{{ accountInfo.coupons }}张</text>
+      </view>
     </view>
+  </view>
+
+  <!-- 服务菜单 -->
+  <view class="service-menu">
+    <view class="menu-section">
+      <view class="section-title">我的服务</view>
+      <view class="menu-grid">
+        <view 
+          class="menu-item"
+          wx:for="{{ serviceMenus }}"
+          wx:key="id"
+          bindtap="navigateToService"
+          data-url="{{ item.url }}"
+        >
+          <view class="menu-icon">{{ item.icon }}</view>
+          <view class="menu-name">{{ item.name }}</view>
+          <view class="menu-badge" wx:if="{{ item.badge }}">{{ item.badge }}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 订单管理 -->
+  <view class="order-management">
+    <view class="section-title">订单管理</view>
+    <view class="order-tabs">
+      <view 
+        class="tab-item {{ orderTab === item.key ? 'active' : '' }}"
+        wx:for="{{ orderTabs }}"
+        wx:key="key"
+        bindtap="switchOrderTab"
+        data-tab="{{ item.key }}"
+      >
+        <text class="tab-text">{{ item.name }}</text>
+        <text class="tab-count" wx:if="{{ item.count > 0 }}">{{ item.count }}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 我的设备 -->
+  <view class="my-devices">
+    <view class="section-header">
+      <text class="section-title">我的设备</text>
+      <text class="view-all" bindtap="viewAllDevices">查看全部</text>
+    </view>
+    <view class="device-list">
+      <view 
+        class="device-item"
+        wx:for="{{ myDevices }}"
+        wx:key="id"
+        bindtap="viewDeviceDetail"
+        data-id="{{ item.id }}"
+      >
+        <view class="device-icon">{{ item.icon }}</view>
+        <view class="device-info">
+          <view class="device-name">{{ item.name }}</view>
+          <view class="device-status {{ item.status }}">{{ item.statusText }}</view>
+        </view>
+        <view class="device-arrow">></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 常用功能 -->
+  <view class="common-functions">
+    <view class="section-title">常用功能</view>
+    <view class="function-list">
+      <view 
+        class="function-item"
+        wx:for="{{ commonFunctions }}"
+        wx:key="id"
+        bindtap="navigateToFunction"
+        data-url="{{ item.url }}"
+      >
+        <view class="function-icon">{{ item.icon }}</view>
+        <view class="function-info">
+          <view class="function-name">{{ item.name }}</view>
+          <view class="function-desc">{{ item.description }}</view>
+        </view>
+        <view class="function-arrow">></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 设置选项 -->
+  <view class="settings-section">
+    <view class="section-title">设置</view>
+    <view class="settings-list">
+      <view 
+        class="setting-item"
+        wx:for="{{ settingsList }}"
+        wx:key="id"
+        bindtap="handleSetting"
+        data-action="{{ item.action }}"
+      >
+        <view class="setting-icon">{{ item.icon }}</view>
+        <view class="setting-info">
+          <view class="setting-name">{{ item.name }}</view>
+          <view class="setting-desc" wx:if="{{ item.description }}">{{ item.description }}</view>
+        </view>
+        <view class="setting-arrow">></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作 -->
+  <view class="bottom-actions">
+    <button class="action-button secondary" bindtap="contactService">
+      联系客服
+    </button>
+    <button class="action-button primary" bindtap="logout">
+      退出登录
+    </button>
   </view>
 </view>
-
