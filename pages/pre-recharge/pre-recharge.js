@@ -1,5 +1,7 @@
 // pages/pre-recharge/pre-recharge.js
 const { navigation, message } = require('../../utils/common');
+const API = require('../../utils/api');
+const app = getApp();
 
 Page({
     data: {
@@ -10,6 +12,7 @@ Page({
     finalAmount: '0.00',
     bonusAmount: 0,
     canRecharge: false,
+    paymentOrderId: null, // 支付订单ID
     amountOptions: [
       { value: '50', bonus: '' },
       { value: '100', bonus: '10' },
@@ -193,25 +196,95 @@ Page({
   },
 
   // 处理充值
-  processRecharge() {
-    wx.showLoading({
-      title: '正在处理...'
-    });
+  async processRecharge() {
+    const { finalAmount, bonusAmount, selectedMethod } = this.data;
 
-    // 模拟支付过程
-    setTimeout(() => {
+    // 只支持微信支付
+    if (selectedMethod !== 'wechat') {
+      message.error('当前仅支持微信支付');
+      return;
+    }
+
+    try {
+      wx.showLoading({ title: '正在创建订单...' });
+      console.log('创建支付订单，金额:', finalAmount);
+
+      // 1. 创建支付订单
+      const paymentResult = await API.createMiniprogramPayment({
+        amount: parseFloat(finalAmount),
+        description: `账户充值 ¥${finalAmount}`,
+        openid: app.globalData.openid
+      });
+
       wx.hideLoading();
-      
-      // 模拟支付成功
-      const success = Math.random() > 0.1; // 90% 成功率
-      
-      if (success) {
-        message.success('充值成功');
-        
+      console.log('支付订单创建成功:', paymentResult.data);
+
+      const { orderId, paymentParams } = paymentResult.data;
+      this.setData({ paymentOrderId: orderId });
+
+      // 2. 调起微信支付
+      wx.showLoading({ title: '正在调起支付...' });
+
+      await new Promise((resolve, reject) => {
+        wx.requestPayment({
+          timeStamp: paymentParams.timeStamp,
+          nonceStr: paymentParams.nonceStr,
+          package: paymentParams.package,
+          signType: paymentParams.signType || 'RSA',
+          paySign: paymentParams.paySign,
+          success: resolve,
+          fail: reject
+        });
+      });
+
+      wx.hideLoading();
+      console.log('用户完成支付');
+
+      // 3. 查询支付状态
+      wx.showLoading({ title: '正在确认支付...' });
+      await this.checkPaymentStatus(orderId);
+
+    } catch (error) {
+      wx.hideLoading();
+      console.error('支付失败:', error);
+
+      // 用户取消支付
+      if (error.errMsg && error.errMsg.includes('cancel')) {
+        message.error('支付已取消');
+
+        // 取消订单
+        if (this.data.paymentOrderId) {
+          try {
+            await API.cancelPayment(this.data.paymentOrderId);
+            console.log('订单已取消');
+          } catch (cancelError) {
+            console.error('取消订单失败:', cancelError);
+          }
+        }
+      } else {
+        const errorMsg = error.message || '支付失败，请重试';
+        message.error(errorMsg);
+      }
+    }
+  },
+
+  // 查询支付状态
+  async checkPaymentStatus(orderId) {
+    try {
+      const statusResult = await API.getPaymentStatus(orderId);
+      const status = statusResult.data.status;
+
+      wx.hideLoading();
+      console.log('支付状态:', status);
+
+      if (status === 'success' || status === 'paid') {
+        // 支付成功
+        message.success('充值成功！');
+
+        const { finalAmount, bonusAmount } = this.data;
+        const totalAmount = (parseFloat(finalAmount) + bonusAmount).toFixed(2);
+
         setTimeout(() => {
-          const { finalAmount, bonusAmount } = this.data;
-          const totalAmount = (parseFloat(finalAmount) + bonusAmount).toFixed(2);
-          
           wx.showModal({
             title: '充值成功',
             content: `充值金额：¥${finalAmount}\n${bonusAmount > 0 ? `赠送金额：¥${bonusAmount}\n` : ''}到账金额：¥${totalAmount}\n\n余额已更新，可立即使用。`,
@@ -224,10 +297,10 @@ Page({
               this.setData({
                 currentBalance: newBalance
               });
-              
+
               // 添加到充值记录
               const newRecord = {
-                id: Date.now().toString(),
+                id: orderId,
                 date: new Date().toLocaleString('zh-CN', {
                   year: 'numeric',
                   month: '2-digit',
@@ -239,34 +312,36 @@ Page({
                 status: 'success',
                 statusText: '成功'
               };
-              
+
               this.setData({
                 rechargeHistory: [newRecord, ...this.data.rechargeHistory]
               });
-              
+
               // 清空选择
               this.setData({
                 selectedAmount: null,
                 customAmount: '',
                 finalAmount: '0.00',
                 bonusAmount: 0,
-                canRecharge: false
+                canRecharge: false,
+                paymentOrderId: null
               });
             }
           });
         }, 1000);
+
+      } else if (status === 'pending') {
+        // 支付处理中
+        message.error('支付处理中，请稍后查看充值记录');
       } else {
-        message.error('充值失败，请重试');
-        
-        setTimeout(() => {
-          wx.showModal({
-            title: '充值失败',
-            content: '支付过程中出现问题，请检查支付方式或联系客服。\n\n如已扣费但未到账，请联系客服处理。',
-            showCancel: false,
-            confirmText: '知道了'
-          });
-        }, 1000);
+        // 支付失败
+        message.error('支付失败，请重试');
       }
-    }, 2000);
+
+    } catch (error) {
+      wx.hideLoading();
+      console.error('查询支付状态失败:', error);
+      message.error('支付状态查询失败，请稍后在充值记录中查看');
+    }
   }
 });

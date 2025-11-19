@@ -1,5 +1,7 @@
 // pages/bind-device-code/bind-device-code.js
 const { navigation, message } = require('../../utils/common');
+const API = require('../../utils/api');
+const app = getApp();
 
 Page({
   data: {
@@ -9,7 +11,7 @@ Page({
 
   onLoad() {
     console.log('绑定设备码页面加载');
-    
+
     // 检查是否已经绑定过设备
     const deviceBound = wx.getStorageSync('deviceBound');
     if (deviceBound) {
@@ -19,7 +21,7 @@ Page({
         icon: 'success',
         duration: 1500
       });
-      
+
       setTimeout(() => {
         navigation.switchTab('/pages/home/home');
       }, 1500);
@@ -31,7 +33,6 @@ Page({
     console.log('绑定设备码页面显示');
   },
 
-
   // 输入框内容变化
   onInputChange(e) {
     this.setData({
@@ -40,35 +41,60 @@ Page({
   },
 
   // 手动提交绑定
-  onManualSubmit() {
+  async onManualSubmit() {
     const { deviceCode } = this.data;
-    
+
+    // 验证设备码长度
     if (deviceCode.length < 16) {
       message.error('请输入16位设备绑定码');
       return;
     }
-    
+
     this.setData({ isLoading: true });
-    
-    console.log('Binding with code:', deviceCode);
-    
-    // 模拟网络请求
-    setTimeout(() => {
+    console.log('开始绑定设备，设备码:', deviceCode);
+
+    try {
+      // 1. 先验证设备码是否有效
+      console.log('验证设备码是否有效...');
+      const customerInfo = await API.getCustomerByDeviceCode(deviceCode);
+
+      if (!customerInfo.data) {
+        this.setData({ isLoading: false });
+        message.error('设备码无效或不存在');
+        return;
+      }
+
+      console.log('设备码有效，客户信息:', customerInfo.data);
+
+      // 2. 绑定设备到用户
+      console.log('绑定设备到用户...');
+      await API.bindDevice(deviceCode);
+
       this.setData({ isLoading: false });
       message.success('设备绑定成功！');
-      
-      // 保存绑定状态
+
+      // 保存绑定状态到本地和全局
       wx.setStorageSync('deviceBound', true);
       wx.setStorageSync('deviceCode', deviceCode);
-      
+      app.globalData.deviceBound = true;
+      app.globalData.deviceCode = deviceCode;
+
       // 清空输入框
       this.setData({ deviceCode: '' });
-      
+
+      // 跳转到首页
       setTimeout(() => {
-        // 使用switchTab跳转到tabBar页面
         navigation.switchTab('/pages/home/home');
       }, 800);
-    }, 1500);
+
+    } catch (error) {
+      console.error('绑定失败:', error);
+      this.setData({ isLoading: false });
+
+      // 显示友好的错误提示
+      const errorMsg = error.message || '设备绑定失败，请重试';
+      message.error(errorMsg);
+    }
   },
 
   // 显示帮助信息

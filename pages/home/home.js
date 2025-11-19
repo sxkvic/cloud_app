@@ -1,20 +1,12 @@
 // pages/home/home.js
 const { navigation, message } = require('../../utils/common');
+const API = require('../../utils/api');
 
 Page({
   data: {
-    slides: [
-      {
-        image: 'https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=800&q=80',
-        title: '家庭影院级体验',
-        subtitle: '超高清视频流畅播放，无卡顿'
-      },
-      {
-        image: 'https://images.unsplash.com/photo-1587145820266-a5951ee6f620?w=800&q=80',
-        title: '极速光纤，一键到家',
-        subtitle: '全新千兆套餐，畅享数字生活'
-      }
-    ],
+    slides: [],
+    articles: [],
+    loading: true,
     commonServices: [
       {
         title: '套餐订购',
@@ -63,19 +55,84 @@ Page({
     ]
   },
 
-  onLoad() {
+  async onLoad() {
     console.log('首页加载');
+    await this.loadBanners();
   },
 
-  onShow() {
+  async onShow() {
     // 页面显示时刷新数据
-    this.refreshData();
+    await this.refreshData();
   },
 
   // 刷新数据
-  refreshData() {
-    // 这里可以添加数据刷新逻辑
+  async refreshData() {
     console.log('刷新首页数据');
+    await this.loadBanners();
+  },
+
+  // 加载Banner轮播图
+  async loadBanners() {
+    try {
+      console.log('开始加载Banner...');
+
+      // 调用API获取Banner列表（传递位置参数 1 = 首页）
+      const result = await API.getBannersList(1);
+
+      console.log('Banner加载成功:', result.data);
+
+      // 检查是否有数据
+      if (result.data && result.data.banners && result.data.banners.length > 0) {
+        const app = getApp();
+        const baseUrl = app.globalData.apiBaseUrl;
+
+        // 转换数据格式以匹配UI需求
+        const slides = result.data.banners.map(banner => {
+          // 拼接完整的图片URL
+          let imageUrl = banner.imageUrl;
+          if (imageUrl && !imageUrl.startsWith('http')) {
+            // 如果不是完整URL，拼接baseUrl
+            imageUrl = `${baseUrl}${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
+          }
+
+          return {
+            id: banner.id,
+            image: imageUrl,  // 拼接后的完整图片URL
+            title: banner.title,
+            subtitle: banner.subtitle || banner.description || '',
+            link: banner.link || ''
+          };
+        });
+
+        this.setData({ slides: slides });
+        console.log('Banner数据已设置:', slides.length, '个');
+      } else {
+        console.warn('Banner列表为空，使用默认数据');
+        this.loadDefaultBanners();
+      }
+
+    } catch (error) {
+      console.error('加载Banner失败:', error);
+      this.loadDefaultBanners();
+    }
+  },
+
+  // 加载默认Banner（降级方案）
+  loadDefaultBanners() {
+    this.setData({
+      slides: [
+        {
+          image: 'https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=800&q=80',
+          title: '家庭影院级体验',
+          subtitle: '超高清视频流畅播放，无卡顿'
+        },
+        {
+          image: 'https://images.unsplash.com/photo-1587145820266-a5951ee6f620?w=800&q=80',
+          title: '极速光纤，一键到家',
+          subtitle: '全新千兆套餐，畅享数字生活'
+        }
+      ]
+    });
   },
 
   // 显示通知

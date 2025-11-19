@@ -1,5 +1,7 @@
 // pages/invoice/invoice.js
 const { navigation, message } = require('../../utils/common');
+const API = require('../../utils/api');
+const app = getApp();
 
 Page({
   data: {
@@ -8,6 +10,8 @@ Page({
     totalAmount: '2,580.00',
     invoicedAmount: '1,200.00',
     availableAmount: '1,380.00',
+    invoiceList: [], // 发票列表
+    loading: true,
     
     // 个人发票数据
     personalData: {
@@ -61,12 +65,83 @@ Page({
     ]
   },
 
-  onLoad() {
+  async onLoad() {
     console.log('开票页面加载');
+    await this.loadInvoiceList();
+    await this.loadInvoiceInfo();
   },
 
-  onShow() {
+  async onShow() {
     console.log('开票页面显示');
+    await this.loadInvoiceList();
+  },
+
+  // 加载发票列表
+  async loadInvoiceList() {
+    try {
+      this.setData({ loading: true });
+      console.log('开始加载发票列表...');
+
+      const result = await API.getInvoiceList({
+        page: 1,
+        pageSize: 20
+      });
+
+      console.log('发票列表加载成功:', result.data);
+      this.setData({
+        invoiceList: result.data.invoices || [],
+        loading: false
+      });
+
+    } catch (error) {
+      console.error('加载发票列表失败:', error);
+      this.setData({ loading: false });
+    }
+  },
+
+  // 加载开票信息（如果设备已绑定）
+  async loadInvoiceInfo() {
+    if (!app.globalData.deviceCode) {
+      console.log('设备未绑定，跳过加载开票信息');
+      return;
+    }
+
+    try {
+      console.log('加载设备开票信息...');
+      const result = await API.getInvoiceInfoByDevice(app.globalData.deviceCode);
+
+      if (result.data) {
+        console.log('开票信息:', result.data);
+        const info = result.data;
+
+        // 根据类型填充表单
+        if (info.type === 'personal') {
+          this.setData({
+            'personalData.title': info.title || '',
+            'personalData.email': info.email || '',
+            'personalData.receiverName': info.receiverName || '',
+            'personalData.receiverPhone': info.receiverPhone || '',
+            'personalData.receiverAddress': info.receiverAddress || ''
+          });
+        } else if (info.type === 'company') {
+          this.setData({
+            'companyData.companyName': info.companyName || '',
+            'companyData.taxNumber': info.taxNumber || '',
+            'companyData.companyAddress': info.companyAddress || '',
+            'companyData.companyPhone': info.companyPhone || '',
+            'companyData.bankName': info.bankName || '',
+            'companyData.bankAccount': info.bankAccount || '',
+            'companyData.email': info.email || '',
+            'companyData.receiverName': info.receiverName || '',
+            'companyData.receiverPhone': info.receiverPhone || '',
+            'companyData.receiverAddress': info.receiverAddress || ''
+          });
+        }
+      }
+
+    } catch (error) {
+      console.error('加载开票信息失败:', error);
+    }
   },
 
   // 选择发票类型
@@ -323,21 +398,61 @@ Page({
   },
 
   // 处理开票申请
-  processInvoice() {
-    wx.showLoading({
-      title: '正在提交...'
-    });
+  async processInvoice() {
+    const { selectedType, personalData, companyData } = this.data;
+    const formData = selectedType === 'personal' ? personalData : companyData;
 
-    setTimeout(() => {
+    try {
+      wx.showLoading({ title: '正在提交...' });
+      console.log('提交开票申请，类型:', selectedType);
+
+      // 1. 先保存或更新开票信息
+      const invoiceInfo = {
+        type: selectedType,
+        deviceCode: app.globalData.deviceCode || '',
+        ...(selectedType === 'personal' ? {
+          title: formData.title,
+          email: formData.email,
+          receiverName: formData.receiverName,
+          receiverPhone: formData.receiverPhone,
+          receiverAddress: formData.receiverAddress
+        } : {
+          companyName: formData.companyName,
+          taxNumber: formData.taxNumber,
+          companyAddress: formData.companyAddress,
+          companyPhone: formData.companyPhone,
+          bankName: formData.bankName,
+          bankAccount: formData.bankAccount,
+          email: formData.email,
+          receiverName: formData.receiverName,
+          receiverPhone: formData.receiverPhone,
+          receiverAddress: formData.receiverAddress
+        })
+      };
+
+      await API.createOrUpdateInvoiceInfo(invoiceInfo);
+      console.log('开票信息已保存');
+
+      // 2. 创建开票申请
+      const invoiceRequest = {
+        orderId: '', // 如果有订单ID可以传入
+        amount: parseFloat(formData.amount),
+        type: selectedType,
+        content: this.data.invoiceContents[formData.contentIndex],
+        remark: formData.remark || '',
+        ...invoiceInfo
+      };
+
+      const result = await API.createInvoiceForOrder(invoiceRequest);
+
       wx.hideLoading();
-      
+      console.log('开票申请成功:', result.data);
       message.success('开票申请提交成功');
-      
+
       setTimeout(() => {
-        const invoiceId = 'INV' + Date.now().toString().slice(-8);
-        const invoiceType = this.data.invoiceTypes.find(type => type.id === this.data.selectedType);
-        const formData = this.data.selectedType === 'personal' ? this.data.personalData : this.data.companyData;
-        
+        const invoiceType = this.data.invoiceTypes.find(type => type.id === selectedType);
+        const invoiceId = result.data.invoiceId || result.data.id || 'INV' + Date.now().toString().slice(-8);
+
         wx.showModal({
           title: '申请已受理',
           content: `您的开票申请已成功提交！\n\n申请编号：${invoiceId}\n发票类型：${invoiceType.name}\n开票金额：¥${formData.amount}\n\n电子发票将在3-5个工作日内开具并发送至邮箱。`,
@@ -374,11 +489,22 @@ Page({
               },
               canSubmit: false
             });
+
+            // 刷新发票列表
+            this.loadInvoiceList();
+
             // 返回首页
             navigation.switchTab('/pages/home/home');
           }
         });
       }, 1000);
-    }, 2000);
+
+    } catch (error) {
+      wx.hideLoading();
+      console.error('开票申请失败:', error);
+
+      const errorMsg = error.message || '开票申请失败，请重试';
+      message.error(errorMsg);
+    }
   }
 });

@@ -1,54 +1,100 @@
 // pages/my-bill/my-bill.js
 const { navigation, message } = require('../../utils/common');
+const API = require('../../utils/api');
 
 Page({
   data: {
-    bills: [
-      {
-        id: '20241201',
-        title: '宽带月费',
-        date: '2024-12-01',
-        period: '2024年12月',
-        amount: '¥88.00',
-        status: 'pending',
-        statusText: '待缴费'
-      },
-      {
-        id: '20241101',
-        title: '宽带月费',
-        date: '2024-11-01',
-        period: '2024年11月',
-        amount: '¥88.00',
-        status: 'paid',
-        statusText: '已缴费'
-      },
-      {
-        id: '20241001',
-        title: '宽带月费',
-        date: '2024-10-01',
-        period: '2024年10月',
-        amount: '¥88.00',
-        status: 'paid',
-        statusText: '已缴费'
-      },
-      {
-        id: '20240915',
-        title: '安装费用',
-        date: '2024-09-15',
-        period: '一次性费用',
-        amount: '¥200.00',
-        status: 'paid',
-        statusText: '已缴费'
-      }
-    ]
+    bills: [],
+    loading: true
   },
 
-  onLoad() {
+  async onLoad() {
     console.log('我的账单页面加载');
+    await this.loadBills();
   },
 
-  onShow() {
+  async onShow() {
     console.log('我的账单页面显示');
+    await this.loadBills();
+  },
+
+  // 加载账单列表
+  async loadBills() {
+    try {
+      this.setData({ loading: true });
+      console.log('开始加载账单列表...');
+
+      const result = await API.getCustomerBillList({
+        page: 1,
+        pageSize: 20,
+        status: '' // 获取所有状态的账单
+      });
+
+      console.log('账单列表加载成功:', result.data);
+
+      // 转换数据格式
+      const bills = result.data.bills.map(bill => ({
+        id: bill.id,
+        title: bill.title || '宽带月费',
+        date: bill.createTime || bill.date,
+        period: bill.period || '月度账单',
+        amount: `¥${parseFloat(bill.amount).toFixed(2)}`,
+        status: bill.status === 'paid' ? 'paid' : 'pending',
+        statusText: bill.status === 'paid' ? '已缴费' : '待缴费'
+      }));
+
+      this.setData({
+        bills: bills,
+        loading: false
+      });
+
+    } catch (error) {
+      console.error('加载账单失败:', error);
+      this.setData({ loading: false });
+
+      // 如果加载失败，使用默认账单数据
+      message.error('加载账单失败，显示默认数据');
+      this.setData({
+        bills: [
+          {
+            id: '20241201',
+            title: '宽带月费',
+            date: '2024-12-01',
+            period: '2024年12月',
+            amount: '¥88.00',
+            status: 'pending',
+            statusText: '待缴费'
+          },
+          {
+            id: '20241101',
+            title: '宽带月费',
+            date: '2024-11-01',
+            period: '2024年11月',
+            amount: '¥88.00',
+            status: 'paid',
+            statusText: '已缴费'
+          },
+          {
+            id: '20241001',
+            title: '宽带月费',
+            date: '2024-10-01',
+            period: '2024年10月',
+            amount: '¥88.00',
+            status: 'paid',
+            statusText: '已缴费'
+          },
+          {
+            id: '20240915',
+            title: '安装费用',
+            date: '2024-09-15',
+            period: '一次性费用',
+            amount: '¥200.00',
+            status: 'paid',
+            statusText: '已缴费'
+          }
+        ]
+      });
+    }
   },
 
   // 充值缴费
@@ -99,18 +145,45 @@ Page({
   },
 
   // 查看账单详情
-  viewBillDetail(e) {
+  async viewBillDetail(e) {
     const billId = e.currentTarget.dataset.id;
-    const bill = this.data.bills.find(b => b.id === billId);
-    
-    if (!bill) return;
 
-    wx.showModal({
-      title: '账单详情',
-      content: `账单类型：${bill.title}\n账单日期：${bill.date}\n计费周期：${bill.period}\n账单金额：${bill.amount}\n缴费状态：${bill.statusText}`,
-      showCancel: false,
-      confirmText: '知道了'
-    });
+    if (!billId) return;
+
+    try {
+      wx.showLoading({ title: '加载中...' });
+      console.log('获取账单详情，ID:', billId);
+
+      const result = await API.getCustomerBillDetail(billId);
+      const bill = result.data;
+
+      wx.hideLoading();
+      console.log('账单详情:', bill);
+
+      wx.showModal({
+        title: '账单详情',
+        content: `账单类型：${bill.title || '宽带月费'}\n账单日期：${bill.createTime || bill.date}\n计费周期：${bill.period || '月度账单'}\n账单金额：¥${parseFloat(bill.amount).toFixed(2)}\n缴费状态：${bill.status === 'paid' ? '已缴费' : '待缴费'}`,
+        showCancel: false,
+        confirmText: '知道了'
+      });
+
+    } catch (error) {
+      wx.hideLoading();
+      console.error('获取账单详情失败:', error);
+
+      // 如果API失败，使用本地数据
+      const bill = this.data.bills.find(b => b.id === billId);
+      if (bill) {
+        wx.showModal({
+          title: '账单详情',
+          content: `账单类型：${bill.title}\n账单日期：${bill.date}\n计费周期：${bill.period}\n账单金额：${bill.amount}\n缴费状态：${bill.statusText}`,
+          showCancel: false,
+          confirmText: '知道了'
+        });
+      } else {
+        message.error('获取账单详情失败');
+      }
+    }
   },
 
   // 查看全部账单
