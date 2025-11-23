@@ -44,9 +44,9 @@ Page({
   async onManualSubmit() {
     const { deviceCode } = this.data;
 
-    // 验证设备码长度
-    if (deviceCode.length < 16) {
-      message.error('请输入16位设备绑定码');
+    // 验证设备码是否为空
+    if (!deviceCode || deviceCode.trim().length === 0) {
+      message.error('请输入设备绑定码');
       return;
     }
 
@@ -54,20 +54,8 @@ Page({
     console.log('开始绑定设备，设备码:', deviceCode);
 
     try {
-      // 1. 先验证设备码是否有效
-      console.log('验证设备码是否有效...');
-      const customerInfo = await API.getCustomerByDeviceCode(deviceCode);
-
-      if (!customerInfo.data) {
-        this.setData({ isLoading: false });
-        message.error('设备码无效或不存在');
-        return;
-      }
-
-      console.log('设备码有效，客户信息:', customerInfo.data);
-
-      // 2. 绑定设备到用户
-      console.log('绑定设备到用户...');
+      // 直接调用绑定接口，后端会处理所有验证逻辑
+      console.log('调用绑定接口...');
       await API.bindDevice(deviceCode);
 
       this.setData({ isLoading: false });
@@ -91,8 +79,8 @@ Page({
       console.error('绑定失败:', error);
       this.setData({ isLoading: false });
 
-      // 显示友好的错误提示
-      const errorMsg = error.message || '设备绑定失败，请重试';
+      // 提取错误信息，支持多种错误字段格式
+      const errorMsg = error.data.error || error.data.message || error.data.details || '设备绑定失败，请重试';
       message.error(errorMsg);
     }
   },

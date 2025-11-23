@@ -64,12 +64,14 @@ function request(options) {
             // 业务成功
             resolve(res.data);
           } else {
-            // 业务错误
+            // 业务错误 - 提取错误信息（支持多种字段）
+            const errorMsg = res.data.error || res.data.message || res.data.details || '操作失败';
             wx.showToast({
-              title: res.data.message || '操作失败',
+              title: errorMsg,
               icon: 'none',
               duration: 2000
             });
+            // 传递完整的错误对象，方便业务层提取信息
             reject(res.data);
           }
         } else if (res.statusCode === 401) {

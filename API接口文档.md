@@ -1639,6 +1639,87 @@
   }
 }
 ```
+
+#### 10.6.4 更新推文
+
+**路径**: `/api/v1/tools/updateArticle/:id`
+**方法**: `PUT`
+**描述**: 更新推文内容（管理员）
+**请求头**:
+- `Authorization`: Bearer token (管理员)
+
+**路径参数**:
+- `id`: 推文ID
+
+**请求参数**:
+| 参数名 | 类型 | 必填 | 描述 |
+| :--- | :--- | :--- | :--- |
+| `title` | `string` | 否 | 标题 |
+| `content` | `string` | 否 | 内容 |
+| `cover` | `string` | 否 | 封面图URL |
+| `author` | `string` | 否 | 作者 |
+
+**成功响应示例**:
+```json
+{
+  "success": true,
+  "message": "推文更新成功",
+  "data": {
+    "id": "article123",
+    "title": "更新后的标题",
+    "updateTime": "2024-01-02T12:00:00Z"
+  }
+}
+```
+
+#### 10.6.5 删除推文
+
+**路径**: `/api/v1/tools/deleteArticle/:id`
+**方法**: `DELETE`
+**描述**: 删除推文（管理员）
+**请求头**:
+- `Authorization`: Bearer token (管理员)
+
+**路径参数**:
+- `id`: 推文ID
+
+**成功响应示例**:
+```json
+{
+  "success": true,
+  "message": "推文删除成功",
+  "data": null
+}
+```
+
+#### 10.6.6 更新推文状态
+
+**路径**: `/api/v1/tools/updateArticleStatus/:id`
+**方法**: `PUT`
+**描述**: 更新推文状态（管理员）
+**请求头**:
+- `Authorization`: Bearer token (管理员)
+
+**路径参数**:
+- `id`: 推文ID
+
+**请求参数**:
+| 参数名 | 类型 | 必填 | 描述 |
+| :--- | :--- | :--- | :--- |
+| `status` | `string` | 是 | 状态（published/draft） |
+
+**成功响应示例**:
+```json
+{
+  "success": true,
+  "message": "状态更新成功",
+  "data": {
+    "id": "article123",
+    "status": "published"
+  }
+}
+```
+
 ## 套餐管理API
 
 ### 12.1 新增套餐

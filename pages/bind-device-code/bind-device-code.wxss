@@ -128,6 +128,32 @@
   100% { transform: rotate(360deg); }
 }
 
+/* --- 跳过按钮区域 --- */
+.skip-section {
+  margin-top: 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.skip-button {
+  width: 100%;
+  height: 88rpx;
+  font-size: 30rpx;
+  font-weight: 400;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 24rpx;
+  color: #6b7280;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none;
+}
+
+.skip-button:active {
+  background: #f9fafb;
+  border-color: #d1d5db;
+}
+
 /* --- 帮助区域 --- */
 .help-section {
   text-align: center;

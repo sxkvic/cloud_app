@@ -18,8 +18,7 @@
             value="{{deviceCode}}"
             bindinput="onInputChange"
             class="custom-input"
-            placeholder="请输入16位设备绑定码"
-            maxlength="16"
+            placeholder="请输入设备绑定码"
             placeholder-style="color: #9ca3af"
           />
         </view>
@@ -35,6 +34,13 @@
         </button>
       </view>
       
+      <!-- 跳过按钮 -->
+      <view class="skip-section">
+        <button class="skip-button" bindtap="skipBinding">
+          暂时跳过
+        </button>
+      </view>
+
       <!-- 帮助信息 -->
       <view class="help-section">
         <text class="help-text" bindtap="showHelp">

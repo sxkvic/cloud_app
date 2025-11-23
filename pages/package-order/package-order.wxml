@@ -1,77 +1,72 @@
 <!--pages/package-order/package-order.wxml-->
 <view class="package-order-page">
-  <!-- 可滚动内容区域 -->
-  <scroll-view class="content-wrapper" scroll-y enhanced show-scrollbar="{{false}}">
-    <!-- 头部标题 -->
-    <view class="page-header">
-      <text class="page-title">套餐订购</text>
-      <text class="page-subtitle">选择适合您的宽带套餐</text>
-    </view>
-
-    <!-- 套餐列表 -->
-    <view class="package-list">
-      <view 
-        wx:for="{{ packages }}" 
-        wx:key="id" 
-        class="package-item {{ selectedPackage === item.id ? 'selected' : '' }}"
-        bindtap="selectPackage"
-        data-id="{{ item.id }}"
-      >
-        <view class="package-header">
-          <view class="package-name">{{ item.name }}</view>
-          <view class="package-badge" wx:if="{{ item.isPopular }}">热门</view>
+    <!-- 可滚动内容区域 -->
+    <scroll-view class="content-wrapper" scroll-y enhanced show-scrollbar="{{false}}">
+        <!-- 头部标题 -->
+        <view class="page-header">
+            <text class="page-title">套餐订购</text>
+            <text class="page-subtitle">选择适合您的宽带套餐</text>
         </view>
-        
-        <view class="package-content">
-          <view class="package-speed">
-            <text class="speed-value">{{ item.speed }}</text>
-            <text class="speed-unit">Mbps</text>
-          </view>
-          
-          <view class="package-features">
-            <view wx:for="{{ item.features }}" wx:key="*this" class="feature-item">
-              <text class="feature-icon">✓</text>
-              <text class="feature-text">{{ item }}</text>
+
+        <!-- 套餐列表 -->
+        <view class="package-list">
+            <view wx:for="{{ packages }}" wx:key="id" class="package-item {{ selectedPackage === item.id ? 'selected' : '' }}" bindtap="selectPackage" data-id="{{ item.id }}">
+                <view class="package-header">
+                    <view class="package-name">{{ item.name }}</view>
+                    <view class="package-badge" wx:if="{{ item.isPopular }}">热门</view>
+                </view>
+
+                <view class="package-content">
+                    <view class="package-speed">
+                        <text class="speed-value">{{ item.speed }}</text>
+                        <text class="speed-unit">Mbps</text>
+                    </view>
+
+                    <view class="package-features">
+                        <view wx:for="{{ item.features }}" wx:key="*this" class="feature-item">
+                            <text class="feature-icon">✓</text>
+                            <text class="feature-text">{{ item }}</text>
+                        </view>
+                    </view>
+
+                    <view class="package-price">
+                        <text class="price-symbol">¥</text>
+                        <text class="price-value">{{ item.price }}</text>
+                    </view>
+                </view>
             </view>
-          </view>
-          
-          <view class="package-price">
-            <text class="price-symbol">¥</text>
-            <text class="price-value">{{ item.price }}</text>
-            <text class="price-unit">/月</text>
-          </view>
         </view>
-      </view>
-    </view>
-  </scroll-view>
+    </scroll-view>
 
-  <!-- 订购按钮 -->
-  <view class="order-section">
-    <!-- 未选择时显示引导 -->
-    <view class="order-guide" wx:if="{{ !selectedPackage }}">
-      <text class="guide-icon">👆</text>
-      <text class="guide-text">请在上方选择您需要的套餐</text>
+    <!-- 订购按钮 -->
+    <view class="order-section">
+        <!-- 未选择时显示引导 -->
+        <view class="order-guide" wx:if="{{ !selectedPackage }}">
+            <text class="guide-icon">👆</text>
+            <text class="guide-text">请在上方选择您需要的套餐</text>
+        </view>
+
+        <!-- 已选择时显示摘要 -->
+        <view class="order-summary" wx:if="{{ selectedPackage && customerInfo }}">
+            <view class="summary-row">
+                <view class="summary-info">
+                    <text class="summary-label">客户</text>
+                    <text class="summary-value">{{ customerInfo.customer_name || '未知' }}</text>
+                </view>
+                <view class="summary-info">
+                    <text class="summary-label">已选套餐</text>
+                    <text class="summary-value">{{ selectedPackageName }}</text>
+                </view>
+            </view>
+            <view class="summary-divider"></view>
+            <view class="summary-price-row">
+                <text class="price-label">金额</text>
+                <text class="price-amount">¥{{ selectedPackagePrice }}</text>
+            </view>
+        </view>
+
+        <button class="order-button {{ selectedPackage && customerInfo ? 'active' : 'disabled' }}" disabled="{{ !selectedPackage || !customerInfo }}" bindtap="confirmOrder">
+            <text class="btn-text">{{ selectedPackage && customerInfo ? '立即订购' : (customerInfo ? '请先选择套餐' : '加载客户信息中...') }}</text>
+        </button>
     </view>
-    
-    <!-- 已选择时显示摘要 -->
-    <view class="order-summary" wx:if="{{ selectedPackage }}">
-      <view class="summary-info">
-        <text class="summary-label">已选套餐</text>
-        <text class="summary-value">{{ selectedPackageName }}</text>
-      </view>
-      <view class="summary-price">
-        <text class="price-label">月费</text>
-        <text class="price-amount">¥{{ selectedPackagePrice }}</text>
-      </view>
-    </view>
-    
-    <button 
-      class="order-button {{ selectedPackage ? 'active' : 'disabled' }}"
-      disabled="{{ !selectedPackage }}"
-      bindtap="confirmOrder"
-    >
-      <text class="btn-icon" wx:if="{{ selectedPackage }}">🎉</text>
-      <text class="btn-text">{{ selectedPackage ? '立即订购' : '请先选择套餐' }}</text>
-    </button>
-  </view>
 </view>

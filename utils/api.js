@@ -117,7 +117,7 @@ const API = {
    */
   getCustomerByDeviceCode(deviceCode) {
     return request({
-      url: `/api/v1/wx/getCustomerByDeviceCode/${deviceCode}`,
+      url: `/api/v1/customer-device-bindings/getCustomerByDeviceCode/${deviceCode}`,
       method: 'GET',
       needAuth: true
     });
@@ -158,15 +158,17 @@ const API = {
   /**
    * 创建订单
    * @param {Object} orderData 订单数据
-   * @param {String} orderData.packageId 套餐ID
-   * @param {String} orderData.packageName 套餐名称
-   * @param {Number} orderData.amount 订单金额
+   * @param {Number} orderData.customer_id 客户ID
+   * @param {String} orderData.device_no 设备号
+   * @param {Number} orderData.package_id 套餐ID
+   * @param {Number} orderData.orderType 订单类型（1=新装）
+   * @param {String} orderData.payment_type 支付方式（1=微信）
    * @param {String} orderData.remark 备注（可选）
    * @returns {Promise} { success, data: { orderId, orderNo }, message }
    */
   createOrder(orderData) {
     return request({
-      url: '/api/v1/wx/orders',
+      url: '/api/v1/payments/admin/payments/web/create',
       method: 'POST',
       data: orderData,
       needAuth: true

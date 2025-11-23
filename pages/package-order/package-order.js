@@ -8,12 +8,17 @@ Page({
     selectedPackageName: '暂无',
     selectedPackagePrice: '0',
     packages: [],
-    loading: true
+    loading: true,
+    // 客户信息相关
+    deviceCode: 'DEV00845211',  // 调试用固定设备码
+    customerInfo: null,          // 客户信息
+    isLoadingCustomer: false     // 加载客户信息状态
   },
 
   async onLoad() {
     console.log('套餐订购页面加载');
     await this.loadPackages();
+    await this.loadCustomerInfo();
   },
 
   async onShow() {
@@ -81,6 +86,27 @@ Page({
     }
   },
 
+  // 加载客户信息
+  async loadCustomerInfo() {
+    try {
+      this.setData({ isLoadingCustomer: true });
+      console.log('查询客户信息，设备码:', this.data.deviceCode);
+      
+      const result = await API.getCustomerByDeviceCode(this.data.deviceCode);
+      console.log('客户信息查询成功:', result.data);
+      
+      this.setData({
+        customerInfo: result.data.customer || result.data,
+        isLoadingCustomer: false
+      });
+      
+    } catch (error) {
+      console.error('查询客户信息失败:', error);
+      this.setData({ isLoadingCustomer: false });
+      message.error('无法获取客户信息，请稍后重试');
+    }
+  },
+
   // 选择套餐
   selectPackage(e) {
     const packageId = e.currentTarget.dataset.id;
@@ -99,12 +125,18 @@ Page({
       message.error('请先选择套餐');
       return;
     }
+    
+    if (!this.data.customerInfo) {
+      message.error('客户信息加载中，请稍候');
+      return;
+    }
 
     const selectedPackage = this.data.packages.find(pkg => pkg.id === this.data.selectedPackage);
+    const customer = this.data.customerInfo;
     
     wx.showModal({
       title: '确认订购',
-      content: `您即将订购 ${selectedPackage.name}，月费 ¥${selectedPackage.price}，是否确认？`,
+      content: `客户：${customer.customer_name || customer.name || '未知'}\n套餐：${selectedPackage.name}\n月费：¥${selectedPackage.price}\n\n确认为该客户订购此套餐？`,
       confirmText: '确认订购',
       cancelText: '再想想',
       success: (res) => {
@@ -118,21 +150,29 @@ Page({
   // 处理订购
   async processOrder() {
     const selectedPackage = this.data.packages.find(pkg => pkg.id === this.data.selectedPackage);
+    const customer = this.data.customerInfo;
 
     if (!selectedPackage) {
       message.error('请选择套餐');
       return;
     }
+    
+    if (!customer) {
+      message.error('客户信息不完整');
+      return;
+    }
 
     try {
       wx.showLoading({ title: '正在处理订单...' });
-      console.log('创建订单，套餐:', selectedPackage);
+      console.log('创建订单，套餐:', selectedPackage, '客户:', customer);
 
-      // 创建订单
+      // 创建订单 - 使用新接口参数格式
       const result = await API.createOrder({
-        packageId: selectedPackage.id,
-        packageName: selectedPackage.name,
-        amount: parseFloat(selectedPackage.price),
+        customer_id: customer.id || customer.customer_id,
+        device_no: this.data.deviceCode,
+        package_id: selectedPackage.id,
+        orderType: 1,  // 1=新装
+        payment_type: '1',  // 1=微信支付
         remark: '小程序订购'
       });
 
@@ -143,7 +183,7 @@ Page({
       setTimeout(() => {
         wx.showModal({
           title: '订购完成',
-          content: `${selectedPackage.name} 订购成功！\n订单号：${result.data.orderId || result.data.orderNo || '已生成'}\n月费：¥${selectedPackage.price}\n我们将尽快为您安排安装。`,
+          content: `${selectedPackage.name} 订购成功！\n客户：${customer.customer_name || customer.name}\n订单号：${result.data.orderId || result.data.orderNo || result.data.order_no || '已生成'}\n月费：¥${selectedPackage.price}\n我们将尽快为您安排服务。`,
           showCancel: false,
           confirmText: '知道了',
           success: () => {
@@ -157,7 +197,7 @@ Page({
       wx.hideLoading();
       console.error('订购失败:', error);
 
-      const errorMsg = error.message || '订购失败，请重试';
+      const errorMsg = error.message || error.data?.message || error.data?.error || '订购失败，请重试';
       message.error(errorMsg);
     }
   }
