@@ -6,6 +6,7 @@ Page({
   data: {
     selectedPackage: null,
     selectedPackageName: '暂无',
+    selectedPackagePrice: '0',
     packages: [],
     loading: true
   },
@@ -26,22 +27,47 @@ Page({
       console.log('开始加载套餐列表...');
 
       const result = await API.getPackagesList({
-        status: 'active', // 只获取激活状态的套餐
         page: 1,
         pageSize: 20
       });
 
       console.log('套餐列表加载成功:', result.data);
 
-      // 转换数据格式以适配现有UI
-      const packages = result.data.packages.map(pkg => ({
-        id: pkg.id,
-        name: pkg.name,
-        speed: pkg.speed || '100',
-        price: pkg.price,
-        isPopular: pkg.isPopular || false,
-        features: pkg.features || []
-      }));
+      // 过滤出有效套餐（status === 1）、排序并转换数据格式
+      const packages = result.data.list
+        .filter(pkg => pkg.status === 1)  // 只保留status为1的有效套餐
+        .sort((a, b) => (a.sort || 0) - (b.sort || 0))  // 根据sort字段从小到大排序
+        .map(pkg => {
+          // 处理流量字段，提取数字部分（如 "1000M" -> "1000"）
+          let speed = '100';
+          if (pkg.flow) {
+            const match = pkg.flow.match(/(\d+)/);
+            speed = match ? match[1] : '100';
+          }
+
+          // 构建特性列表
+          const features = [];
+          if (pkg.flow) {
+            features.push(`流量: ${pkg.flow}`);
+          }
+          if (pkg.remark) {
+            features.push(pkg.remark);
+          }
+          if (pkg.package_type === '0') {
+            features.push('包月套餐');
+          }
+
+          return {
+            id: pkg.id,
+            name: pkg.package_name || '未命名套餐',
+            speed: speed,
+            price: pkg.price || '0',
+            isPopular: pkg.package_type === '3',  // package_type为3的标记为热门
+            features: features
+          };
+        });
+
+      console.log('有效套餐数量:', packages.length);
 
       this.setData({
         packages: packages,
@@ -51,77 +77,7 @@ Page({
     } catch (error) {
       console.error('加载套餐失败:', error);
       this.setData({ loading: false });
-
-      // 如果加载失败，使用默认套餐数据
-      message.error('加载套餐失败，显示默认套餐');
-      this.setData({
-        packages: [
-          {
-            id: 'basic',
-            name: '基础套餐',
-            speed: '100',
-            price: '88',
-            isPopular: false,
-            features: [
-              '100Mbps 高速上网',
-              '免费WiFi路由器',
-              '7×24小时技术支持',
-              '免费上门安装'
-            ]
-          },
-          {
-            id: 'standard',
-            name: '标准套餐',
-            speed: '200',
-            price: '128',
-            isPopular: true,
-            features: [
-              '200Mbps 极速上网',
-              '免费WiFi路由器',
-              '7×24小时技术支持',
-              '免费上门安装',
-              '免费IPTV机顶盒',
-              '家庭云存储10GB'
-            ]
-          },
-          {
-            id: 'premium',
-            name: '豪华套餐',
-            speed: '500',
-            price: '188',
-            isPopular: false,
-            features: [
-              '500Mbps 超高速上网',
-              '高端WiFi路由器',
-              '7×24小时技术支持',
-              '免费上门安装',
-              '4K IPTV机顶盒',
-              '家庭云存储50GB',
-              '智能家居控制',
-              '优先技术支持'
-            ]
-          },
-          {
-            id: 'ultimate',
-            name: '旗舰套餐',
-            speed: '1000',
-            price: '288',
-            isPopular: false,
-            features: [
-              '1000Mbps 极速上网',
-              '专业级WiFi路由器',
-              '7×24小时技术支持',
-              '免费上门安装',
-              '4K IPTV机顶盒',
-              '家庭云存储100GB',
-              '智能家居控制',
-              '优先技术支持',
-              '专线客服',
-              '免费设备维护'
-            ]
-          }
-        ]
-      });
+      message.error('加载套餐失败，请稍后重试');
     }
   },
 
@@ -132,11 +88,9 @@ Page({
     
     this.setData({
       selectedPackage: packageId,
-      selectedPackageName: selectedPackage.name
+      selectedPackageName: selectedPackage.name,
+      selectedPackagePrice: selectedPackage.price
     });
-
-    // 触觉反馈
-    wx.vibrateShort();
   },
 
   // 确认订购

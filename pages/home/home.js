@@ -61,14 +61,9 @@ Page({
   },
 
   async onShow() {
-    // 页面显示时刷新数据
-    await this.refreshData();
-  },
-
-  // 刷新数据
-  async refreshData() {
-    console.log('刷新首页数据');
-    await this.loadBanners();
+    console.log('首页显示');
+    // 页面显示时不自动刷新，避免与onLoad重复调用接口
+    // 如需刷新数据，可使用下拉刷新功能
   },
 
   // 加载Banner轮播图
@@ -89,7 +84,7 @@ Page({
         // 转换数据格式以匹配UI需求
         const slides = result.data.banners.map(banner => {
           // 拼接完整的图片URL
-          let imageUrl = banner.imageUrl;
+          let imageUrl = banner.image_url;  // 使用后端返回的字段名 image_url
           if (imageUrl && !imageUrl.startsWith('http')) {
             // 如果不是完整URL，拼接baseUrl
             imageUrl = `${baseUrl}${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;

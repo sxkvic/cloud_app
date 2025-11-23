@@ -1,15 +1,26 @@
 <!--pages/login/login.wxml-->
 <view class="login-page-wrapper">
+  <!-- 装饰性背景元素 -->
+  <view class="bg-decoration">
+    <view class="circle circle-1"></view>
+    <view class="circle circle-2"></view>
+    <view class="circle circle-3"></view>
+  </view>
+
   <!-- 主要内容区域 -->
   <view class="login-container">
     <!-- 头部标题区域 -->
     <view class="header-section">
+      <view class="logo-wrapper">
+        <view class="logo-icon">📡</view>
+      </view>
       <text class="main-title">云网宽带</text>
       <text class="subtitle">便捷安装 · 专业服务 · 全程保障</text>
     </view>
 
     <!-- 登录卡片 -->
     <view class="login-card">
+      <view class="card-glow"></view>
       <view class="login-core">
         <button 
           class="btn-wechat-login {{loading ? 'loading' : ''}}"
@@ -18,17 +29,21 @@
           open-type="getUserInfo"
           bindgetuserinfo="onGetUserInfo"
         >
-          <text class="btn-text">{{loading ? '授权中...' : '微信一键登录'}}</text>
+          <view class="btn-content">
+            <text class="wechat-icon">{{loading ? '⏳' : '💬'}}</text>
+            <text class="btn-text">{{loading ? '授权中...' : '微信一键登录'}}</text>
+          </view>
+          <view class="btn-shine"></view>
         </button>
         
         <view class="agreement-section">
           <view class="checkbox-wrapper" bindtap="toggleAgreement">
             <view class="checkbox {{agreed ? 'checked' : ''}}">
-              <text wx:if="{{agreed}}" class="check-icon">✓</text>
+              <view wx:if="{{agreed}}" class="check-icon">✓</view>
             </view>
             <text class="agreement-text">
               我已阅读并同意
-              <text class="agreement-link" bindtap="showAgreement">用户服务协议</text>
+              <text class="agreement-link" bindtap="showAgreement">《用户服务协议》</text>
             </text>
           </view>
         </view>
@@ -38,7 +53,7 @@
   
   <!-- 底部帮助链接 -->
   <view class="footer-links">
-    <text class="help-link" bindtap="contactService">遇到问题？联系客服</text>
+    <text class="help-link" bindtap="contactService">💬 遇到问题？联系客服</text>
   </view>
 </view>
 

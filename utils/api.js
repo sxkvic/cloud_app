@@ -135,7 +135,7 @@ const API = {
    */
   getPackagesList(params = {}) {
     return request({
-      url: '/api/v1/wx/packages/getPackagesList',
+      url: '/api/v1/packages/getPackagesList',
       method: 'GET',
       data: params,
       needAuth: false
