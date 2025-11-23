@@ -7,6 +7,7 @@
     "pages/bind-device-code/bind-device-code",
     "pages/package-order/package-order",
     "pages/my-bill/my-bill",
+    "pages/bill-detail/bill-detail",
     "pages/customer-service/customer-service",
     "pages/pre-recharge/pre-recharge",
     "pages/business-cancellation/business-cancellation",

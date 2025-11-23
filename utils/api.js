@@ -201,12 +201,31 @@ const API = {
    */
   getCustomerBillDetail(id) {
     return request({
-      url: `/api/v1/wx/customerBill/getCustomerBillDetail/${id}`,
+      url: `/api/v1/customer-bills/getBillDetail/${id}`,
       method: 'GET',
       needAuth: true
     });
   },
-
+  
+  /**
+   * 获取账单列表
+   * @param {Object} params 查询参数
+   * @param {Number} params.page 页码
+   * @param {Number} params.pageSize 每页数量
+   * @param {String} params.customer_name 客户名称（可选）
+   * @param {String} params.device_no 设备号（可选）
+   * @param {String} params.bill_no 账单号（可选）
+   * @returns {Promise} { success, data: { list, total }, message }
+   */
+  getBillList(params) {
+    return request({
+      url: '/api/v1/customer-bills/getBillList',
+      method: 'GET',
+      data: params,
+      needAuth: true
+    });
+  },
+  
   // ==================== 支付功能模块 ====================
 
   /**

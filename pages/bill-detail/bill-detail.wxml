@@ -1,0 +1,106 @@
+<!--pages/bill-detail/bill-detail.wxml-->
+<view class="bill-detail-page">
+  <scroll-view class="detail-content" scroll-y enhanced show-scrollbar="{{false}}">
+    <!-- 账单状态卡片 -->
+    <view class="status-card">
+      <view class="status-badge {{ billDetail.bill_status == 1 ? 'paid' : 'pending' }}">
+        <text class="status-text">{{ billDetail.bill_status == 1 ? '已支付' : '待支付' }}</text>
+      </view>
+      <view class="amount-display">
+        <text class="amount-label">账单金额</text>
+        <text class="amount-value">¥{{ billDetail.amount || '0.00' }}</text>
+      </view>
+      <text class="bill-no-text">账单号：{{ billDetail.bill_no || billDetail.order_no }}</text>
+    </view>
+
+    <!-- 基本信息 -->
+    <view class="info-card">
+      <view class="card-title">
+        <view class="title-indicator"></view>
+        <text class="title-text">基本信息</text>
+      </view>
+      <view class="info-list">
+        <view class="info-row">
+          <text class="info-label">客户名称</text>
+          <text class="info-value">{{ billDetail.customer_name }}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">套餐详情</text>
+          <text class="info-value">{{ billDetail.package_name }}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">设备编号</text>
+          <text class="info-value">{{ billDetail.device_no }}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">安装地址</text>
+          <text class="info-value">{{ billDetail.full_address }}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">创建时间</text>
+          <text class="info-value">{{ billDetail.created_at }}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 计费信息 -->
+    <view class="info-card">
+      <view class="card-title">
+        <view class="title-indicator"></view>
+        <text class="title-text">计费信息</text>
+      </view>
+      <view class="info-list">
+        <view class="info-row">
+          <text class="info-label">计费周期</text>
+          <text class="info-value">{{ billDetail.billing_start_date }} 至 {{ billDetail.billing_end_date }}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">计费开始</text>
+          <text class="info-value">{{ billDetail.billing_start_date }}</text>
+        </view>
+        <view class="info-row">
+          <text class="info-label">计费结束</text>
+          <text class="info-value">{{ billDetail.billing_end_date }}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 费用明细 -->
+    <view class="info-card">
+      <view class="card-title">
+        <view class="title-indicator"></view>
+        <text class="title-text">费用明细</text>
+      </view>
+      <view class="fee-list">
+        <view class="fee-row">
+          <text class="fee-label">基础费用</text>
+          <text class="fee-value">¥{{ billDetail.amount || '0.00' }}</text>
+        </view>
+        <view class="fee-row">
+          <text class="fee-label">服务费</text>
+          <text class="fee-value">¥0.00</text>
+        </view>
+        <view class="fee-row">
+          <text class="fee-label">其他费用</text>
+          <text class="fee-value">¥0.00</text>
+        </view>
+        <view class="fee-row">
+          <text class="fee-label">减免费用</text>
+          <text class="fee-value">¥0.00</text>
+        </view>
+        <view class="fee-divider"></view>
+        <view class="fee-row total">
+          <text class="fee-label">总计金额</text>
+          <text class="fee-value total">¥{{ billDetail.amount || '0.00' }}</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 底部操作按钮（仅未支付时显示） -->
+  <view wx:if="{{ billDetail.bill_status != 1 }}" class="bottom-action">
+    <button class="pay-button" bindtap="payNow">
+      <text class="btn-text">立即支付</text>
+    </button>
+  </view>
+</view>

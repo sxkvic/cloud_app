@@ -1,87 +1,62 @@
 <!--pages/my-bill/my-bill.wxml-->
 <view class="my-bill-page">
-  <!-- 头部信息 -->
-  <view class="page-header">
-    <view class="user-info">
-      <text class="user-name">王女士</text>
-      <text class="account-info">账号：138****8888</text>
-    </view>
-    <view class="balance-info">
-      <text class="balance-label">账户余额</text>
-      <text class="balance-amount">¥128.50</text>
-    </view>
-  </view>
+  <scroll-view class="list-scroll-view" scroll-y enhanced show-scrollbar="{{false}}">
+    <view class="list-content">
+      <!-- 头部卡片 -->
+      <view class="header-card">
+        <view class="customer-info">
+          <text class="customer-name">{{ customerInfo.customer_name || '加载中...' }}</text>
+          <text class="device-code">设备号：{{ deviceCode }}</text>
+        </view>
+      </view>
 
-  <!-- 账单统计 -->
-  <view class="bill-stats">
-    <view class="stat-item">
-      <text class="stat-label">本月消费</text>
-      <text class="stat-value">¥88.00</text>
-    </view>
-    <view class="stat-item">
-      <text class="stat-label">待缴费</text>
-      <text class="stat-value pending">¥88.00</text>
-    </view>
-    <view class="stat-item">
-      <text class="stat-label">已缴费</text>
-      <text class="stat-value paid">¥0.00</text>
-    </view>
-  </view>
-
-  <!-- 快捷操作 -->
-  <view class="quick-actions">
-    <view class="action-item" bindtap="recharge">
-      <view class="action-icon">💰</view>
-      <text class="action-text">充值缴费</text>
-    </view>
-    <view class="action-item" bindtap="viewHistory">
-      <view class="action-icon">📋</view>
-      <text class="action-text">历史账单</text>
-    </view>
-    <view class="action-item" bindtap="downloadBill">
-      <view class="action-icon">📄</view>
-      <text class="action-text">下载账单</text>
-    </view>
-  </view>
-
-  <!-- 账单列表 -->
-  <view class="bill-list">
-    <view class="list-header">
-      <text class="list-title">最近账单</text>
-      <text class="list-more" bindtap="viewAllBills">查看全部</text>
-    </view>
-    
-    <view class="bill-items">
-      <view 
-        wx:for="{{ bills }}" 
-        wx:key="id" 
-        class="bill-item {{ item.status }}"
-        bindtap="viewBillDetail"
-        data-id="{{ item.id }}"
-      >
-        <view class="bill-info">
-          <view class="bill-title">{{ item.title }}</view>
-          <view class="bill-date">{{ item.date }}</view>
-          <view class="bill-period">{{ item.period }}</view>
+      <!-- 账单列表 -->
+      <view class="bill-list-section">
+        <view class="section-title">
+          <text class="title-text">我的账单</text>
+          <text class="bill-count">共 {{ bills.length }} 条</text>
         </view>
         
-        <view class="bill-amount">
-          <text class="amount-value">{{ item.amount }}</text>
-          <text class="amount-status">{{ item.statusText }}</text>
+        <view class="bill-cards">
+          <view 
+            wx:for="{{ bills }}" 
+            wx:key="id" 
+            class="bill-card {{ item.status }}"
+            bindtap="viewBillDetail"
+            data-id="{{ item.id }}"
+          >
+            <view class="card-header">
+              <view class="bill-title-row">
+                <text class="bill-name">{{ item.title }}</text>
+                <text class="bill-status {{ item.status }}">{{ item.statusText }}</text>
+              </view>
+              <text class="bill-no">账单号：{{ item.billNo }}</text>
+            </view>
+            
+            <view class="card-content">
+              <view class="info-item">
+                <text class="info-label">计费周期</text>
+                <text class="info-value">{{ item.period }}</text>
+              </view>
+              <view class="info-item">
+                <text class="info-label">创建时间</text>
+                <text class="info-value">{{ item.date }}</text>
+              </view>
+            </view>
+            
+            <view class="card-footer">
+              <view class="amount-section">
+                <text class="amount-label">账单金额</text>
+                <text class="amount-value">{{ item.amount }}</text>
+              </view>
+              <view class="view-detail">
+                <text class="detail-text">查看详情</text>
+                <text class="arrow-icon">→</text>
+              </view>
+            </view>
+          </view>
         </view>
-        
-        <view class="bill-arrow">></view>
       </view>
     </view>
-  </view>
-
-  <!-- 底部操作 -->
-  <view class="bottom-actions">
-    <button class="action-button secondary" bindtap="contactService">
-      联系客服
-    </button>
-    <button class="action-button primary" bindtap="payNow">
-      立即缴费
-    </button>
-  </view>
+  </scroll-view>
 </view>
