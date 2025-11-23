@@ -23,7 +23,9 @@ Page({
       });
 
       setTimeout(() => {
-        navigation.switchTab('/pages/home/home');
+        wx.redirectTo({
+          url: '/pages/home/home'
+        });
       }, 1500);
       return;
     }
@@ -72,7 +74,9 @@ Page({
 
       // 跳转到首页
       setTimeout(() => {
-        navigation.switchTab('/pages/home/home');
+        wx.redirectTo({
+          url: '/pages/home/home'
+        });
       }, 800);
 
     } catch (error) {
@@ -120,7 +124,9 @@ Page({
           wx.setStorageSync('bindingSkipped', true);
           message.success('已跳过绑定，您可以稍后绑定');
           setTimeout(() => {
-            navigation.switchTab('/pages/home/home');
+            wx.redirectTo({
+              url: '/pages/home/home'
+            });
           }, 800);
         }
       }

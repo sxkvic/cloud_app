@@ -14,9 +14,9 @@ const navigation = {
     wx.redirectTo({ url });
   },
   
-  // 切换到tabBar页面
+  // 切换到tabBar页面（已改为redirectTo，因为使用自定义tabbar）
   switchTab(url) {
-    wx.switchTab({ url });
+    wx.redirectTo({ url });
   },
   
   // 返回上一页

@@ -148,6 +148,15 @@ Page({
     } else {
       message.error('功能开发中，敬请期待');
     }
+  },
+
+  // Tabbar切换事件
+  onTabChange(event) {
+    const index = event.detail;
+    if (index === 1) {
+      wx.redirectTo({
+        url: '/pages/my/my'
+      });
+    }
   }
 });
-

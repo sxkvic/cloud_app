@@ -5,7 +5,7 @@
 .home-page {
   background-color: #f7f8fa;
   min-height: 100vh;
-  padding-bottom: 120rpx; /* 为底部导航栏留出空间 */
+  padding-bottom: 160rpx; /* 为底部导航栏留出空间 */
 }
 
 /* 主体内容区 */

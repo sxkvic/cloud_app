@@ -81,3 +81,8 @@
   </view>
 </view>
 
+<!-- 底部导航栏 -->
+<van-tabbar active="{{ 0 }}" bind:change="onTabChange">
+  <van-tabbar-item icon="home-o">首页</van-tabbar-item>
+  <van-tabbar-item icon="user-o">我的</van-tabbar-item>
+</van-tabbar>
