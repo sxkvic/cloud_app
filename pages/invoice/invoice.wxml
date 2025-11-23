@@ -1,267 +1,143 @@
 <!--pages/invoice/invoice.wxml-->
 <view class="invoice-page">
-  <!-- 页面头部 -->
-  <view class="page-header">
-    <text class="page-title">开票申请</text>
-    <text class="page-subtitle">申请开具发票服务</text>
-  </view>
-
-  <!-- 发票类型选择 -->
-  <view class="invoice-types">
-    <view class="section-title">发票类型</view>
-    <view class="type-list">
-      <view 
-        class="type-item {{ selectedType === item.id ? 'selected' : '' }}"
-        wx:for="{{ invoiceTypes }}"
-        wx:key="id"
-        bindtap="selectInvoiceType"
-        data-id="{{ item.id }}"
-      >
-        <view class="type-icon">{{ item.icon }}</view>
-        <view class="type-info">
-          <view class="type-name">{{ item.name }}</view>
-          <view class="type-description">{{ item.description }}</view>
-          <view class="type-fee">费用：{{ item.fee }}</view>
-        </view>
-        <view class="type-radio {{ selectedType === item.id ? 'selected' : '' }}">
-          <view class="radio-inner"></view>
-        </view>
-      </view>
+  <!-- 滚动内容区域 -->
+  <scroll-view class="invoice-content" scroll-y>
+    <!-- 页面头部 -->
+    <view class="page-header">
+      <text class="page-title">开票申请</text>
+      <text class="page-subtitle">申请开具发票服务</text>
     </view>
-  </view>
 
-  <!-- 可开票金额 -->
-  <view class="invoice-amount">
-    <view class="section-title">可开票金额</view>
-    <view class="amount-card">
-      <view class="amount-info">
-        <view class="amount-item">
-          <text class="amount-label">总消费金额</text>
-          <text class="amount-value">¥{{ totalAmount }}</text>
-        </view>
-        <view class="amount-item">
-          <text class="amount-label">已开票金额</text>
-          <text class="amount-value">¥{{ invoicedAmount }}</text>
-        </view>
-        <view class="amount-item highlight">
-          <text class="amount-label">可开票金额</text>
-          <text class="amount-value">¥{{ availableAmount }}</text>
-        </view>
-      </view>
-    </view>
-  </view>
-
-  <!-- 开票表单 -->
-  <view class="invoice-form" wx:if="{{ selectedType }}">
+    <!-- 开票表单 -->
+  <view class="invoice-form">
     <view class="section-title">开票信息</view>
     
-    <!-- 发票金额 -->
+    <!-- 抬头类型 -->
     <view class="form-section">
       <view class="form-item">
-        <text class="form-label">开票金额</text>
-        <view class="amount-input-group">
-          <text class="currency-symbol">¥</text>
+        <text class="form-label required">抬头类型</text>
+        <view class="radio-group">
+          <view 
+            class="radio-item {{ titleType === '2' ? 'selected' : '' }}"
+            bindtap="selectTitleType"
+            data-type="2"
+          >
+            <view class="radio-circle {{ titleType === '2' ? 'selected' : '' }}">
+              <view class="radio-dot"></view>
+            </view>
+            <text class="radio-label">个人</text>
+          </view>
+          <view 
+            class="radio-item {{ titleType === '1' ? 'selected' : '' }}"
+            bindtap="selectTitleType"
+            data-type="1"
+          >
+            <view class="radio-circle {{ titleType === '1' ? 'selected' : '' }}">
+              <view class="radio-dot"></view>
+            </view>
+            <text class="radio-label">企业</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 发票抬头 -->
+    <view class="form-section">
+      <view class="form-item">
+        <text class="form-label required">发票抬头</text>
+        <input 
+          class="form-input"
+          type="text"
+          placeholder="{{ titleType === '2' ? '请输入个人姓名' : '请输入企业名称' }}"
+          value="{{ invoiceTitle }}"
+          bindinput="onInvoiceTitleInput"
+        />
+      </view>
+    </view>
+
+    <!-- 发票类型 -->
+    <view class="form-section">
+      <view class="form-item">
+        <text class="form-label required">发票类型</text>
+        <view class="radio-group">
+          <view 
+            class="radio-item {{ invoiceType === 1 ? 'selected' : '' }}"
+            bindtap="selectInvoiceType"
+            data-type="1"
+          >
+            <view class="radio-circle {{ invoiceType === 1 ? 'selected' : '' }}">
+              <view class="radio-dot"></view>
+            </view>
+            <text class="radio-label">增值税普通发票</text>
+          </view>
+          <view 
+            class="radio-item {{ invoiceType === 2 ? 'selected' : '' }}"
+            bindtap="selectInvoiceType"
+            data-type="2"
+          >
+            <view class="radio-circle {{ invoiceType === 2 ? 'selected' : '' }}">
+              <view class="radio-dot"></view>
+            </view>
+            <text class="radio-label">增值税专用发票</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 统一社会信用代码（企业必填） -->
+    <view class="form-section" wx:if="{{ titleType === '1' }}">
+      <view class="form-item">
+        <text class="form-label required">统一社会信用代码</text>
+        <input 
+          class="form-input"
+          type="text"
+          placeholder="请输入统一社会信用代码"
+          value="{{ socialCreditCode }}"
+          bindinput="onSocialCreditCodeInput"
+        />
+      </view>
+    </view>
+
+    <!-- 接收邮箱 -->
+    <view class="form-section">
+      <view class="form-item">
+        <text class="form-label required">接收邮箱</text>
+        <input 
+          class="form-input"
+          type="text"
+          placeholder="请输入接收邮箱"
+          value="{{ receiveEmail }}"
+          bindinput="onReceiveEmailInput"
+        />
+      </view>
+    </view>
+
+    <!-- 企业额外信息 -->
+    <view wx:if="{{ titleType === '1' }}">
+      <view class="form-section">
+        <view class="form-item">
+          <text class="form-label">开户银行</text>
           <input 
-            class="amount-input"
-            type="digit"
-            placeholder="0.00"
-            value="{{ selectedType === 'personal' ? personalData.amount : companyData.amount }}"
-            bindinput="onAmountInput"
+            class="form-input"
+            type="text"
+            placeholder="请输入开户银行"
+            value="{{ bankName }}"
+            bindinput="onBankNameInput"
           />
         </view>
-        <view class="amount-tips">
-          <text class="tip-text">可开票金额：¥{{ availableAmount }}</text>
-          <text class="tip-action" bindtap="setMaxAmount">全部开票</text>
+      </view>
+
+      <view class="form-section">
+        <view class="form-item">
+          <text class="form-label">银行账号</text>
+          <input 
+            class="form-input"
+            type="text"
+            placeholder="请输入银行账号"
+            value="{{ bankAccount }}"
+            bindinput="onBankAccountInput"
+          />
         </view>
-      </view>
-    </view>
-
-    <!-- 个人发票表单 -->
-    <view wx:if="{{ selectedType === 'personal' }}" class="form-section">
-      <view class="form-item">
-        <text class="form-label">发票抬头</text>
-        <input 
-          class="form-input"
-          type="text"
-          placeholder="请输入发票抬头"
-          value="{{ personalData.title }}"
-          bindinput="onInputChange"
-          data-field="title"
-        />
-      </view>
-      
-      <view class="form-item">
-        <text class="form-label">邮箱地址</text>
-        <input 
-          class="form-input"
-          type="text"
-          placeholder="请输入邮箱地址"
-          value="{{ personalData.email }}"
-          bindinput="onInputChange"
-          data-field="email"
-        />
-      </view>
-    </view>
-
-    <!-- 企业发票表单 -->
-    <view wx:if="{{ selectedType === 'company' }}" class="form-section">
-      <view class="form-item">
-        <text class="form-label">企业名称</text>
-        <input 
-          class="form-input"
-          type="text"
-          placeholder="请输入企业名称"
-          value="{{ companyData.companyName }}"
-          bindinput="onInputChange"
-          data-field="companyName"
-        />
-      </view>
-      
-      <view class="form-item">
-        <text class="form-label">纳税人识别号</text>
-        <input 
-          class="form-input"
-          type="text"
-          placeholder="请输入纳税人识别号"
-          value="{{ companyData.taxNumber }}"
-          bindinput="onInputChange"
-          data-field="taxNumber"
-        />
-      </view>
-      
-      <view class="form-item">
-        <text class="form-label">企业地址</text>
-        <input 
-          class="form-input"
-          type="text"
-          placeholder="请输入企业地址"
-          value="{{ companyData.companyAddress }}"
-          bindinput="onInputChange"
-          data-field="companyAddress"
-        />
-      </view>
-      
-      <view class="form-item">
-        <text class="form-label">企业电话</text>
-        <input 
-          class="form-input"
-          type="text"
-          placeholder="请输入企业电话"
-          value="{{ companyData.companyPhone }}"
-          bindinput="onInputChange"
-          data-field="companyPhone"
-          maxlength="11"
-        />
-      </view>
-      
-      <view class="form-item">
-        <text class="form-label">开户银行</text>
-        <input 
-          class="form-input"
-          type="text"
-          placeholder="请输入开户银行"
-          value="{{ companyData.bankName }}"
-          bindinput="onInputChange"
-          data-field="bankName"
-        />
-      </view>
-      
-      <view class="form-item">
-        <text class="form-label">银行账号</text>
-        <input 
-          class="form-input"
-          type="text"
-          placeholder="请输入银行账号"
-          value="{{ companyData.bankAccount }}"
-          bindinput="onInputChange"
-          data-field="bankAccount"
-        />
-      </view>
-      
-      <view class="form-item">
-        <text class="form-label">邮箱地址</text>
-        <input 
-          class="form-input"
-          type="text"
-          placeholder="请输入邮箱地址"
-          value="{{ companyData.email }}"
-          bindinput="onInputChange"
-          data-field="email"
-        />
-      </view>
-    </view>
-
-    <!-- 发票内容 -->
-    <view class="form-section">
-      <view class="form-item">
-        <text class="form-label">发票内容</text>
-        <picker 
-          mode="selector"
-          range="{{ invoiceContents }}"
-          value="{{ selectedType === 'personal' ? personalData.contentIndex : companyData.contentIndex }}"
-          bindchange="onContentChange"
-        >
-          <view class="picker-input">
-            {{ invoiceContents[selectedType === 'personal' ? personalData.contentIndex : companyData.contentIndex] || '请选择发票内容' }}
-          </view>
-        </picker>
-      </view>
-    </view>
-
-    <!-- 收票信息 -->
-    <view class="form-section">
-      <view class="form-item">
-        <text class="form-label">收票人姓名</text>
-        <input 
-          class="form-input"
-          type="text"
-          placeholder="请输入收票人姓名"
-          value="{{ selectedType === 'personal' ? personalData.receiverName : companyData.receiverName }}"
-          bindinput="onInputChange"
-          data-field="receiverName"
-        />
-      </view>
-      
-      <view class="form-item">
-        <text class="form-label">收票人电话</text>
-        <input 
-          class="form-input"
-          type="text"
-          placeholder="请输入收票人电话"
-          value="{{ selectedType === 'personal' ? personalData.receiverPhone : companyData.receiverPhone }}"
-          bindinput="onInputChange"
-          data-field="receiverPhone"
-          maxlength="11"
-        />
-      </view>
-      
-      <view class="form-item">
-        <text class="form-label">收票地址</text>
-        <textarea
-          class="form-textarea"
-          placeholder="请输入详细收票地址"
-          value="{{ selectedType === 'personal' ? personalData.receiverAddress : companyData.receiverAddress }}"
-          bindinput="onInputChange"
-          data-field="receiverAddress"
-          maxlength="200"
-        ></textarea>
-        <view class="input-counter">{{ selectedType === 'personal' ? personalData.receiverAddress.length : companyData.receiverAddress.length }}/200</view>
-      </view>
-    </view>
-
-    <!-- 备注信息 -->
-    <view class="form-section">
-      <view class="form-item">
-        <text class="form-label">备注说明</text>
-        <textarea
-          class="form-textarea"
-          placeholder="如有特殊需求请在此说明..."
-          value="{{ selectedType === 'personal' ? personalData.remark : companyData.remark }}"
-          bindinput="onInputChange"
-          data-field="remark"
-          maxlength="200"
-        ></textarea>
-        <view class="input-counter">{{ selectedType === 'personal' ? personalData.remark.length : companyData.remark.length }}/200</view>
       </view>
     </view>
   </view>
@@ -288,6 +164,7 @@
       </view>
     </view>
   </view>
+  </scroll-view>
 
   <!-- 底部操作 -->
   <view class="bottom-actions">

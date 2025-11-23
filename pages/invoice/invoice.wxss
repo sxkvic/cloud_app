@@ -2,10 +2,10 @@
 
 /* 页面整体样式 */
 .invoice-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
   background-color: #f8fafc;
-  min-height: 100vh;
-  padding: 32rpx;
-  padding-bottom: 120rpx;
 }
 
 /* 页面头部 */
@@ -210,6 +210,73 @@
   margin-bottom: 12rpx;
 }
 
+.form-label.required::before {
+  content: '*';
+  color: #ef4444;
+  margin-right: 4rpx;
+}
+
+/* 单选按钮组 */
+.radio-group {
+  display: flex;
+  gap: 32rpx;
+}
+
+.radio-item {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 16rpx 24rpx;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+  flex: 1;
+}
+
+.radio-item.selected {
+  border-color: #2563eb;
+  background: #f0f7ff;
+}
+
+.radio-item:active {
+  opacity: 0.7;
+}
+
+.radio-circle {
+  width: 36rpx;
+  height: 36rpx;
+  border: 3rpx solid #d1d5db;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.radio-circle.selected {
+  border-color: #2563eb;
+  background: #2563eb;
+}
+
+.radio-dot {
+  width: 16rpx;
+  height: 16rpx;
+  background: white;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.radio-circle.selected .radio-dot {
+  opacity: 1;
+}
+
+.radio-label {
+  font-size: 28rpx;
+  color: #374151;
+  font-weight: 500;
+}
+
 /* 金额输入 */
 .amount-input-group {
   display: flex;
@@ -360,12 +427,29 @@
   flex: 1;
 }
 
+/* 滚动内容区域 */
+.invoice-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* 内容内边距容器 */
+.page-header,
+.invoice-form,
+.invoice-notice {
+  margin: 0 32rpx;
+}
+
+.page-header {
+  margin-top: 32rpx;
+}
+
+.invoice-notice {
+  margin-bottom: 32rpx;
+}
+
 /* 底部操作 */
 .bottom-actions {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
   background: white;
   padding: 32rpx;
   box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.1);
@@ -402,21 +486,7 @@
 }
 
 .action-button:active:not(:disabled) {
-  transform: scale(0.98);
-}
-
-/* 响应式设计 */
-@media (max-width: 375px) {
-  .invoice-page {
-    padding: 24rpx;
-  }
-  
-  .invoice-types,
-  .invoice-amount,
-  .invoice-form,
-  .invoice-notice {
-    padding: 24rpx;
-  }
+  opacity: 0.8;
 }
 
 

@@ -5,57 +5,21 @@ const app = getApp();
 
 Page({
   data: {
-    selectedType: null, // 'personal' 或 'company'
+    titleType: '2', // "2"=个人, "1"=企业
+    invoiceType: 1, // 1=增值税普通发票, 2=增值税专用发票
+    invoiceTitle: '', // 发票抬头
+    socialCreditCode: '', // 统一社会信用代码
+    receiveEmail: '', // 接收邮箱
+    bankName: '', // 开户银行
+    bankAccount: '', // 银行账号
+    customerName: '', // 客户名称
+    deviceNo: '', // 设备号
     canSubmit: false,
     totalAmount: '2,580.00',
     invoicedAmount: '1,200.00',
     availableAmount: '1,380.00',
     invoiceList: [], // 发票列表
     loading: true,
-    
-    // 个人发票数据
-    personalData: {
-      amount: '',
-      title: '',
-      email: '',
-      contentIndex: null,
-      receiverName: '',
-      receiverPhone: '',
-      receiverAddress: '',
-      remark: ''
-    },
-    
-    // 企业发票数据
-    companyData: {
-      amount: '',
-      companyName: '',
-      taxNumber: '',
-      companyAddress: '',
-      companyPhone: '',
-      bankName: '',
-      bankAccount: '',
-      email: '',
-      contentIndex: null,
-      receiverName: '',
-      receiverPhone: '',
-      receiverAddress: '',
-      remark: ''
-    },
-    
-    invoiceTypes: [
-      {
-        id: 'personal',
-        name: '个人发票',
-        description: '适用于个人用户',
-        icon: '👤'
-      },
-      {
-        id: 'company',
-        name: '企业发票',
-        description: '适用于企业用户，可抵扣税款',
-        icon: '🏢'
-      }
-    ],
     invoiceContents: [
       '宽带服务费',
       '安装服务费',
@@ -101,6 +65,19 @@ Page({
 
   // 加载开票信息（如果设备已绑定）
   async loadInvoiceInfo() {
+    // 获取设备号和客户名称
+    if (app.globalData.deviceCode) {
+      this.setData({
+        deviceNo: app.globalData.deviceCode
+      });
+    }
+    
+    if (app.globalData.customerName) {
+      this.setData({
+        customerName: app.globalData.customerName
+      });
+    }
+
     if (!app.globalData.deviceCode) {
       console.log('设备未绑定，跳过加载开票信息');
       return;
@@ -114,29 +91,15 @@ Page({
         console.log('开票信息:', result.data);
         const info = result.data;
 
-        // 根据类型填充表单
-        if (info.type === 'personal') {
-          this.setData({
-            'personalData.title': info.title || '',
-            'personalData.email': info.email || '',
-            'personalData.receiverName': info.receiverName || '',
-            'personalData.receiverPhone': info.receiverPhone || '',
-            'personalData.receiverAddress': info.receiverAddress || ''
-          });
-        } else if (info.type === 'company') {
-          this.setData({
-            'companyData.companyName': info.companyName || '',
-            'companyData.taxNumber': info.taxNumber || '',
-            'companyData.companyAddress': info.companyAddress || '',
-            'companyData.companyPhone': info.companyPhone || '',
-            'companyData.bankName': info.bankName || '',
-            'companyData.bankAccount': info.bankAccount || '',
-            'companyData.email': info.email || '',
-            'companyData.receiverName': info.receiverName || '',
-            'companyData.receiverPhone': info.receiverPhone || '',
-            'companyData.receiverAddress': info.receiverAddress || ''
-          });
-        }
+        // 填充表单
+        this.setData({
+          titleType: info.title_type || '2',
+          invoiceTitle: info.invoice_title || '',
+          socialCreditCode: info.social_credit_code || '',
+          receiveEmail: info.receive_email || '',
+          bankName: info.bankName || '',
+          bankAccount: info.bankAccount || ''
+        });
       }
 
     } catch (error) {
@@ -144,161 +107,93 @@ Page({
     }
   },
 
+  // 选择抬头类型
+  selectTitleType(e) {
+    const type = e.currentTarget.dataset.type;
+    this.setData({
+      titleType: type,
+      socialCreditCode: '', // 切换类型时清空社会信用代码
+      bankName: '',
+      bankAccount: ''
+    });
+    this.checkCanSubmit();
+    wx.vibrateShort();
+  },
+
   // 选择发票类型
   selectInvoiceType(e) {
-    const typeId = e.currentTarget.dataset.id;
+    const type = parseInt(e.currentTarget.dataset.type);
     this.setData({
-      selectedType: typeId
+      invoiceType: type
     });
     this.checkCanSubmit();
-    
-    // 触觉反馈
     wx.vibrateShort();
   },
 
-  // 输入开票金额
-  onAmountInput(e) {
-    let value = e.detail.value;
-    
-    // 只允许数字和小数点
-    value = value.replace(/[^\d.]/g, '');
-    
-    // 确保只有一个小数点
-    const parts = value.split('.');
-    if (parts.length > 2) {
-      value = parts[0] + '.' + parts.slice(1).join('');
-    }
-    
-    // 限制小数点后最多两位
-    if (parts.length === 2 && parts[1].length > 2) {
-      value = parts[0] + '.' + parts[1].substring(0, 2);
-    }
-    
-    const field = this.data.selectedType === 'personal' ? 'personalData.amount' : 'companyData.amount';
+  // 输入发票抬头
+  onInvoiceTitleInput(e) {
     this.setData({
-      [field]: value
+      invoiceTitle: e.detail.value
     });
     this.checkCanSubmit();
   },
 
-  // 设置最大金额
-  setMaxAmount() {
-    const field = this.data.selectedType === 'personal' ? 'personalData.amount' : 'companyData.amount';
+  // 输入统一社会信用代码
+  onSocialCreditCodeInput(e) {
     this.setData({
-      [field]: this.data.availableAmount.replace(',', '')
+      socialCreditCode: e.detail.value
     });
     this.checkCanSubmit();
-    
-    // 触觉反馈
-    wx.vibrateShort();
   },
 
-  // 通用输入处理
-  onInputChange(e) {
-    const field = e.currentTarget.dataset.field;
-    const value = e.detail.value;
-    
-    if (this.data.selectedType === 'personal') {
-      this.setData({
-        [`personalData.${field}`]: value
-      });
-    } else {
-      this.setData({
-        [`companyData.${field}`]: value
-      });
-    }
+  // 输入接收邮箱
+  onReceiveEmailInput(e) {
+    this.setData({
+      receiveEmail: e.detail.value
+    });
     this.checkCanSubmit();
   },
 
-  // 选择发票内容
-  onContentChange(e) {
-    const field = this.data.selectedType === 'personal' ? 'personalData.contentIndex' : 'companyData.contentIndex';
+  // 输入开户银行
+  onBankNameInput(e) {
     this.setData({
-      [field]: e.detail.value
+      bankName: e.detail.value
+    });
+    this.checkCanSubmit();
+  },
+
+  // 输入银行账号
+  onBankAccountInput(e) {
+    this.setData({
+      bankAccount: e.detail.value
     });
     this.checkCanSubmit();
   },
 
   // 检查是否可以提交
   checkCanSubmit() {
-    const { selectedType, personalData, companyData } = this.data;
+    const { titleType, invoiceTitle, receiveEmail, socialCreditCode } = this.data;
     
-    if (!selectedType) {
-      this.setData({ canSubmit: false });
-      return;
-    }
-
-    let formData = selectedType === 'personal' ? personalData : companyData;
     let canSubmit = false;
 
-    if (selectedType === 'personal') {
+    // 基本验证
+    const hasTitle = invoiceTitle && invoiceTitle.trim().length > 0;
+    const hasEmail = receiveEmail && receiveEmail.trim().length > 0;
+    const isValidEmail = this.validateEmail(receiveEmail);
+
+    if (titleType === '2') {
       // 个人发票验证
-      const hasAmount = formData.amount && parseFloat(formData.amount) > 0;
-      const hasTitle = formData.title && formData.title.trim().length > 0;
-      const hasEmail = formData.email && formData.email.trim().length > 0;
-      const hasContent = formData.contentIndex !== null;
-      const hasReceiverName = formData.receiverName && formData.receiverName.trim().length > 0;
-      const hasReceiverPhone = formData.receiverPhone && formData.receiverPhone.trim().length > 0;
-      const hasReceiverAddress = formData.receiverAddress && formData.receiverAddress.trim().length > 0;
-
-      // 金额验证
-      const amount = parseFloat(formData.amount);
-      const availableAmount = parseFloat(this.data.availableAmount.replace(',', ''));
-      const isValidAmount = amount > 0 && amount <= availableAmount;
-
-      // 手机号验证
-      const isValidPhone = this.validatePhone(formData.receiverPhone);
-
-      // 邮箱验证
-      const isValidEmail = this.validateEmail(formData.email);
-
-      canSubmit = hasAmount && hasTitle && hasEmail && hasContent && 
-                  hasReceiverName && hasReceiverPhone && hasReceiverAddress &&
-                  isValidAmount && isValidPhone && isValidEmail;
+      canSubmit = hasTitle && hasEmail && isValidEmail;
     } else {
       // 企业发票验证
-      const hasAmount = formData.amount && parseFloat(formData.amount) > 0;
-      const hasCompanyName = formData.companyName && formData.companyName.trim().length > 0;
-      const hasTaxNumber = formData.taxNumber && formData.taxNumber.trim().length > 0;
-      const hasCompanyAddress = formData.companyAddress && formData.companyAddress.trim().length > 0;
-      const hasCompanyPhone = formData.companyPhone && formData.companyPhone.trim().length > 0;
-      const hasBankName = formData.bankName && formData.bankName.trim().length > 0;
-      const hasBankAccount = formData.bankAccount && formData.bankAccount.trim().length > 0;
-      const hasEmail = formData.email && formData.email.trim().length > 0;
-      const hasContent = formData.contentIndex !== null;
-      const hasReceiverName = formData.receiverName && formData.receiverName.trim().length > 0;
-      const hasReceiverPhone = formData.receiverPhone && formData.receiverPhone.trim().length > 0;
-      const hasReceiverAddress = formData.receiverAddress && formData.receiverAddress.trim().length > 0;
-
-      // 金额验证
-      const amount = parseFloat(formData.amount);
-      const availableAmount = parseFloat(this.data.availableAmount.replace(',', ''));
-      const isValidAmount = amount > 0 && amount <= availableAmount;
-
-      // 手机号验证
-      const isValidPhone = this.validatePhone(formData.receiverPhone);
-      const isValidCompanyPhone = this.validatePhone(formData.companyPhone);
-
-      // 纳税人识别号验证
-      const isValidTaxNumber = this.validateTaxNumber(formData.taxNumber);
-
-      // 邮箱验证
-      const isValidEmail = this.validateEmail(formData.email);
-
-      canSubmit = hasAmount && hasCompanyName && hasTaxNumber && hasCompanyAddress && 
-                  hasCompanyPhone && hasBankName && hasBankAccount && hasEmail && hasContent && 
-                  hasReceiverName && hasReceiverPhone && hasReceiverAddress &&
-                  isValidAmount && isValidPhone && isValidCompanyPhone && isValidTaxNumber && isValidEmail;
+      const hasSocialCode = socialCreditCode && socialCreditCode.trim().length > 0;
+      const isValidSocialCode = this.validateTaxNumber(socialCreditCode);
+      
+      canSubmit = hasTitle && hasEmail && hasSocialCode && 
+                  isValidEmail && isValidSocialCode;
     }
     
     this.setData({ canSubmit });
-  },
-
-  // 验证手机号
-  validatePhone(phone) {
-    if (!phone) return false;
-    const phoneRegex = /^1[3-9]\d{9}$/;
-    return phoneRegex.test(phone);
   },
 
   // 验证纳税人识别号
@@ -344,43 +239,28 @@ Page({
       return;
     }
 
-    const { selectedType, personalData, companyData } = this.data;
-    const invoiceType = this.data.invoiceTypes.find(type => type.id === selectedType);
-    const formData = selectedType === 'personal' ? personalData : companyData;
-    const amount = parseFloat(formData.amount);
-    const availableAmount = parseFloat(this.data.availableAmount.replace(',', ''));
-    
-    if (amount > availableAmount) {
-      message.error('开票金额不能超过可开票金额');
-      return;
-    }
+    const { titleType, invoiceType, invoiceTitle, receiveEmail, socialCreditCode } = this.data;
 
-    if (!this.validatePhone(formData.receiverPhone)) {
-      message.error('请输入正确的收票人手机号码');
-      return;
-    }
-
-    if (!this.validateEmail(formData.email)) {
+    // 验证邮箱
+    if (!this.validateEmail(receiveEmail)) {
       message.error('请输入正确的邮箱地址');
       return;
     }
 
-    if (selectedType === 'company') {
-      if (!this.validateTaxNumber(formData.taxNumber)) {
-        message.error('请输入正确的纳税人识别号');
-        return;
-      }
-      if (!this.validatePhone(formData.companyPhone)) {
-        message.error('请输入正确的企业电话');
+    // 企业发票验证社会信用代码
+    if (titleType === '1') {
+      if (!this.validateTaxNumber(socialCreditCode)) {
+        message.error('请输入正确的统一社会信用代码');
         return;
       }
     }
 
-    let content = `发票类型：${invoiceType.name}\n开票金额：¥${formData.amount}\n`;
-    if (selectedType === 'personal') {
-      content += `发票抬头：${formData.title}\n收票人：${formData.receiverName}\n`;
-    } else {
-      content += `企业名称：${formData.companyName}\n收票人：${formData.receiverName}\n`;
+    const typeText = titleType === '2' ? '个人' : '企业';
+    const invoiceTypeText = invoiceType === 1 ? '增值税普通发票' : '增值税专用发票';
+    
+    let content = `抬头类型：${typeText}\n发票抬头：${invoiceTitle}\n发票类型：${invoiceTypeText}\n接收邮箱：${receiveEmail}\n`;
+    if (titleType === '1') {
+      content += `社会信用代码：${socialCreditCode}\n`;
     }
     content += `\n确认提交开票申请？`;
 
@@ -399,94 +279,61 @@ Page({
 
   // 处理开票申请
   async processInvoice() {
-    const { selectedType, personalData, companyData } = this.data;
-    const formData = selectedType === 'personal' ? personalData : companyData;
+    const { titleType, invoiceType, invoiceTitle, socialCreditCode, receiveEmail, bankName, bankAccount, customerName, deviceNo } = this.data;
 
     try {
       wx.showLoading({ title: '正在提交...' });
-      console.log('提交开票申请，类型:', selectedType);
+      console.log('提交开票申请');
 
-      // 1. 先保存或更新开票信息
+      // 构建API参数
       const invoiceInfo = {
-        type: selectedType,
-        deviceCode: app.globalData.deviceCode || '',
-        ...(selectedType === 'personal' ? {
-          title: formData.title,
-          email: formData.email,
-          receiverName: formData.receiverName,
-          receiverPhone: formData.receiverPhone,
-          receiverAddress: formData.receiverAddress
-        } : {
-          companyName: formData.companyName,
-          taxNumber: formData.taxNumber,
-          companyAddress: formData.companyAddress,
-          companyPhone: formData.companyPhone,
-          bankName: formData.bankName,
-          bankAccount: formData.bankAccount,
-          email: formData.email,
-          receiverName: formData.receiverName,
-          receiverPhone: formData.receiverPhone,
-          receiverAddress: formData.receiverAddress
-        })
+        title_type: titleType,
+        invoice_title: invoiceTitle,
+        invoice_type: invoiceType,
+        customer_name: customerName || invoiceTitle,
+        device_no: deviceNo || '',
+        receive_email: receiveEmail
       };
 
-      await API.createOrUpdateInvoiceInfo(invoiceInfo);
-      console.log('开票信息已保存');
+      // 企业发票额外参数
+      if (titleType === '1') {
+        invoiceInfo.social_credit_code = socialCreditCode;
+        if (bankName) {
+          invoiceInfo.bankName = bankName;
+        }
+        if (bankAccount) {
+          invoiceInfo.bankAccount = bankAccount;
+        }
+      }
 
-      // 2. 创建开票申请
-      const invoiceRequest = {
-        orderId: '', // 如果有订单ID可以传入
-        amount: parseFloat(formData.amount),
-        type: selectedType,
-        content: this.data.invoiceContents[formData.contentIndex],
-        remark: formData.remark || '',
-        ...invoiceInfo
-      };
+      console.log('开票参数:', invoiceInfo);
 
-      const result = await API.createInvoiceForOrder(invoiceRequest);
+      // 调用API
+      const result = await API.createOrUpdateInvoiceInfo(invoiceInfo);
 
       wx.hideLoading();
-      console.log('开票申请成功:', result.data);
+      console.log('开票申请成功:', result);
       message.success('开票申请提交成功');
 
       setTimeout(() => {
-        const invoiceType = this.data.invoiceTypes.find(type => type.id === selectedType);
-        const invoiceId = result.data.invoiceId || result.data.id || 'INV' + Date.now().toString().slice(-8);
+        const typeText = titleType === '2' ? '个人' : '企业';
+        const invoiceTypeText = invoiceType === 1 ? '增值税普通发票' : '增值税专用发票';
 
         wx.showModal({
           title: '申请已受理',
-          content: `您的开票申请已成功提交！\n\n申请编号：${invoiceId}\n发票类型：${invoiceType.name}\n开票金额：¥${formData.amount}\n\n电子发票将在3-5个工作日内开具并发送至邮箱。`,
+          content: `您的开票申请已成功提交！\n\n抬头类型：${typeText}\n发票抬头：${invoiceTitle}\n发票类型：${invoiceTypeText}\n\n电子发票将在3-5个工作日内开具并发送至邮箱。`,
           showCancel: false,
           confirmText: '知道了',
           success: () => {
             // 清空表单数据
             this.setData({
-              selectedType: null,
-              personalData: {
-                amount: '',
-                title: '',
-                email: '',
-                contentIndex: null,
-                receiverName: '',
-                receiverPhone: '',
-                receiverAddress: '',
-                remark: ''
-              },
-              companyData: {
-                amount: '',
-                companyName: '',
-                taxNumber: '',
-                companyAddress: '',
-                companyPhone: '',
-                bankName: '',
-                bankAccount: '',
-                email: '',
-                contentIndex: null,
-                receiverName: '',
-                receiverPhone: '',
-                receiverAddress: '',
-                remark: ''
-              },
+              titleType: '2',
+              invoiceType: 1,
+              invoiceTitle: '',
+              socialCreditCode: '',
+              receiveEmail: '',
+              bankName: '',
+              bankAccount: '',
               canSubmit: false
             });
 
@@ -494,7 +341,7 @@ Page({
             this.loadInvoiceList();
 
             // 返回首页
-            navigation.switchTab('/pages/home/home');
+            navigation.navigateTo('/pages/home/home');
           }
         });
       }, 1000);
