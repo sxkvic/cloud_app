@@ -30,6 +30,12 @@ Page({
       return;
     }
 
+    // 防止重复调用
+    if (this.data.loading) {
+      console.log('登录进行中，忽略重复调用');
+      return;
+    }
+
     console.log("Starting WeChat Login...");
     this.setData({ loading: true });
 

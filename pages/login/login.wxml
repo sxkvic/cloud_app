@@ -24,7 +24,6 @@
       <view class="login-core">
         <button 
           class="btn-wechat-login {{loading ? 'loading' : ''}}"
-          bindtap="onWeChatLogin"
           disabled="{{loading}}"
           open-type="getUserInfo"
           bindgetuserinfo="onGetUserInfo"
