@@ -42,6 +42,29 @@ Page({
     });
   },
 
+  // 扫码功能
+  handleScan() {
+    wx.scanCode({
+      scanType: ['barCode', 'qrCode'], // 支持条形码和二维码
+      success: (res) => {
+        console.log('扫码成功:', res);
+        // 将扫码结果填入输入框
+        this.setData({
+          deviceCode: res.result
+        });
+        message.success('扫码成功');
+      },
+      fail: (err) => {
+        console.error('扫码失败:', err);
+        if (err.errMsg.includes('cancel')) {
+          message.info('已取消扫码');
+        } else {
+          message.error('扫码失败，请重试');
+        }
+      }
+    });
+  },
+
   // 手动提交绑定
   async onManualSubmit() {
     const { deviceCode } = this.data;

@@ -57,7 +57,7 @@
           <view class="input-wrapper">
             <input 
               class="input-field font-code" 
-              placeholder="CH-XXXX-XXXX" 
+              placeholder="XXXX-XXXX-XXXX" 
               placeholder-class="input-placeholder"
               value="{{deviceCode}}"
               bindinput="onInputChange"

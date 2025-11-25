@@ -201,18 +201,26 @@ page {
 .input-wrapper {
   position: relative;
   height: 100rpx;
-  background: #F9FAFB;
+  background: #ffffff;
+  border: 2rpx solid #E5E7EB;
   border-radius: 24rpx;
   display: flex;
   align-items: center;
   padding: 0 32rpx;
+  transition: border-color 0.2s ease;
+}
+
+.input-wrapper:focus-within {
+  border-color: #4D6AFF;
+  box-shadow: 0 0 0 4rpx rgba(77, 106, 255, 0.1);
 }
 
 .input-field {
   flex: 1;
   height: 100%;
   font-size: 30rpx;
-  color: #111827;
+  color: #1F2937;
+  background: transparent;
 }
 
 /* 模拟宽体字体 */
@@ -223,7 +231,7 @@ page {
 }
 
 .input-placeholder {
-  color: #D1D5DB;
+  color: #9CA3AF;
   font-weight: normal;
 }
 
