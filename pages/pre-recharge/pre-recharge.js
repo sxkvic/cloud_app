@@ -8,17 +8,12 @@ Page({
         deviceCode: 'DEV00845211', // 使用固定设备码
         rechargeAmount: '',
         paymentType: '1', // 支付类型：1-微信支付
-        paymentMethod: '1', // 支付方式：1-直接支付, 2-二维码支付
         remark: '',
         isLoading: false,
         isLoadingCustomer: false, // 客户信息加载状态
         selectedAmount: null,
         quickAmounts: [50, 100, 150, 200, 300, 500],
-        customerInfo: null, // 客户信息
-        paymentMethods: [
-            { value: '1', label: '微信直接支付', desc: '在小程序内直接支付' },
-            { value: '2', label: '二维码支付', desc: '生成二维码扫码支付' }
-        ]
+        customerInfo: null // 客户信息
     },
 
     onLoad() {
@@ -107,14 +102,6 @@ Page({
         });
     },
 
-    // 选择支付方式
-    selectPaymentMethod(e) {
-        const paymentMethod = e.currentTarget.dataset.type;
-        this.setData({
-            paymentMethod: paymentMethod
-        });
-        wx.vibrateShort(); // 触觉反馈
-    },
 
     // 创建预充值订单
     async createRechargeOrder() {
@@ -185,111 +172,120 @@ Page({
         console.log('订单信息:', orderData);
         console.log('客户信息:', customerInfo);
         console.log('设备信息:', deviceInfo);
-        console.log('支付方式:', this.data.paymentMethod);
         
         try {
-            if (this.data.paymentMethod === '1') {
-                // 微信直接支付（后续实现）
-                await this.handleDirectPayment(orderData, customerInfo);
-            } else if (this.data.paymentMethod === '2') {
-                // 二维码支付
-                await this.handleQRCodePayment(orderData, customerInfo);
-            } else {
-                message.error('请选择支付方式');
-            }
+            // 直接调用微信支付
+            await this.handleDirectPayment(orderData, customerInfo);
         } catch (error) {
             console.error('支付处理失败:', error);
             message.error('支付处理失败，请重试');
         }
     },
 
-    // 微信直接支付（预留）
+    // 微信直接支付
     async handleDirectPayment(orderData, customerInfo) {
-        // TODO: 后续实现微信直接支付
-        message.info('微信直接支付功能将在后续版本中实现');
-        this.resetForm();
-    },
-
-    // 二维码支付
-    async handleQRCodePayment(orderData, customerInfo) {
         try {
-            console.log('二维码支付数据:', orderData);
+            console.log('========== 开始微信直接支付 ==========');
+            console.log('订单数据:', orderData);
             
-            if (orderData && orderData.qr_code_url) {
-                // 直接使用订单返回的二维码链接
-                const paymentInfo = {
-                    qr_code_url: orderData.qr_code_url,
-                    order_no: orderData.order_no,
-                    amount: this.data.rechargeAmount,
-                    subject: `预充值 - ${customerInfo.customer_name}`
-                };
-                
-                this.showQRCodePayment(paymentInfo);
-            } else {
-                message.error('未获取到支付二维码，请重试');
+            wx.showLoading({ title: '正在调起支付...' });
+            
+            // 获取用户的openid
+            const openid = wx.getStorageSync('openid') || app.globalData.openid;
+            
+            console.log('获取openid:', openid);
+            console.log('Storage中的openid:', wx.getStorageSync('openid'));
+            console.log('globalData中的openid:', app.globalData.openid);
+            
+            if (!openid) {
+                wx.hideLoading();
+                console.error('未获取到openid');
+                message.error('未获取到用户信息，请重新登录');
+                return;
             }
+            
+            // 调用小程序支付接口
+            const paymentParams = {
+                payment_type: 1, // 微信支付
+                order_id: orderData.order_no,
+                customer_id: customerInfo.id,
+                device_no: this.data.deviceCode,
+                orderType: 2, // 预充值
+                openid: openid,
+                amount: parseFloat(this.data.rechargeAmount)
+            };
+            
+            console.log('支付参数:', paymentParams);
+            
+            const payResult = await API.createMiniprogramPayment(paymentParams);
+            
+            wx.hideLoading();
+            
+            console.log('========== 支付接口返回 ==========');
+            console.log('完整返回数据:', JSON.stringify(payResult, null, 2));
+            console.log('success:', payResult.success);
+            console.log('data:', payResult.data);
+            console.log('message:', payResult.message);
+            
+            if (payResult.success && payResult.data) {
+                console.log('========== 准备调起微信支付 ==========');
+                console.log('支付参数:', JSON.stringify(payResult.data, null, 2));
+                
+                // 检查必需的支付参数
+                const requiredParams = ['timeStamp', 'nonceStr', 'package', 'signType', 'paySign'];
+                const missingParams = requiredParams.filter(param => !payResult.data[param]);
+                
+                if (missingParams.length > 0) {
+                    console.error('缺少必需的支付参数:', missingParams);
+                    message.error('支付参数不完整: ' + missingParams.join(', '));
+                    return;
+                }
+                
+                console.log('支付参数验证通过，调起微信支付...');
+                
+                wx.requestPayment({
+                    timeStamp: payResult.data.timeStamp,
+                    nonceStr: payResult.data.nonceStr,
+                    package: payResult.data.package,
+                    signType: payResult.data.signType,
+                    paySign: payResult.data.paySign,
+                    success: (payRes) => {
+                        console.log('========== 支付成功 ==========', payRes);
+                        wx.showToast({
+                            title: '支付成功',
+                            icon: 'success',
+                            duration: 2000
+                        });
+                        
+                        // 支付成功回调
+                        this.onPaymentSuccess(orderData.order_no);
+                        this.resetForm();
+                    },
+                    fail: (payErr) => {
+                        console.error('========== 支付失败 ==========');
+                        console.error('错误对象:', payErr);
+                        console.error('错误信息:', payErr.errMsg);
+                        
+                        if (payErr.errMsg.indexOf('cancel') > -1) {
+                            message.info('支付已取消');
+                        } else {
+                            message.error('支付失败: ' + payErr.errMsg);
+                        }
+                    }
+                });
+            } else {
+                console.error('========== 支付接口调用失败 ==========');
+                console.error('返回数据:', payResult);
+                message.error('获取支付参数失败: ' + (payResult.message || '未知错误'));
+            }
+            
         } catch (error) {
-            console.error('二维码支付失败:', error);
-            message.error('二维码支付失败，请重试');
+            wx.hideLoading();
+            console.error('========== 微信支付异常 ==========', error);
+            message.error('支付失败: ' + (error.message || '未知错误'));
         }
     },
 
-    // 显示二维码支付界面
-    showQRCodePayment(paymentData) {
-        const { qr_code_url, order_no, amount, subject } = paymentData;
-        
-        // 生成二维码
-        wx.showModal({
-            title: '微信扫码支付',
-            content: `订单号：${order_no}\n支付金额：¥${amount}\n支付说明：${subject}\n\n请使用微信扫一扫下方二维码完成支付`,
-            confirmText: '查看二维码',
-            cancelText: '取消支付',
-            success: (res) => {
-                if (res.confirm) {
-                    this.displayQRCode(qr_code_url, order_no);
-                } else {
-                    message.info('支付已取消');
-                }
-            }
-        });
-    },
-
-    // 显示二维码
-    displayQRCode(qrCodeUrl, orderNo) {
-        wx.showLoading({ title: '生成二维码...' });
-        
-        // 跳转到二维码显示页面
-        wx.navigateTo({
-            url: `/pages/qrcode-payment/qrcode-payment?qrCodeUrl=${encodeURIComponent(qrCodeUrl)}&orderNo=${orderNo}&amount=${this.data.rechargeAmount}`,
-            success: () => {
-                wx.hideLoading();
-                console.log('跳转到二维码支付页面成功');
-            },
-            fail: (error) => {
-                wx.hideLoading();
-                console.error('跳转失败:', error);
-                // 降级到弹窗显示
-                this.showQRCodeModal(qrCodeUrl, orderNo);
-            }
-        });
-    },
-
-    // 弹窗显示二维码（降级方案）
-    showQRCodeModal(qrCodeUrl, orderNo) {
-        wx.showModal({
-            title: '微信扫码支付',
-            content: `订单号：${orderNo}\n支付金额：¥${this.data.rechargeAmount}\n\n请使用微信扫一扫功能扫描二维码完成支付\n\n二维码内容：${qrCodeUrl}`,
-            confirmText: '已扫码支付',
-            cancelText: '取消支付',
-            success: (res) => {
-                if (res.confirm) {
-                    this.startPaymentStatusCheck(orderNo);
-                } else {
-                    message.info('支付已取消');
-                }
-            }
-        });
-    },
 
     // 开始支付状态检查
     startPaymentStatusCheck(orderNo) {

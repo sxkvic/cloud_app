@@ -48,34 +48,6 @@
       </view>
     </view>
 
-    <!-- 支付方式 -->
-    <view class="payment-section">
-      <view class="section-title">支付方式</view>
-      <view class="payment-methods">
-        <view 
-          class="payment-method {{paymentMethod == item.value ? 'selected' : ''}}"
-          wx:for="{{paymentMethods}}" 
-          wx:key="value"
-          bindtap="selectPaymentMethod"
-          data-type="{{item.value}}"
-        >
-          <view class="payment-icon">
-            <view class="icon-wrapper">
-              <text class="payment-emoji" wx:if="{{item.value == '1'}}">💳</text>
-              <text class="payment-emoji" wx:if="{{item.value == '2'}}">📱</text>
-            </view>
-          </view>
-          <view class="payment-info">
-            <text class="payment-name">{{item.label}}</text>
-            <text class="payment-desc">{{item.desc}}</text>
-          </view>
-          <view class="payment-check">
-            <view class="check-icon {{paymentMethod == item.value ? 'checked' : ''}}">✓</view>
-          </view>
-        </view>
-      </view>
-    </view>
-
     <!-- 备注信息 -->
     <view class="remark-section">
       <view class="section-title">备注信息（可选）</view>

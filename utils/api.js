@@ -235,11 +235,15 @@ const API = {
    * @param {String} paymentData.description 支付描述
    * @param {String} paymentData.openid 用户openid
    * @param {String} paymentData.order_id 关联订单ID（可选）
-   * @returns {Promise} { success, data: { order_no, jsapi_params }, message }
+   * @param {Number} paymentData.payment_type 支付类型
+   * @param {Number} paymentData.customer_id 客户ID
+   * @param {String} paymentData.device_no 设备编号
+   * @param {Number} paymentData.orderType 订单类型
+   * @returns {Promise} { success, data: { timeStamp, nonceStr, package, signType, paySign }, message }
    */
   createMiniprogramPayment(paymentData) {
     return request({
-      url: '/api/v1/wx/miniprogram/pay',
+      url: '/api/v1/miniprogram/pay',
       method: 'POST',
       data: paymentData,
       needAuth: true
@@ -254,7 +258,7 @@ const API = {
    */
   getPaymentStatus(params) {
     return request({
-      url: '/api/v1/wx/payments/status/enhanced',
+      url: '/api/payments/status/enhanced',
       method: 'GET',
       data: params,
       needAuth: true
