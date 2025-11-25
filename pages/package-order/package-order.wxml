@@ -2,36 +2,47 @@
 <view class="package-order-page">
     <!-- 可滚动内容区域 -->
     <scroll-view class="content-wrapper" scroll-y enhanced show-scrollbar="{{false}}">
-        <!-- 头部标题 -->
-        <view class="page-header">
-            <text class="page-title">套餐订购</text>
-            <text class="page-subtitle">选择适合您的宽带套餐</text>
-        </view>
-
         <!-- 套餐列表 -->
         <view class="package-list">
-            <view wx:for="{{ packages }}" wx:key="id" class="package-item {{ selectedPackage === item.id ? 'selected' : '' }}" bindtap="selectPackage" data-id="{{ item.id }}">
-                <view class="package-header">
-                    <view class="package-name">{{ item.name }}</view>
-                    <view class="package-badge" wx:if="{{ item.isPopular }}">热门</view>
-                </view>
-
-                <view class="package-content">
-                    <view class="package-speed">
-                        <text class="speed-value">{{ item.speed }}</text>
-                        <text class="speed-unit">Mbps</text>
+            <view wx:for="{{ packages }}" wx:key="id" class="package-card {{ selectedPackage === item.id ? 'selected' : '' }}" bindtap="selectPackage" data-id="{{ item.id }}">
+                <!-- 热门角标 -->
+                <view class="popular-badge" wx:if="{{ item.isPopular }}">特惠</view>
+                
+                <!-- 左侧流量图标 -->
+                <view class="data-thumb theme-{{ item.colorTheme }}">
+                    <view class="signal-bg"></view>
+                    <view class="data-content">
+                        <view class="data-number">
+                            <text class="data-num">{{ item.speed }}</text>
+                            <text class="data-unit">{{ item.speedUnit }}</text>
+                        </view>
+                        <view class="data-type">宽带</view>
                     </view>
-
-                    <view class="package-features">
-                        <view wx:for="{{ item.features }}" wx:key="*this" class="feature-item">
-                            <text class="feature-icon">✓</text>
-                            <text class="feature-text">{{ item }}</text>
+                </view>
+                
+                <!-- 右侧信息 -->
+                <view class="package-info">
+                    <view class="info-top">
+                        <view class="package-header">
+                            <view class="package-name">{{ item.name }}</view>
+                            <view class="package-price">
+                                <text class="price-symbol">¥</text>
+                                <text class="price-value">{{ item.price }}</text>
+                            </view>
+                        </view>
+                        <view class="package-desc" wx:if="{{ item.features.length > 0 }}">{{ item.features[0] }}</view>
+                        
+                        <!-- 特性标签 -->
+                        <view class="feature-tags">
+                            <view wx:for="{{ item.featureTags }}" wx:for-item="tag" wx:key="*this" class="feature-tag theme-{{ item.colorTheme }}">
+                                {{ tag }}
+                            </view>
                         </view>
                     </view>
-
-                    <view class="package-price">
-                        <text class="price-symbol">¥</text>
-                        <text class="price-value">{{ item.price }}</text>
+                    
+                    <!-- 购买按钮 -->
+                    <view class="buy-button-wrapper">
+                        <view class="buy-button theme-{{ item.colorTheme }}">购买</view>
                     </view>
                 </view>
             </view>

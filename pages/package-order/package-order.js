@@ -38,16 +38,20 @@ Page({
 
       console.log('套餐列表加载成功:', result.data);
 
-      // 过滤出有效套餐（status === 1）、排序并转换数据格式
+      // 过滤出有效套餐(status === 1)、排序并转换数据格式
       const packages = result.data.list
         .filter(pkg => pkg.status === 1)  // 只保留status为1的有效套餐
         .sort((a, b) => (a.sort || 0) - (b.sort || 0))  // 根据sort字段从小到大排序
-        .map(pkg => {
-          // 处理流量字段，提取数字部分（如 "1000M" -> "1000"）
+        .map((pkg, index) => {
+          // 处理流量字段,提取数字和单位(如 "1000M" -> speed: "1000", unit: "M")
           let speed = '100';
+          let speedUnit = 'M';
           if (pkg.flow) {
-            const match = pkg.flow.match(/(\d+)/);
-            speed = match ? match[1] : '100';
+            const match = pkg.flow.match(/(\d+)([A-Za-z]*)/);
+            if (match) {
+              speed = match[1];
+              speedUnit = match[2] || 'M';  // 如果没有单位，默认M
+            }
           }
 
           // 构建特性列表
@@ -62,13 +66,29 @@ Page({
             features.push('包月套餐');
           }
 
+          // 构建特性标签(用于显示在卡片上)
+          const featureTags = [];
+          if (pkg.package_type === '0') {
+            featureTags.push('包月套餐');
+          }
+          if (pkg.package_type === '3') {
+            featureTags.push('热销TOP1');
+          }
+          featureTags.push('不限速');
+          if (speed >= 1000) {
+            featureTags.push('千兆光纤');
+          }
+
           return {
             id: pkg.id,
             name: pkg.package_name || '未命名套餐',
             speed: speed,
+            speedUnit: speedUnit,  // 动态单位
             price: pkg.price || '0',
             isPopular: pkg.package_type === '3',  // package_type为3的标记为热门
-            features: features
+            features: features,
+            featureTags: featureTags,
+            colorTheme: index % 4  // 颜色主题循环: 0-绿色, 1-蓝色, 2-橙红色, 3-紫色
           };
         });
 
