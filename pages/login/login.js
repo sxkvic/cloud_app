@@ -5,7 +5,6 @@ const app = getApp();
 
 Page({
   data: {
-    agreed: false,
     loading: false
   },
 
@@ -20,11 +19,6 @@ Page({
 
   // 微信登录
   async onWeChatLogin() {
-    if (!this.data.agreed) {
-      message.error('请先阅读并同意用户服务协议');
-      return;
-    }
-
     // 防止重复调用
     if (this.data.loading) {
       console.log('登录进行中，忽略重复调用');
@@ -178,27 +172,14 @@ Page({
     }
   },
 
-  // 切换协议同意状态
-  toggleAgreement() {
-    this.setData({
-      agreed: !this.data.agreed
-    });
-  },
-
   // 显示协议
   showAgreement(e) {
     e.stopPropagation();
     wx.showModal({
       title: '用户服务协议',
-      content: '这里是用户服务协议的内容...\n\n1. 服务条款\n2. 隐私政策\n3. 免责声明\n\n点击确定表示您已阅读并同意以上条款。',
-      showCancel: true,
-      cancelText: '取消',
-      confirmText: '我同意',
-      success: (res) => {
-        if (res.confirm) {
-          this.setData({ agreed: true });
-        }
-      }
+      content: '这里是用户服务协议的内容...\n\n1. 服务条款\n2. 隐私政策\n3. 免责声明',
+      showCancel: false,
+      confirmText: '我知道了'
     });
   },
 

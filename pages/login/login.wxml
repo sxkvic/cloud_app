@@ -1,58 +1,65 @@
 <!--pages/login/login.wxml-->
-<view class="login-page-wrapper">
-  <!-- 装饰性背景元素 -->
-  <view class="bg-decoration">
-    <view class="circle circle-1"></view>
-    <view class="circle circle-2"></view>
-    <view class="circle circle-3"></view>
-  </view>
+<view class="container">
+  <!-- 1. 顶部右上角装饰光晕 -->
+  <view class="top-decoration"></view>
 
-  <!-- 主要内容区域 -->
-  <view class="login-container">
-    <!-- 头部标题区域 -->
-    <view class="header-section">
-      <view class="logo-wrapper">
-        <view class="logo-icon">📡</view>
+  <!-- 2. 主体内容区 -->
+  <view class="content-wrapper">
+    
+    <!-- A. 品牌 Logo 区域 -->
+    <view class="brand-header">
+      <!-- 纯CSS绘制的微缩版 Logo -->
+      <view class="mini-logo">
+        <view class="cloud-shape"></view>
+        <view class="c-shape"></view>
       </view>
-      <text class="main-title">云网宽带</text>
-      <text class="subtitle">便捷安装 · 专业服务 · 全程保障</text>
+      <text class="brand-text">Chmura</text>
     </view>
 
-    <!-- 登录卡片 -->
-    <view class="login-card">
-      <view class="card-glow"></view>
-      <view class="login-core">
-        <button 
-          class="btn-wechat-login {{loading ? 'loading' : ''}}"
-          disabled="{{loading}}"
-          open-type="getUserInfo"
-          bindgetuserinfo="onGetUserInfo"
-        >
-          <view class="btn-content">
-            <text class="wechat-icon">{{loading ? '⏳' : '💬'}}</text>
-            <text class="btn-text">{{loading ? '授权中...' : '微信一键登录'}}</text>
-          </view>
-          <view class="btn-shine"></view>
-        </button>
-        
-        <view class="agreement-section">
-          <view class="checkbox-wrapper" bindtap="toggleAgreement">
-            <view class="checkbox {{agreed ? 'checked' : ''}}">
-              <view wx:if="{{agreed}}" class="check-icon">✓</view>
-            </view>
-            <text class="agreement-text">
-              我已阅读并同意
-              <text class="agreement-link" bindtap="showAgreement">《用户服务协议》</text>
-            </text>
-          </view>
-        </view>
+    <!-- B. 欢迎语 -->
+    <view class="welcome-section">
+      <view class="title">
+        <text>欢迎使用</text>
+        <text>云网宽带服务</text>
+      </view>
+      <text class="subtitle">高速 · 稳定 · 智能连接您的生活</text>
+    </view>
+
+    <!-- C. 中间WiFi信号插画 (CSS绘制) -->
+    <view class="illustration-section">
+      <!-- WiFi信号波纹 -->
+      <view class="wifi-signal">
+        <!-- 外层信号波 -->
+        <view class="signal-wave wave-1"></view>
+        <view class="signal-wave wave-2"></view>
+        <view class="signal-wave wave-3"></view>
+        <!-- 中心发射点 -->
+        <view class="signal-center"></view>
       </view>
     </view>
-  </view>
-  
-  <!-- 底部帮助链接 -->
-  <view class="footer-links">
-    <text class="help-link" bindtap="contactService">💬 遇到问题？联系客服</text>
+
+    <!-- D. 底部操作区 -->
+    <view class="action-section">
+      <!-- 微信登录按钮 -->
+      <button 
+        class="wechat-btn {{loading ? 'loading' : ''}}" 
+        disabled="{{loading}}"
+        open-type="getUserInfo"
+        bindgetuserinfo="onGetUserInfo"
+        hover-class="wechat-btn-hover"
+      >
+        <text>{{loading ? '授权中...' : '微信一键登录'}}</text>
+      </button>
+
+      <!-- 协议 -->
+      <view class="agreement-box">
+        <text class="agreement-text">登录即代表您同意 </text>
+        <text class="agreement-link" bindtap="showAgreement">《用户协议》</text>
+        <text class="agreement-text"> 与 </text>
+        <text class="agreement-link">《隐私政策》</text>
+      </view>
+    </view>
+
   </view>
 </view>
 
