@@ -501,6 +501,20 @@ const API = {
   },
 
   /**
+   * 创建预充值订单
+   * @param {Object} params 订单参数
+   * @returns {Promise} { success, data: { qr_code_url, order_no }, message }
+   */
+  createPreRechargeOrder(params) {
+    return request({
+      url: '/api/v1/payments/admin/payments/web/create',
+      method: 'POST',
+      data: params,
+      needAuth: true
+    });
+  },
+
+  /**
    * 获取推文详情
    * @param {String} id 推文ID
    * @returns {Promise} { success, data: { article }, message }
@@ -536,6 +550,15 @@ const API = {
       method: 'GET',
       needAuth: false
     });
+  },
+
+  /**
+   * 检查支付状态
+   * @param {String} orderNo 订单号
+   * @returns {Promise} { success, data: { status, transaction_id, ... }, message }
+   */
+  checkPaymentStatus(orderNo) {
+    return this.getPaymentStatus({ order_no: orderNo });
   }
 };
 

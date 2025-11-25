@@ -5,343 +5,367 @@ const app = getApp();
 
 Page({
     data: {
-    currentBalance: '128.50',
-    selectedAmount: null,
-    customAmount: '',
-    selectedMethod: 'wechat',
-    finalAmount: '0.00',
-    bonusAmount: 0,
-    canRecharge: false,
-    paymentOrderId: null, // 支付订单ID
-    amountOptions: [
-      { value: '50', bonus: '' },
-      { value: '100', bonus: '10' },
-      { value: '200', bonus: '25' },
-      { value: '500', bonus: '80' },
-      { value: '1000', bonus: '200' }
-    ],
-    paymentMethods: [
-      {
-        id: 'wechat',
-        name: '微信支付',
-        description: '使用微信零钱或绑定的银行卡',
-        icon: 'wechat'
-      },
-      {
-        id: 'alipay',
-        name: '支付宝',
-        description: '使用支付宝余额或绑定的银行卡',
-        icon: 'alipay'
-      }
-    ],
-    rechargeHistory: [
-      {
-        id: '1',
-        date: '2024-12-10 14:30',
-        amount: '200.00',
-        status: 'success',
-        statusText: '成功'
-      },
-      {
-        id: '2',
-        date: '2024-11-15 09:20',
-        amount: '100.00',
-        status: 'success',
-        statusText: '成功'
-      },
-      {
-        id: '3',
-        date: '2024-10-20 16:45',
-        amount: '500.00',
-        status: 'success',
-        statusText: '成功'
-      },
-      {
-        id: '4',
-        date: '2024-09-25 11:15',
-        amount: '200.00',
-        status: 'failed',
-        statusText: '失败'
-      }
-    ]
-  },
+        deviceCode: 'DEV00845211', // 使用固定设备码
+        rechargeAmount: '',
+        paymentType: '1', // 支付类型：1-微信支付
+        paymentMethod: '1', // 支付方式：1-直接支付, 2-二维码支付
+        remark: '',
+        isLoading: false,
+        isLoadingCustomer: false, // 客户信息加载状态
+        selectedAmount: null,
+        quickAmounts: [50, 100, 150, 200, 300, 500],
+        customerInfo: null, // 客户信息
+        paymentMethods: [
+            { value: '1', label: '微信直接支付', desc: '在小程序内直接支付' },
+            { value: '2', label: '二维码支付', desc: '生成二维码扫码支付' }
+        ]
+    },
 
-  onLoad() {
-    console.log('预充值页面加载');
-  },
-
-  onShow() {
-    console.log('预充值页面显示');
-  },
-
-  // 选择充值金额
-  selectAmount(e) {
-    const value = e.currentTarget.dataset.value;
-    this.setData({
-      selectedAmount: value,
-      customAmount: ''
-    });
-    this.calculateAmount();
-    
-    // 触觉反馈
-    wx.vibrateShort();
-  },
-
-  // 输入自定义金额
-  onCustomAmountInput(e) {
-    let value = e.detail.value;
-    
-    // 只允许数字和小数点
-    value = value.replace(/[^\d.]/g, '');
-    
-    // 确保只有一个小数点
-    const parts = value.split('.');
-    if (parts.length > 2) {
-      value = parts[0] + '.' + parts.slice(1).join('');
-    }
-    
-    // 限制小数点后最多两位
-    if (parts.length === 2 && parts[1].length > 2) {
-      value = parts[0] + '.' + parts[1].substring(0, 2);
-    }
-    
-    this.setData({
-      customAmount: value,
-      selectedAmount: value ? 'custom' : null
-    });
-    this.calculateAmount();
-  },
-
-  // 计算充值金额和赠送金额
-  calculateAmount() {
-    const { selectedAmount, customAmount } = this.data;
-    let amount = 0;
-    let bonus = 0;
-    
-    if (selectedAmount === 'custom' && customAmount) {
-      amount = parseFloat(customAmount) || 0;
-    } else if (selectedAmount && selectedAmount !== 'custom') {
-      amount = parseFloat(selectedAmount) || 0;
-      // 计算赠送金额
-      const option = this.data.amountOptions.find(opt => opt.value === selectedAmount);
-      if (option && option.bonus) {
-        bonus = parseFloat(option.bonus) || 0;
-      }
-    }
-    
-    this.setData({
-      finalAmount: amount.toFixed(2),
-      bonusAmount: bonus,
-      canRecharge: amount > 0
-    });
-  },
-
-  // 选择支付方式
-  selectPaymentMethod(e) {
-    const methodId = e.currentTarget.dataset.id;
-    this.setData({
-      selectedMethod: methodId
-    });
-    
-    // 触觉反馈
-    wx.vibrateShort();
-  },
-
-  // 联系客服
-  contactService() {
-    wx.showModal({
-      title: '联系客服',
-      content: '充值相关问题请联系客服咨询。\n\n客服电话：400-123-4567\n工作时间：9:00-18:00',
-      confirmText: '拨打电话',
-      cancelText: '在线咨询',
-      success: (res) => {
-        if (res.confirm) {
-          wx.makePhoneCall({
-            phoneNumber: '400-123-4567'
-          });
-        } else {
-          message.success('正在为您转接在线客服...');
+    onLoad() {
+        console.log('预充值页面加载');
+        // 获取全局设备码
+        if (app.globalData.deviceCode) {
+            this.setData({
+                deviceCode: app.globalData.deviceCode
+            });
         }
-      }
-    });
-  },
+        // 加载客户信息
+        this.loadCustomerInfo();
+    },
 
-  // 开始充值
-  startRecharge() {
-    if (!this.data.canRecharge) {
-      message.error('请选择充值金额');
-      return;
-    }
+    onShow() {
+        console.log('预充值页面显示');
+    },
 
-    const { selectedMethod, finalAmount, bonusAmount } = this.data;
-    const paymentMethod = this.data.paymentMethods.find(method => method.id === selectedMethod);
-    
-    let content = `充值金额：¥${finalAmount}\n`;
-    if (bonusAmount > 0) {
-      content += `赠送金额：¥${bonusAmount}\n`;
-    }
-    content += `支付方式：${paymentMethod.name}\n\n确认充值？`;
-
-    wx.showModal({
-      title: '确认充值',
-      content: content,
-      confirmText: '确认支付',
-      cancelText: '取消',
-      success: (res) => {
-        if (res.confirm) {
-          this.processRecharge();
-        }
-      }
-    });
-  },
-
-  // 处理充值
-  async processRecharge() {
-    const { finalAmount, bonusAmount, selectedMethod } = this.data;
-
-    // 只支持微信支付
-    if (selectedMethod !== 'wechat') {
-      message.error('当前仅支持微信支付');
-      return;
-    }
-
-    try {
-      wx.showLoading({ title: '正在创建订单...' });
-      console.log('创建支付订单，金额:', finalAmount);
-
-      // 1. 创建支付订单
-      const paymentResult = await API.createMiniprogramPayment({
-        amount: parseFloat(finalAmount),
-        description: `账户充值 ¥${finalAmount}`,
-        openid: app.globalData.openid
-      });
-
-      wx.hideLoading();
-      console.log('支付订单创建成功:', paymentResult.data);
-
-      const { orderId, paymentParams } = paymentResult.data;
-      this.setData({ paymentOrderId: orderId });
-
-      // 2. 调起微信支付
-      wx.showLoading({ title: '正在调起支付...' });
-
-      await new Promise((resolve, reject) => {
-        wx.requestPayment({
-          timeStamp: paymentParams.timeStamp,
-          nonceStr: paymentParams.nonceStr,
-          package: paymentParams.package,
-          signType: paymentParams.signType || 'RSA',
-          paySign: paymentParams.paySign,
-          success: resolve,
-          fail: reject
-        });
-      });
-
-      wx.hideLoading();
-      console.log('用户完成支付');
-
-      // 3. 查询支付状态
-      wx.showLoading({ title: '正在确认支付...' });
-      await this.checkPaymentStatus(orderId);
-
-    } catch (error) {
-      wx.hideLoading();
-      console.error('支付失败:', error);
-
-      // 用户取消支付
-      if (error.errMsg && error.errMsg.includes('cancel')) {
-        message.error('支付已取消');
-
-        // 取消订单
-        if (this.data.paymentOrderId) {
-          try {
-            await API.cancelPayment(this.data.paymentOrderId);
-            console.log('订单已取消');
-          } catch (cancelError) {
-            console.error('取消订单失败:', cancelError);
-          }
-        }
-      } else {
-        const errorMsg = error.message || '支付失败，请重试';
-        message.error(errorMsg);
-      }
-    }
-  },
-
-  // 查询支付状态
-  async checkPaymentStatus(orderId) {
-    try {
-      const statusResult = await API.getPaymentStatus(orderId);
-      const status = statusResult.data.status;
-
-      wx.hideLoading();
-      console.log('支付状态:', status);
-
-      if (status === 'success' || status === 'paid') {
-        // 支付成功
-        message.success('充值成功！');
-
-        const { finalAmount, bonusAmount } = this.data;
-        const totalAmount = (parseFloat(finalAmount) + bonusAmount).toFixed(2);
-
-        setTimeout(() => {
-          wx.showModal({
-            title: '充值成功',
-            content: `充值金额：¥${finalAmount}\n${bonusAmount > 0 ? `赠送金额：¥${bonusAmount}\n` : ''}到账金额：¥${totalAmount}\n\n余额已更新，可立即使用。`,
-            showCancel: false,
-            confirmText: '知道了',
-            success: () => {
-              // 更新余额
-              const currentBalance = parseFloat(this.data.currentBalance);
-              const newBalance = (currentBalance + parseFloat(totalAmount)).toFixed(2);
-              this.setData({
-                currentBalance: newBalance
-              });
-
-              // 添加到充值记录
-              const newRecord = {
-                id: orderId,
-                date: new Date().toLocaleString('zh-CN', {
-                  year: 'numeric',
-                  month: '2-digit',
-                  day: '2-digit',
-                  hour: '2-digit',
-                  minute: '2-digit'
-                }).replace(/\//g, '-'),
-                amount: totalAmount,
-                status: 'success',
-                statusText: '成功'
-              };
-
-              this.setData({
-                rechargeHistory: [newRecord, ...this.data.rechargeHistory]
-              });
-
-              // 清空选择
-              this.setData({
-                selectedAmount: null,
-                customAmount: '',
-                finalAmount: '0.00',
-                bonusAmount: 0,
-                canRecharge: false,
-                paymentOrderId: null
-              });
+    // 加载客户信息
+    async loadCustomerInfo() {
+        try {
+            this.setData({ isLoadingCustomer: true });
+            console.log('查询客户信息，设备码:', this.data.deviceCode);
+            
+            if (!this.data.deviceCode) {
+                message.error('设备码未设置，请重新登录');
+                return;
             }
-          });
-        }, 1000);
+            
+            const result = await API.getCustomerByDeviceCode(this.data.deviceCode);
+            console.log('客户信息查询成功:', result.data);
+            
+            // 存储完整的查询结果，包含customer、binding_info、device_info
+            this.setData({
+                customerInfo: result.data,
+                isLoadingCustomer: false
+            });
+            
+            // 显示客户基本信息（可选）
+            if (result.data && result.data.customer) {
+                console.log(`客户：${result.data.customer.customer_name}, 设备：${result.data.device_info.device_name}`);
+            }
+            
+        } catch (error) {
+            console.error('查询客户信息失败:', error);
+            this.setData({ isLoadingCustomer: false });
+            message.error('无法获取客户信息，请稍后重试');
+        }
+    },
 
-      } else if (status === 'pending') {
-        // 支付处理中
-        message.error('支付处理中，请稍后查看充值记录');
-      } else {
-        // 支付失败
-        message.error('支付失败，请重试');
-      }
+    // 选择快捷金额
+    selectQuickAmount(e) {
+        const amount = e.currentTarget.dataset.amount;
+        this.setData({
+            selectedAmount: amount,
+            rechargeAmount: amount.toString()
+        });
+        wx.vibrateShort(); // 触觉反馈
+    },
 
-    } catch (error) {
-      wx.hideLoading();
-      console.error('查询支付状态失败:', error);
-      message.error('支付状态查询失败，请稍后在充值记录中查看');
+    // 金额输入
+    onAmountInput(e) {
+        let value = e.detail.value;
+        // 只允许数字和小数点
+        value = value.replace(/[^\d.]/g, '');
+        // 确保只有一个小数点
+        const parts = value.split('.');
+        if (parts.length > 2) {
+            value = parts[0] + '.' + parts.slice(1).join('');
+        }
+        // 限制小数点后最多两位
+        if (parts.length === 2 && parts[1].length > 2) {
+            value = parts[0] + '.' + parts[1].substring(0, 2);
+        }
+
+        this.setData({
+            rechargeAmount: value,
+            selectedAmount: value ? 'custom' : null
+        });
+    },
+
+    // 备注输入
+    onRemarkInput(e) {
+        this.setData({
+            remark: e.detail.value
+        });
+    },
+
+    // 选择支付方式
+    selectPaymentMethod(e) {
+        const paymentMethod = e.currentTarget.dataset.type;
+        this.setData({
+            paymentMethod: paymentMethod
+        });
+        wx.vibrateShort(); // 触觉反馈
+    },
+
+    // 创建预充值订单
+    async createRechargeOrder() {
+        if (!this.data.rechargeAmount || parseFloat(this.data.rechargeAmount) <= 0) {
+            message.error('请选择或输入充值金额');
+            return;
+        }
+
+        if (!this.data.customerInfo) {
+            message.error('客户信息未加载，请稍后重试');
+            return;
+        }
+
+        this.setData({ isLoading: true });
+
+        try {
+            const customerData = this.data.customerInfo;
+            const customer = customerData.customer;
+            const deviceInfo = customerData.device_info;
+            
+            // 验证必要的数据
+            if (!customer || !customer.id) {
+                message.error('客户信息不完整，请重新加载');
+                return;
+            }
+            
+            if (!deviceInfo || !deviceInfo.id) {
+                message.error('设备信息不完整，请重新加载');
+                return;
+            }
+            
+            const orderData = {
+                orderType: 2, // 2=预充值
+                device_no: this.data.deviceCode,
+                package_id: '',
+                customer_id: customer.id,
+                device_id: deviceInfo.id,
+                payment_type: this.data.paymentType, // 始终为1（微信支付）
+                recharge_amount: parseFloat(this.data.rechargeAmount),
+                remark: this.data.remark,
+            };
+
+            console.log('创建预充值订单参数:', orderData);
+            console.log('客户信息:', customer.customer_name, '设备:', deviceInfo.device_name);
+
+            // 先创建订单
+            const orderResponse = await API.createPreRechargeOrder(orderData);
+            console.log('订单创建成功:', orderResponse);
+
+            if (orderResponse.data && orderResponse.data.order_no) {
+                // 订单创建成功，直接进入支付流程
+                console.log('订单创建成功，进入支付流程');
+                this.handlePayment(orderResponse.data, customer, deviceInfo);
+            } else {
+                message.error('订单创建失败，请重试');
+            }
+
+        } catch (error) {
+            console.error('创建订单失败:', error);
+            message.error('创建订单失败，请重试');
+        } finally {
+            this.setData({ isLoading: false });
+        }
+    },
+
+    // 支付处理函数
+    async handlePayment(orderData, customerInfo, deviceInfo) {
+        console.log('订单信息:', orderData);
+        console.log('客户信息:', customerInfo);
+        console.log('设备信息:', deviceInfo);
+        console.log('支付方式:', this.data.paymentMethod);
+        
+        try {
+            if (this.data.paymentMethod === '1') {
+                // 微信直接支付（后续实现）
+                await this.handleDirectPayment(orderData, customerInfo);
+            } else if (this.data.paymentMethod === '2') {
+                // 二维码支付
+                await this.handleQRCodePayment(orderData, customerInfo);
+            } else {
+                message.error('请选择支付方式');
+            }
+        } catch (error) {
+            console.error('支付处理失败:', error);
+            message.error('支付处理失败，请重试');
+        }
+    },
+
+    // 微信直接支付（预留）
+    async handleDirectPayment(orderData, customerInfo) {
+        // TODO: 后续实现微信直接支付
+        message.info('微信直接支付功能将在后续版本中实现');
+        this.resetForm();
+    },
+
+    // 二维码支付
+    async handleQRCodePayment(orderData, customerInfo) {
+        try {
+            console.log('二维码支付数据:', orderData);
+            
+            if (orderData && orderData.qr_code_url) {
+                // 直接使用订单返回的二维码链接
+                const paymentInfo = {
+                    qr_code_url: orderData.qr_code_url,
+                    order_no: orderData.order_no,
+                    amount: this.data.rechargeAmount,
+                    subject: `预充值 - ${customerInfo.customer_name}`
+                };
+                
+                this.showQRCodePayment(paymentInfo);
+            } else {
+                message.error('未获取到支付二维码，请重试');
+            }
+        } catch (error) {
+            console.error('二维码支付失败:', error);
+            message.error('二维码支付失败，请重试');
+        }
+    },
+
+    // 显示二维码支付界面
+    showQRCodePayment(paymentData) {
+        const { qr_code_url, order_no, amount, subject } = paymentData;
+        
+        // 生成二维码
+        wx.showModal({
+            title: '微信扫码支付',
+            content: `订单号：${order_no}\n支付金额：¥${amount}\n支付说明：${subject}\n\n请使用微信扫一扫下方二维码完成支付`,
+            confirmText: '查看二维码',
+            cancelText: '取消支付',
+            success: (res) => {
+                if (res.confirm) {
+                    this.displayQRCode(qr_code_url, order_no);
+                } else {
+                    message.info('支付已取消');
+                }
+            }
+        });
+    },
+
+    // 显示二维码
+    displayQRCode(qrCodeUrl, orderNo) {
+        wx.showLoading({ title: '生成二维码...' });
+        
+        // 跳转到二维码显示页面
+        wx.navigateTo({
+            url: `/pages/qrcode-payment/qrcode-payment?qrCodeUrl=${encodeURIComponent(qrCodeUrl)}&orderNo=${orderNo}&amount=${this.data.rechargeAmount}`,
+            success: () => {
+                wx.hideLoading();
+                console.log('跳转到二维码支付页面成功');
+            },
+            fail: (error) => {
+                wx.hideLoading();
+                console.error('跳转失败:', error);
+                // 降级到弹窗显示
+                this.showQRCodeModal(qrCodeUrl, orderNo);
+            }
+        });
+    },
+
+    // 弹窗显示二维码（降级方案）
+    showQRCodeModal(qrCodeUrl, orderNo) {
+        wx.showModal({
+            title: '微信扫码支付',
+            content: `订单号：${orderNo}\n支付金额：¥${this.data.rechargeAmount}\n\n请使用微信扫一扫功能扫描二维码完成支付\n\n二维码内容：${qrCodeUrl}`,
+            confirmText: '已扫码支付',
+            cancelText: '取消支付',
+            success: (res) => {
+                if (res.confirm) {
+                    this.startPaymentStatusCheck(orderNo);
+                } else {
+                    message.info('支付已取消');
+                }
+            }
+        });
+    },
+
+    // 开始支付状态检查
+    startPaymentStatusCheck(orderNo) {
+        wx.showLoading({ title: '等待支付结果...' });
+        
+        let checkCount = 0;
+        const maxChecks = 60; // 最多检查60次，每次3秒，总共180秒
+        
+        const checkInterval = setInterval(async () => {
+            checkCount++;
+            
+            try {
+                const result = await this.checkPaymentStatus(orderNo);
+                if (result && result.success && result.data && result.data.status === 'paid') {
+                    clearInterval(checkInterval);
+                    wx.hideLoading();
+                    
+                    wx.showToast({
+                        title: '支付成功',
+                        icon: 'success',
+                        duration: 2000
+                    });
+                    
+                    this.onPaymentSuccess(orderNo);
+                    this.resetForm();
+                }
+            } catch (error) {
+                console.error('检查支付状态失败:', error);
+            }
+            
+            if (checkCount >= maxChecks) {
+                clearInterval(checkInterval);
+                wx.hideLoading();
+                
+                wx.showModal({
+                    title: '支付状态确认',
+                    content: '未能自动确认支付状态，请手动确认支付是否成功',
+                    confirmText: '已支付',
+                    cancelText: '未支付',
+                    success: (res) => {
+                        if (res.confirm) {
+                            this.onPaymentSuccess(orderNo);
+                            this.resetForm();
+                        }
+                    }
+                });
+            }
+        }, 3000); // 每3秒检查一次
+    },
+
+    // 检查支付状态
+    async checkPaymentStatus(orderNo) {
+        try {
+            const result = await API.checkPaymentStatus(orderNo);
+            return result;
+        } catch (error) {
+            console.error('支付状态查询失败:', error);
+            throw error;
+        }
+    },
+
+    // 支付成功回调
+    onPaymentSuccess(orderNo) {
+        console.log('支付成功，订单号:', orderNo);
+        message.success('充值成功！');
+        // 可以在这里添加支付成功后的逻辑
+        // 比如刷新余额、跳转到成功页面等
+    },
+
+    // 重置表单
+    resetForm() {
+        this.setData({
+            rechargeAmount: '',
+            selectedAmount: null,
+            remark: ''
+        });
     }
-  }
+
 });

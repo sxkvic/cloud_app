@@ -1,154 +1,108 @@
 <!--pages/pre-recharge/pre-recharge.wxml-->
 <view class="pre-recharge-page">
-  <!-- 页面头部 -->
+  <!-- 头部标题 -->
   <view class="page-header">
-    <text class="page-title">预充值</text>
-    <text class="page-subtitle">账户余额充值服务</text>
+    <text class="page-title">账户充值</text>
+    <text class="page-subtitle">为您的宽带账户充值</text>
   </view>
 
-  <!-- 账户余额 -->
-  <view class="account-balance">
-    <view class="balance-card">
-      <view class="balance-info">
-        <text class="balance-label">当前余额</text>
-        <text class="balance-amount">¥{{ currentBalance }}</text>
-      </view>
-      <view class="balance-tips">
-        <text class="tip-text">余额不足时将影响宽带服务</text>
+  <!-- 主体内容 -->
+  <view class="main-content">
+    <!-- 加载状态 -->
+    <view class="loading-section" wx:if="{{isLoadingCustomer}}">
+      <view class="loading-card">
+        <view class="loading-icon">⏳</view>
+        <text class="loading-text">正在加载客户信息...</text>
       </view>
     </view>
-  </view>
 
-  <!-- 充值金额选择 -->
-  <view class="recharge-amount">
-    <view class="section-title">充值金额</view>
-    <view class="amount-grid">
-      <view 
-        class="amount-item {{ selectedAmount === item.value ? 'selected' : '' }}"
-        wx:for="{{ amountOptions }}"
-        wx:key="value"
-        bindtap="selectAmount"
-        data-value="{{ item.value }}"
-      >
-        <view class="amount-value">¥{{ item.value }}</view>
-        <view class="amount-bonus" wx:if="{{ item.bonus }}">送{{ item.bonus }}</view>
-      </view>
-    </view>
-    
-    <!-- 自定义金额 -->
-    <view class="custom-amount">
-      <view class="custom-label">自定义金额</view>
-      <view class="amount-input-group">
-        <text class="currency-symbol">¥</text>
-        <input 
-          class="amount-input"
-          type="digit"
-          placeholder="0.00"
-          value="{{ customAmount }}"
-          bindinput="onCustomAmountInput"
-        />
-      </view>
-    </view>
-  </view>
-
-  <!-- 支付方式 -->
-  <view class="payment-methods">
-    <view class="section-title">支付方式</view>
-    <view class="method-list">
-      <view 
-        class="method-item {{ selectedMethod === item.id ? 'selected' : '' }}"
-        wx:for="{{ paymentMethods }}"
-        wx:key="id"
-        bindtap="selectPaymentMethod"
-        data-id="{{ item.id }}"
-      >
-        <view class="method-icon">
-          <image wx:if="{{ item.icon === 'wechat' }}" class="payment-icon" src="/images/wechat-pay.svg" mode="aspectFit"></image>
-          <image wx:elif="{{ item.icon === 'alipay' }}" class="payment-icon" src="/images/alipay.svg" mode="aspectFit"></image>
-          <text wx:else class="payment-emoji">💰</text>
+    <!-- 充值金额选择 -->
+    <view class="amount-section">
+      <view class="section-title">选择充值金额</view>
+      <view class="amount-grid">
+        <view 
+          class="amount-item {{selectedAmount == item ? 'selected' : ''}}"
+          wx:for="{{quickAmounts}}" 
+          wx:key="*this"
+          bindtap="selectQuickAmount"
+          data-amount="{{item}}"
+        >
+          <text class="amount-value">¥{{item}}</text>
+          <text class="amount-label" wx:if="{{item >= 200}}">送{{item >= 500 ? '50' : item >= 200 ? '20' : '10'}}元</text>
         </view>
-        <view class="method-info">
-          <view class="method-name">{{ item.name }}</view>
-          <view class="method-description">{{ item.description }}</view>
-        </view>
-        <view class="method-radio {{ selectedMethod === item.id ? 'selected' : '' }}">
-          <view class="radio-inner"></view>
+      </view>
+
+      <!-- 自定义金额 -->
+      <view class="custom-amount-section">
+        <view class="custom-title">自定义金额</view>
+        <view class="amount-input-wrapper">
+          <text class="currency-symbol">¥</text>
+          <input
+            class="amount-input"
+            type="digit"
+            placeholder="0.00"
+            value="{{rechargeAmount}}"
+            bindinput="onAmountInput"
+          />
         </view>
       </view>
     </view>
-  </view>
 
-  <!-- 充值说明 -->
-  <view class="recharge-notice">
-    <view class="section-title">充值说明</view>
-    <view class="notice-list">
-      <view class="notice-item">
-        <text class="notice-icon">💰</text>
-        <text class="notice-text">充值金额将直接到账，可用于支付宽带费用</text>
-      </view>
-      <view class="notice-item">
-        <text class="notice-icon">🎁</text>
-        <text class="notice-text">充值满100元送10元，满200元送25元</text>
-      </view>
-      <view class="notice-item">
-        <text class="notice-icon">🔄</text>
-        <text class="notice-text">余额可随时用于缴费，无使用期限</text>
-      </view>
-      <view class="notice-item">
-        <text class="notice-icon">📱</text>
-        <text class="notice-text">充值成功后将有短信通知</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 充值记录 -->
-  <view class="recharge-history">
-    <view class="section-title">充值记录</view>
-    <view class="history-list">
-      <view 
-        class="history-item"
-        wx:for="{{ rechargeHistory }}"
-        wx:key="id"
-      >
-        <view class="history-info">
-          <view class="history-date">{{ item.date }}</view>
-          <view class="history-amount">+¥{{ item.amount }}</view>
-        </view>
-        <view class="history-status {{ item.status }}">
-          {{ item.statusText }}
+    <!-- 支付方式 -->
+    <view class="payment-section">
+      <view class="section-title">支付方式</view>
+      <view class="payment-methods">
+        <view 
+          class="payment-method {{paymentMethod == item.value ? 'selected' : ''}}"
+          wx:for="{{paymentMethods}}" 
+          wx:key="value"
+          bindtap="selectPaymentMethod"
+          data-type="{{item.value}}"
+        >
+          <view class="payment-icon">
+            <view class="icon-wrapper">
+              <text class="payment-emoji" wx:if="{{item.value == '1'}}">💳</text>
+              <text class="payment-emoji" wx:if="{{item.value == '2'}}">📱</text>
+            </view>
+          </view>
+          <view class="payment-info">
+            <text class="payment-name">{{item.label}}</text>
+            <text class="payment-desc">{{item.desc}}</text>
+          </view>
+          <view class="payment-check">
+            <view class="check-icon {{paymentMethod == item.value ? 'checked' : ''}}">✓</view>
+          </view>
         </view>
       </view>
     </view>
+
+    <!-- 备注信息 -->
+    <view class="remark-section">
+      <view class="section-title">备注信息（可选）</view>
+      <textarea
+        class="remark-input"
+        placeholder="请输入备注信息"
+        value="{{remark}}"
+        bindinput="onRemarkInput"
+        maxlength="100"
+      />
+    </view>
   </view>
 
-  <!-- 底部操作 -->
-  <view class="bottom-actions">
-    <view class="payment-summary">
-      <view class="summary-item">
-        <text class="summary-label">充值金额</text>
-        <text class="summary-value">¥{{ finalAmount }}</text>
-      </view>
-      <view class="summary-item" wx:if="{{ bonusAmount > 0 }}">
-        <text class="summary-label">赠送金额</text>
-        <text class="summary-value bonus">+¥{{ bonusAmount }}</text>
-      </view>
-      <view class="summary-item total">
-        <text class="summary-label">实际支付</text>
-        <text class="summary-value">¥{{ finalAmount }}</text>
-      </view>
+  <!-- 底部充值按钮 -->
+  <view class="bottom-action">
+    <view class="recharge-summary" wx:if="{{rechargeAmount}}">
+      <text class="summary-text">充值金额：¥{{rechargeAmount}}</text>
     </view>
-    
-    <view class="action-buttons">
-      <button class="action-button secondary" bindtap="contactService">
-        联系客服
-      </button>
-      <button 
-        class="action-button primary" 
-        disabled="{{ !canRecharge }}"
-        bindtap="startRecharge"
-      >
-        立即充值
-      </button>
-    </view>
+    <button 
+      class="recharge-btn {{!rechargeAmount || !customerInfo || isLoadingCustomer ? 'disabled' : ''}} {{isLoading ? 'loading' : ''}}" 
+      bindtap="createRechargeOrder"
+      disabled="{{!rechargeAmount || !customerInfo || isLoading || isLoadingCustomer}}"
+    >
+      <text wx:if="{{isLoading}}">处理中...</text>
+      <text wx:elif="{{isLoadingCustomer}}">加载中...</text>
+      <text wx:elif="{{!customerInfo}}">客户信息加载失败</text>
+      <text wx:else>立即充值</text>
+    </button>
   </view>
 </view>
