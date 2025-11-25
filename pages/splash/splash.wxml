@@ -1,42 +1,35 @@
 <!--pages/splash/splash.wxml-->
-<view class="splash-page">
-  <!-- 背景装饰 -->
-  <view class="background-decoration">
-    <view class="circle circle-1"></view>
-    <view class="circle circle-2"></view>
-    <view class="circle circle-3"></view>
-  </view>
+<!-- 容器 -->
+<view class="container {{fadeOut ? 'fade-out' : ''}}">
+  
+  <!-- 背景层：极光光晕 -->
+  <view class="aurora-bg"></view>
 
-  <!-- 主要内容 -->
-  <view class="splash-content">
-    <!-- Logo区域 -->
-    <view class="logo-container">
+  <!-- 内容层 -->
+  <view class="content">
+    
+    <!-- 中间 Logo 区域 -->
+    <view class="logo-section">
+      <!-- Logo 图片 -->
       <view class="logo-wrapper">
-        <image src="/images/logo.png" alt="云网宽带" class="logo-image" />
-        <view class="logo-glow"></view>
+        <image src="/images/logo.png"  class="logo-image" mode="aspectFit" />
       </view>
     </view>
 
-    <!-- 品牌信息 -->
-    <view class="brand-info">
-      <text class="brand-title">云网宽带</text>
-      <text class="brand-slogan">便捷安装 · 专业服务 · 全程保障</text>
-    </view>
-
-    <!-- 加载动画 -->
-    <view class="loading-section">
-      <view class="loading-dots">
-        <view class="dot dot-1"></view>
-        <view class="dot dot-2"></view>
-        <view class="dot dot-3"></view>
+    <!-- 底部 Slogan 区域 -->
+    <view class="footer-section">
+      <text class="slogan-cn">云网宽带</text>
+      
+      <view class="slogan-en-box">
+        <view class="line"></view>
+        <text class="slogan-en">CONNECT FUTURE</text>
+        <view class="line"></view>
       </view>
+      
+      <!-- 加载状态显示 -->
       <text class="loading-text">{{loadingText}}</text>
     </view>
-  </view>
 
-  <!-- 版权信息 -->
-  <view class="copyright">
-    <text>© 2024 云网宽带 All Rights Reserved</text>
   </view>
 </view>
 
