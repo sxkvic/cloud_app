@@ -1,6 +1,7 @@
 {
   "navigationStyle": "custom",
+  "navigationBarTitleText": "绑定设备",
+  "navigationBarTextStyle": "white",
   "backgroundColor": "#2563eb",
   "backgroundTextStyle": "light"
 }
-

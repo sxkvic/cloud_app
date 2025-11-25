@@ -1,53 +1,96 @@
 <!--pages/bind-device-code/bind-device-code.wxml-->
-<view class="bind-device-page">
-  <!-- 顶部标题区域 -->
-  <view class="header-section">
-    <text class="title">绑定您的设备</text>
-    <text class="subtitle">请输入您的设备绑定码</text>
+<view class="container">
+  
+  <!-- 1. 顶部沉浸式 Header -->
+  <view class="header-bg">
+    <!-- 装饰背景图 (CSS绘制的Logo C形) -->
+    <view class="bg-decoration"></view>
+
+    <!-- 状态栏占位 (防止内容被手机状态栏遮挡) -->
+    <view style="height: {{statusBarHeight}}px;"></view>
+
+    <!-- 导航栏区域 -->
+    <view class="nav-bar">
+      <view class="nav-title"></view>
+    </view>
+
+    <!-- 页面大标题 -->
+    <view class="header-content">
+      <text class="title">绑定设备</text>
+      <text class="subtitle">Bind Device to activate network</text>
+    </view>
   </view>
 
-  <!-- 主内容区域 -->
-  <view class="content-wrapper">
-    <view class="bind-card">
-      <!-- 输入表单 -->
-      <view class="input-section">
-        <view class="input-wrapper">
-          <text class="input-icon">📱</text>
-          <input
-            type="text"
-            value="{{deviceCode}}"
-            bindinput="onInputChange"
-            class="custom-input"
-            placeholder="请输入设备绑定码"
-            placeholder-style="color: #9ca3af"
-          />
+  <!-- 2. 悬浮内容区 -->
+  <view class="content-body">
+    
+    <!-- 白色卡片 -->
+    <view class="card">
+      
+      <!-- 扫码区域 -->
+      <view class="scan-box" bindtap="handleScan">
+        <view class="scan-icon-wrapper">
+          <!-- 扫描图标 (SVG Base64) -->
+          <image class="icon-scan" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNEQ2QUZGIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTEyIDR2MW02IDExaDJtLTYgMGgtMnY0bTAtMTF2M20wIDBoLjAxTTEyIDE3aC4wMU0xOS4wNyA0LjkzTTE3IDdsMS4wNyAxbS0zLjE0IDBsMS4wNyAxLjA3TTQuOTMgMTkuMDdsMi4wNy0yLjA3bS0zLjE0IDBsMS4wNy0xLjA3Ii8+PC9zdmc+" mode="aspectFit"></image>
+          <!-- 扫描线动效 -->
+          <view class="scan-line"></view>
         </view>
+        <view class="scan-text-box">
+          <text class="scan-title">点击扫描二维码/条形码</text>
+          <text class="scan-desc">请扫描设备背面的设备码</text>
+        </view>
+      </view>
+
+      <!-- 分割线 -->
+      <view class="divider">
+        <view class="line"></view>
+        <text class="divider-text">手动输入</text>
+        <view class="line"></view>
+      </view>
+
+      <!-- 表单输入 -->
+      <view class="form-group">
         
+        <!-- SN 输入 -->
+        <view class="input-item">
+          <text class="label">设备编码</text>
+          <view class="input-wrapper">
+            <input 
+              class="input-field font-code" 
+              placeholder="CH-XXXX-XXXX" 
+              placeholder-class="input-placeholder"
+              value="{{deviceCode}}"
+              bindinput="onInputChange"
+            />
+            <!-- 输入框右侧图标 -->
+            <image class="input-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRDFEMT1EIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTkgMTJsMiAyIDQtNG02IDJhOSA5IDAgMTEtMTggMCA5IDkgMCAwMTE4IDB6Ii8+PC9zdmc+" mode="aspectFit"></image>
+          </view>
+        </view>
+
+      </view>
+
+      <!-- 按钮组 -->
+      <view class="btn-group">
         <button 
-          class="submit-button {{isLoading ? 'loading' : ''}}" 
+          class="btn-primary {{isLoading ? 'loading' : ''}}" 
           bindtap="onManualSubmit"
           disabled="{{isLoading}}"
         >
-          <text wx:if="{{!isLoading}}" class="button-icon">✓</text>
-          <text wx:if="{{isLoading}}" class="loading-icon">⟳</text>
-          {{isLoading ? '绑定中...' : '确认绑定'}}
+          {{isLoading ? '绑定中...' : '立即绑定设备'}}
         </button>
-      </view>
-      
-      <!-- 跳过按钮 -->
-      <view class="skip-section">
-        <button class="skip-button" bindtap="skipBinding">
-          暂时跳过
+        <button class="btn-ghost" bindtap="skipBinding">
+          暂不绑定，跳过
+          <text class="arrow-right">></text>
         </button>
       </view>
 
-      <!-- 帮助信息 -->
-      <view class="help-section">
-        <text class="help-text" bindtap="showHelp">
-          找不到绑定码？点击查看帮助
-        </text>
-      </view>
     </view>
+
+    <!-- 底部客服 -->
+    <view class="footer-link" bindtap="showHelp">
+      <text>遇到问题？联系客服</text>
+    </view>
+
   </view>
 </view>
 
