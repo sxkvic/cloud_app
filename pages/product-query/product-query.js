@@ -1,4 +1,7 @@
 // pages/product-query/product-query.js
+const { message } = require('../../utils/common');
+const API = require('../../utils/api');
+
 Page({
 
     /**
@@ -6,7 +9,9 @@ Page({
      */
     data: {
         queryInput: '',
-        isLoading: false
+        isLoading: false,
+        queryResult: null,
+        showResult: false
     },
 
     /**
@@ -77,32 +82,68 @@ Page({
     /**
      * 提交查询表单
      */
-    onSubmit() {
+    async onSubmit() {
         if (!this.data.queryInput.trim()) {
-            wx.showToast({
-                title: '请输入设备码或宽带账号',
-                icon: 'none'
-            });
+            message.error('请输入设备码或宽带账号');
             return;
         }
         
         this.setData({
-            isLoading: true
+            isLoading: true,
+            showResult: false
         });
 
-        console.log('Querying for:', this.data.queryInput);
-
-        // 模拟查询请求
-        setTimeout(() => {
-            this.setData({
-                isLoading: false
-            });
+        try {
+            console.log('查询设备信息:', this.data.queryInput);
             
-            wx.showToast({
-                title: '查询成功！',
-                icon: 'success'
+            // 调用设备查询接口
+            const response = await API.getDevicesList({
+                page: 1,
+                pageSize: 10,
+                deviceNo: this.data.queryInput.trim()
             });
-        }, 1500);
+
+            console.log('查询结果:', response);
+
+            if (response.data && response.data.list && response.data.list.length > 0) {
+                this.setData({
+                    queryResult: {
+                        data: response.data.list,
+                        total: response.data.total || response.data.list.length,
+                        page: response.data.page || 1,
+                        pageSize: response.data.pageSize || 10
+                    },
+                    showResult: true,
+                    isLoading: false
+                });
+                message.success(`查询成功！找到 ${response.data.list.length} 条设备信息`);
+            } else {
+                this.setData({
+                    queryResult: null,
+                    showResult: false,
+                    isLoading: false
+                });
+                message.info('未找到相关设备信息');
+            }
+        } catch (error) {
+            console.error('查询失败:', error);
+            this.setData({
+                isLoading: false,
+                showResult: false
+            });
+            message.error('查询失败，请重试');
+        }
+    },
+
+    /**
+     * 重新查询
+     */
+    resetQuery() {
+        this.setData({
+            queryInput: '',
+            queryResult: null,
+            showResult: false
+        });
     },
 
     /**

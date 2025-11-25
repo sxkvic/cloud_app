@@ -1,40 +1,98 @@
 <!--pages/product-query/product-query.wxml-->
 <view class="product-query-page">
-  <view class="main-content">
-    <view class="query-card">
-      <view class="card-title">查询您的宽带产品信息</view>
-      
-      <form bindsubmit="onSubmit" class="query-form">
-        <!-- 输入框 -->
-        <view class="input-wrapper">
-          <input
-            type="text"
-            value="{{ queryInput }}"
-            bindinput="onInputChange"
-            class="custom-input"
-            placeholder="输入设备码 / 宽带账号"
-            placeholder-style="color: #9ca3af"
-          />
+  <!-- 查询表单区域 -->
+  <view class="query-section" wx:if="{{!showResult}}">
+    <view class="main-content">
+      <view class="query-card">
+        <view class="card-title">查询您的宽带产品信息</view>
+        
+        <form bindsubmit="onSubmit" class="query-form">
+          <!-- 输入框 -->
+          <view class="input-wrapper">
+            <input
+              type="text"
+              value="{{ queryInput }}"
+              bindinput="onInputChange"
+              class="custom-input"
+              placeholder="输入设备码 / 宽带账号"
+              placeholder-style="color: #9ca3af"
+            />
+          </view>
+
+          <!-- 查询按钮 -->
+          <view class="button-wrapper">
+            <button
+              form-type="submit"
+              class="submit-button"
+              disabled="{{ isLoading }}"
+            >
+              <text wx:if="{{ isLoading }}" class="loading-icon">⟳</text>
+              {{ isLoading ? '查询中...' : '立即查询' }}
+            </button>
+          </view>
+        </form>
+        
+        <view class="help-link-wrapper">
+          <view class="help-link" bindtap="showHelp">
+            <text class="help-icon">❓</text>
+            如何找到我的设备码？
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 查询结果区域 -->
+  <view class="result-section" wx:if="{{showResult && queryResult}}">
+    <!-- 结果头部 -->
+    <view class="result-header">
+      <view class="header-content">
+        <view class="result-title">设备信息</view>
+        <view class="result-subtitle">共找到 {{queryResult.total}} 条记录</view>
+      </view>
+      <view class="header-actions">
+        <button class="new-query-btn" bindtap="resetQuery">重新查询</button>
+      </view>
+    </view>
+
+    <!-- 设备列表 -->
+    <view class="devices-list">
+      <view class="device-card" wx:for="{{queryResult.data}}" wx:key="id">
+        <!-- 设备头部信息 -->
+        <view class="device-header">
+          <view class="device-name">{{item.device_name || item.created_by_username || '未命名设备'}}</view>
+          <view class="device-status" data-status="{{item.status || '1'}}">
+            <text class="status-dot"></text>
+            <text class="status-text">{{item.status == '2' ? '运行中' : '待分配'}}</text>
+          </view>
         </view>
 
-        <!-- 查询按钮 -->
-        <view class="button-wrapper">
-          <button
-            form-type="submit"
-            class="submit-button"
-            disabled="{{ isLoading }}"
-          >
-            <text wx:if="{{ isLoading }}" class="loading-icon">⟳</text>
-            <text wx:else class="button-icon">🔍</text>
-            {{ isLoading ? '查询中...' : '立即查询' }}
-          </button>
-        </view>
-      </form>
-      
-      <view class="help-link-wrapper">
-        <view class="help-link" bindtap="showHelp">
-          <text class="help-icon">❓</text>
-          如何找到我的设备码？
+        <!-- 设备详细信息 -->
+        <view class="device-details">
+          <view class="detail-row">
+            <view class="detail-label">设备编号</view>
+            <view class="detail-value">{{item.device_no}}</view>
+          </view>
+          <view class="detail-row">
+            <view class="detail-label">设备类型</view>
+            <view class="detail-value">{{item.device_type}}</view>
+          </view>
+          <view class="detail-row">
+            <view class="detail-label">规格配置</view>
+            <view class="detail-value">{{item.specification}}</view>
+          </view>
+          <view class="detail-row">
+            <view class="detail-label">费用金额</view>
+            <view class="detail-value amount">¥{{item.amount}}</view>
+          </view>
+          <view class="detail-row">
+            <view class="detail-label">创建时间</view>
+            <view class="detail-value">{{item.created_at}}</view>
+          </view>
+          <view class="detail-row" wx:if="{{item.description}}">
+            <view class="detail-label">备注说明</view>
+            <view class="detail-value">{{item.description}}</view>
+          </view>
         </view>
       </view>
     </view>

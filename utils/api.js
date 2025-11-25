@@ -480,6 +480,27 @@ const API = {
   },
 
   /**
+   * 获取设备列表
+   * @param {Object} params 查询参数
+   * @param {Number} params.page 页码
+   * @param {Number} params.pageSize 每页数量
+   * @param {String} params.deviceNo 设备编号
+   * @returns {Promise} { success, data: [], total, page, pageSize, message }
+   */
+  getDevicesList(params = {}) {
+    return request({
+      url: '/api/v1/devices/getDevicesList',
+      method: 'GET',
+      data: {
+        page: params.page || 1,
+        pageSize: params.pageSize || 10,
+        deviceNo: params.deviceNo || ''
+      },
+      needAuth: true  // 需要认证
+    });
+  },
+
+  /**
    * 获取推文详情
    * @param {String} id 推文ID
    * @returns {Promise} { success, data: { article }, message }

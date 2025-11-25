@@ -103,10 +103,6 @@
   box-shadow: 0 12rpx 32rpx rgba(59, 130, 246, 0.4);
 }
 
-.button-icon {
-  margin-right: 16rpx;
-  font-size: 32rpx;
-}
 
 .loading-icon {
   margin-right: 16rpx;
@@ -135,4 +131,160 @@
 .help-icon {
   margin-right: 12rpx;
   font-size: 28rpx;
+}
+
+/* --- 查询结果区域 --- */
+.result-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding-top: 60rpx;
+}
+
+/* --- 结果头部 --- */
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40rpx 32rpx;
+  background: rgba(255, 255, 255, 0.95);
+  margin: 0 32rpx 40rpx;
+  border-radius: 32rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+}
+
+.header-content .result-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 8rpx;
+}
+
+.header-content .result-subtitle {
+  font-size: 24rpx;
+  color: #6b7280;
+}
+
+.new-query-btn {
+  padding: 16rpx 32rpx;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: white;
+  border-radius: 24rpx;
+  font-size: 24rpx;
+  border: none;
+  box-shadow: 0 4rpx 16rpx rgba(79, 70, 229, 0.3);
+}
+
+/* --- 设备列表 --- */
+.devices-list {
+  padding: 0 32rpx;
+}
+
+.device-card {
+  background: white;
+  border-radius: 32rpx;
+  margin-bottom: 32rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
+}
+
+/* --- 设备头部 --- */
+.device-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx;
+  background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+  border-bottom: 2rpx solid #f1f5f9;
+}
+
+.device-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #1e293b;
+}
+
+.device-status {
+  display: flex;
+  align-items: center;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  background: #dcfce7;
+}
+
+.device-status[data-status="2"] {
+  background: #dcfce7; /* 运行中 - 绿色 */
+}
+
+.device-status[data-status="1"] {
+  background: #fef3c7; /* 待分配 - 黄色 */
+}
+
+.status-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: #16a34a;
+  margin-right: 8rpx;
+}
+
+.device-status[data-status="1"] .status-dot {
+  background: #f59e0b; /* 待分配 - 橙色点 */
+}
+
+.status-text {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #16a34a; /* 运行中 - 绿色文字 */
+}
+
+.device-status[data-status="1"] .status-text {
+  color: #f59e0b; /* 待分配 - 橙色文字 */
+}
+
+/* --- 设备详情 --- */
+.device-details {
+  padding: 32rpx;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f1f5f9;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-size: 28rpx;
+  color: #64748b;
+  font-weight: 500;
+  min-width: 160rpx;
+}
+
+.detail-value {
+  font-size: 28rpx;
+  color: #1e293b;
+  font-weight: 600;
+  text-align: right;
+  flex: 1;
+}
+
+.detail-value.amount {
+  color: #dc2626;
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+
+/* --- 运营商品牌色彩 --- */
+.telecom-style {
+  --primary-color: #1890ff;
+  --secondary-color: #722ed1;
+  --success-color: #52c41a;
+  --warning-color: #faad14;
+  --error-color: #f5222d;
 }
