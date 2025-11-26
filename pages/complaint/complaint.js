@@ -4,34 +4,51 @@ const { navigation, message } = require('../../utils/common');
 
 Page({
   data: {
-    // 投诉分类（1-10）
-    complaintCategories: [
+    statusBarHeight: 20,
+    
+    // 投诉类别数据源（恢复原来的10个选项）
+    categories: [
       { id: '1', name: '宽带/光纤无法连接' },
       { id: '2', name: '宽带/光纤速率不达标' },
-      { id: '3', name: '网络信号覆盖差、去哪儿都、影响正常使用' },
-      { id: '4', name: 'WiFi信号覆盖差或速率慢效果不佳' },
-      { id: '5', name: '合约期内无法律维或改或降套餐' },
-      { id: '6', name: '进新购的运营商套餐+套餐合理' },
-      { id: '7', name: '进订/续约承诺是否兑现、按实际运营或设备赠送' },
-      { id: '8', name: '营业网点正反、问题无人处理' },
-      { id: '9', name: '套餐信息披露、问题无法处理' },
-      { id: '10', name: '其他问题（如骚扰电话、恶意营销等）' }
+      { id: '3', name: '网络信号覆盖差、影响正常使用' },
+      { id: '4', name: 'WiFi信号覆盖差或速率慢' },
+      { id: '5', name: '合约期内无法维护或改降套餐' },
+      { id: '6', name: '新购运营商套餐不合理' },
+      { id: '7', name: '订购/续约承诺未兑现' },
+      { id: '8', name: '营业网点服务问题' },
+      { id: '9', name: '套餐信息披露不清' },
+      { id: '10', name: '其他问题（骚扰电话、恶意营销等）' }
     ],
-    categoryIndex: -1,
-    deviceNumber: '',
-    contactPhone: '',
-    complaintContent: '',
-    canSubmit: false,
+    index: -1, // -1 表示未选择
+    
+    // Vant Picker 相关
+    showPicker: false,
+    pickerColumns: [],
+    
+    deviceSn: '',
+    phone: '',
+    content: '',
+    contentLength: 0,
+    
+    canSubmit: false, // 按钮是否激活
     openid: ''
   },
 
   onLoad(options) {
     console.log('投诉页面加载', options);
     
+    // 获取系统信息
+    const sys = wx.getSystemInfoSync();
+    this.setData({ statusBarHeight: sys.statusBarHeight });
+    
+    // 初始化 Vant Picker 数据
+    const pickerColumns = this.data.categories.map(item => item.name);
+    this.setData({ pickerColumns });
+    
     // 从页面参数获取设备编号
     if (options.device_number) {
       this.setData({
-        deviceNumber: options.device_number
+        deviceSn: options.device_number
       });
     }
     
@@ -44,12 +61,31 @@ Page({
     }
   },
 
-  // 选择投诉类别
-  onCategoryChange(e) {
+  // 返回上一页
+  handleBack() {
+    wx.navigateBack();
+  },
+
+  // 显示 Vant Picker
+  showVantPicker() {
+    this.setData({ showPicker: true });
+  },
+
+  // 关闭 Vant Picker
+  onPickerClose() {
+    this.setData({ showPicker: false });
+  },
+
+  // 确认选择
+  onPickerConfirm(e) {
+    const { value, index } = e.detail;
+    console.log('选择了：', value, '索引：', index);
+    
     this.setData({
-      categoryIndex: parseInt(e.detail.value)
+      index: index,
+      showPicker: false
     });
-    this.checkCanSubmit();
+    this.checkForm();
     
     // 触觉反馈
     wx.vibrateShort({
@@ -57,46 +93,63 @@ Page({
     });
   },
 
-  // 输入设备编号
-  onDeviceNumberInput(e) {
+  // 处理下拉框选择（保留作为备用）
+  bindPickerChange(e) {
     this.setData({
-      deviceNumber: e.detail.value
+      index: parseInt(e.detail.value)
+    });
+    this.checkForm();
+    
+    // 触觉反馈
+    wx.vibrateShort({
+      type: 'light'
     });
   },
 
-  // 输入联系电话
+  // 2. 处理设备编号输入
+  onDeviceInput(e) {
+    this.setData({
+      deviceSn: e.detail.value
+    });
+  },
+
+  // 3. 处理电话输入
   onPhoneInput(e) {
     this.setData({
-      contactPhone: e.detail.value
+      phone: e.detail.value
     });
   },
 
-  // 输入投诉内容
-  onContentInput(e) {
+  // 4. 处理内容输入
+  handleInput(e) {
+    const val = e.detail.value;
     this.setData({
-      complaintContent: e.detail.value
+      content: val,
+      contentLength: val.length
     });
-    this.checkCanSubmit();
+    this.checkForm();
   },
 
-  // 检查是否可以提交
-  checkCanSubmit() {
-    const { categoryIndex, complaintContent } = this.data;
-    
-    // 必填项：投诉类别和投诉内容
-    const canSubmit = categoryIndex >= 0 && complaintContent.trim().length > 0;
-    
-    this.setData({ canSubmit });
+  // 5. 表单校验 (控制按钮颜色)
+  checkForm() {
+    const { index, content } = this.data;
+    // 必填项：类别已选 且 内容不为空
+    const isValid = (index != -1) && (content.trim().length > 0);
+    this.setData({ canSubmit: isValid });
   },
 
-  // 提交投诉
-  async submitComplaint() {
-    if (!this.data.canSubmit) {
-      message.error('请完善必填信息');
+  // 6. 提交
+  handleSubmit() {
+    const { index, categories, deviceSn, phone, content, openid } = this.data;
+    
+    if (index == -1) {
+      wx.showToast({ title: '请选择投诉类别', icon: 'none' });
       return;
     }
-
-    const { categoryIndex, complaintCategories, complaintContent, openid, deviceNumber, contactPhone } = this.data;
+    if (!content.trim()) {
+      wx.showToast({ title: '请填写投诉内容', icon: 'none' });
+      return;
+    }
 
     // 验证openid
     if (!openid) {
@@ -107,44 +160,39 @@ Page({
       return;
     }
 
-    // 确认提交
-    const selectedCategory = complaintCategories[categoryIndex];
-    wx.showModal({
-      title: '确认提交',
-      content: `投诉类别：${selectedCategory.name}\n\n确认提交投诉？`,
-      confirmText: '确认',
-      cancelText: '取消',
-      success: (res) => {
-        if (res.confirm) {
-          this.processSubmit();
-        }
-      }
-    });
+    const payload = {
+      category: categories[index].name, // 发给后端的字段：类别名称
+      category_id: categories[index].id, // 发给后端的字段：类别ID
+      deviceSn: deviceSn,                // 发给后端的字段：设备号
+      phone: phone,                      // 发给后端的字段：电话
+      content: content,                  // 发给后端的字段：内容
+      openid: openid                     // 用户openid
+    };
+
+    console.log('提交给后端的数据:', payload);
+
+    wx.showLoading({ title: '提交中...', mask: true });
+    
+    // 调用API提交投诉
+    this.processSubmit(payload);
   },
 
   // 处理提交
-  async processSubmit() {
-    const { categoryIndex, complaintCategories, complaintContent, openid, deviceNumber, contactPhone } = this.data;
-
-    wx.showLoading({
-      title: '提交中...',
-      mask: true
-    });
-
+  async processSubmit(payload) {
     try {
       // 构建请求数据
       const complaintData = {
-        complaint_category: complaintCategories[categoryIndex].id,
-        complaint_content: complaintContent.trim(),
-        openid: openid
+        complaint_category: payload.category_id,
+        complaint_content: payload.content.trim(),
+        openid: payload.openid
       };
 
       // 添加可选参数
-      if (deviceNumber.trim()) {
-        complaintData.device_number = deviceNumber.trim();
+      if (payload.deviceSn.trim()) {
+        complaintData.device_number = payload.deviceSn.trim();
       }
-      if (contactPhone.trim()) {
-        complaintData.contact_phone = contactPhone.trim();
+      if (payload.phone.trim()) {
+        complaintData.contact_phone = payload.phone.trim();
       }
 
       console.log('提交投诉数据：', complaintData);
@@ -155,27 +203,31 @@ Page({
       wx.hideLoading();
 
       if (result.success) {
-        message.success('投诉提交成功');
-        
-        // 延迟返回
-        setTimeout(() => {
-          // 清空表单
-          this.setData({
-            categoryIndex: -1,
-            deviceNumber: '',
-            contactPhone: '',
-            complaintContent: '',
-            canSubmit: false
-          });
-          
-          // 返回上一页或首页
-          const pages = getCurrentPages();
-          if (pages.length > 1) {
-            navigation.navigateBack();
-          } else {
-            navigation.switchTab('/pages/home/home');
+        wx.showModal({
+          title: '提交成功',
+          content: '我们会尽快处理您的反馈',
+          showCancel: false,
+          confirmColor: '#4D6AFF',
+          success: () => {
+            // 清空表单
+            this.setData({
+              index: -1,
+              deviceSn: '',
+              phone: '',
+              content: '',
+              contentLength: 0,
+              canSubmit: false
+            });
+            
+            // 返回上一页或首页
+            const pages = getCurrentPages();
+            if (pages.length > 1) {
+              wx.navigateBack();
+            } else {
+              navigation.switchTab('/pages/home/home');
+            }
           }
-        }, 1500);
+        });
       } else {
         message.error(result.message || '提交失败，请重试');
       }

@@ -1,86 +1,115 @@
 <!--pages/service-evaluation/service-evaluation.wxml-->
-<view class="evaluation-page">
-  <!-- 页面头部 -->
-  <view class="page-header">
-    <view class="header-icon">⭐</view>
-    <text class="page-title">服务评价</text>
-    <text class="page-subtitle">您的评价是我们前进的动力</text>
-  </view>
-
-  <!-- 评分卡片容器 -->
-  <view class="rating-cards">
-    <!-- 响应速度 -->
-    <view class="rating-card">
-      <view class="card-header">
-        <view class="card-icon">⚡</view>
-        <view class="card-title">响应速度</view>
+<view class="container">
+  
+  <!-- 1. 头部蓝色背景 + 服务信息 -->
+  <view class="header-bg">
+    <!-- 状态栏占位 -->
+    <view style="height: {{statusBarHeight}}px;"></view>
+    <!-- 导航栏 -->
+    <view class="nav-bar">
+      <view class="back-btn" bindtap="handleBack">
+        <image class="icon-back" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTE1IDE5bC03LTcgNy03Ii8+PC9zdmc+" mode="aspectFit"></image>
       </view>
-      <view class="star-container">
-        <view 
-          class="star-item"
-          wx:for="{{ 5 }}"
-          wx:key="index"
-          bindtap="setRating"
-          data-type="response_speed"
-          data-rating="{{ index + 1 }}"
-        >
-          <text class="star {{ index < ratings.response_speed ? 'active' : '' }}">★</text>
-        </view>
-      </view>
-      <view class="rating-desc">{{ getRatingText(ratings.response_speed) }}</view>
+      <text class="nav-title">服务评价</text>
     </view>
 
-    <!-- 服务质量 -->
-    <view class="rating-card">
-      <view class="card-header">
-        <view class="card-icon">👍</view>
-        <view class="card-title">服务质量</view>
+    <!-- 业务单信息卡片 -->
+    <view class="order-info">
+      <view class="tech-avatar">
+        <!-- 师傅头像/图标 -->
+        <image src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgdmlld0JveD0iMCAwIDY0IDY0Ij48Y2lyY2xlIGN4PSIzMiIgY3k9IjIwIiByPSIxMiIgZmlsbD0iIzRENkFGRiIvPjxwYXRoIGQ9Ik0xMCA0OGMwLTEyIDEwLTIwIDIyLTIwczIyIDggMjIgMjAiIGZpbGw9IiM0RDZBRkYiLz48L3N2Zz4=" class="avatar-img"></image>
       </view>
-      <view class="star-container">
-        <view 
-          class="star-item"
-          wx:for="{{ 5 }}"
-          wx:key="index"
-          bindtap="setRating"
-          data-type="service_quality"
-          data-rating="{{ index + 1 }}"
-        >
-          <text class="star {{ index < ratings.service_quality ? 'active' : '' }}">★</text>
-        </view>
+      <view class="order-detail">
+        <text class="order-type">{{orderInfo.serviceType || '宽带安装服务'}}</text>
+        <text class="order-sn">工单号：{{orderInfo.orderNo || device_no || '暂无'}}</text>
+        <text class="order-time">完成时间：{{orderInfo.completeTime || currentTime}}</text>
       </view>
-      <view class="rating-desc">{{ getRatingText(ratings.service_quality) }}</view>
-    </view>
-
-    <!-- 服务态度 -->
-    <view class="rating-card">
-      <view class="card-header">
-        <view class="card-icon">😊</view>
-        <view class="card-title">服务态度</view>
-      </view>
-      <view class="star-container">
-        <view 
-          class="star-item"
-          wx:for="{{ 5 }}"
-          wx:key="index"
-          bindtap="setRating"
-          data-type="service_attitude"
-          data-rating="{{ index + 1 }}"
-        >
-          <text class="star {{ index < ratings.service_attitude ? 'active' : '' }}">★</text>
-        </view>
-      </view>
-      <view class="rating-desc">{{ getRatingText(ratings.service_attitude) }}</view>
     </view>
   </view>
 
-  <!-- 提交按钮 -->
-  <view class="submit-container">
-    <button 
-      class="submit-btn {{ canSubmit ? '' : 'disabled' }}" 
-      disabled="{{ !canSubmit }}"
-      bindtap="submitEvaluation"
-    >
-      提交评价
-    </button>
+  <!-- 2. 主体评价内容 -->
+  <view class="content-body">
+    
+    <!-- 评分核心区 -->
+    <view class="card rating-card">
+      <view class="card-title">您对本次服务满意吗？</view>
+      <view class="card-subtitle">请为本次服务过程打分</view>
+
+      <!-- 评分列表 -->
+      <view class="rating-list">
+        
+        <!-- 1. 响应速度 -->
+        <view class="rating-item">
+          <text class="rating-label">响应速度</text>
+          <view class="star-group">
+            <block wx:for="{{5}}" wx:key="index">
+              <view class="star-wrap" data-type="response_speed" data-score="{{index + 1}}" bindtap="handleRate">
+                <image class="star-icon" src="{{index < scores.response_speed ? starFilled : starEmpty}}"></image>
+              </view>
+            </block>
+          </view>
+          <text class="score-text">{{scores.response_speed}}.0</text>
+        </view>
+
+        <!-- 2. 服务质量 -->
+        <view class="rating-item">
+          <text class="rating-label">服务质量</text>
+          <view class="star-group">
+            <block wx:for="{{5}}" wx:key="index">
+              <view class="star-wrap" data-type="service_quality" data-score="{{index + 1}}" bindtap="handleRate">
+                <image class="star-icon" src="{{index < scores.service_quality ? starFilled : starEmpty}}"></image>
+              </view>
+            </block>
+          </view>
+          <text class="score-text">{{scores.service_quality}}.0</text>
+        </view>
+
+        <!-- 3. 服务态度 -->
+        <view class="rating-item">
+          <text class="rating-label">服务态度</text>
+          <view class="star-group">
+            <block wx:for="{{5}}" wx:key="index">
+              <view class="star-wrap" data-type="service_attitude" data-score="{{index + 1}}" bindtap="handleRate">
+                <image class="star-icon" src="{{index < scores.service_attitude ? starFilled : starEmpty}}"></image>
+              </view>
+            </block>
+          </view>
+          <text class="score-text">{{scores.service_attitude}}.0</text>
+        </view>
+
+      </view>
+    </view>
+
+    <!-- 快捷标签区 -->
+    <view class="card tag-card">
+      <view class="card-header-sm">服务印象</view>
+      <view class="tag-list">
+        <block wx:for="{{tags}}" wx:key="index">
+          <view class="tag-item {{item.selected ? 'tag-active' : ''}}" data-index="{{index}}" bindtap="toggleTag">
+            {{item.name}}
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <!-- 文本输入区 -->
+    <view class="card text-card">
+      <textarea 
+        class="comment-area" 
+        placeholder="说说哪里让您满意，或者有哪些需要改进的地方..." 
+        placeholder-class="placeholder-style"
+        maxlength="200"
+        value="{{comment}}"
+        bindinput="handleCommentInput"
+      ></textarea>
+      <view class="word-count">{{commentLength}}/200</view>
+    </view>
+
   </view>
+
+  <!-- 3. 底部提交按钮 -->
+  <view class="footer-btn-box">
+    <button class="submit-btn {{canSubmit ? '' : 'disabled'}}" disabled="{{!canSubmit}}" bindtap="handleSubmit">提交评价</button>
+  </view>
+
 </view>

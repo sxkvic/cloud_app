@@ -1,105 +1,99 @@
 <!--pages/complaint/complaint.wxml-->
-<view class="complaint-page">
-  <!-- 页面头部 -->
-  <view class="page-header">
-    <view class="header-icon">📢</view>
-    <text class="page-title">投诉建议</text>
-    <text class="page-subtitle">您的意见是我们改进的动力</text>
+<view class="container">
+  
+  <!-- 1. 头部：保持专业蓝底，但高度缩减，不喧宾夺主 -->
+  <view class="header-bg">
+    <!-- 状态栏占位 -->
+    <view style="height: {{statusBarHeight}}px;"></view>
+    <!-- 导航栏 -->
+    <view class="nav-bar">
+      <view class="back-btn" bindtap="handleBack">
+        <image class="icon-back" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTE1IDE5bC03LTcgNy03Ii8+PC9zdmc+" mode="aspectFit"></image>
+      </view>
+      <text class="nav-title">投诉建议</text>
+    </view>
+    
+    <view class="header-text">
+      <text class="h1">您的意见是我们改进的动力</text>
+    </view>
   </view>
 
-  <!-- 投诉表单 -->
-  <view class="complaint-form">
-    <!-- 投诉类别 -->
-    <view class="form-item">
-      <view class="item-label">
-        <text class="label-text">投诉类别</text>
-        <text class="required">*</text>
+  <!-- 2. 表单卡片 (悬浮于蓝色背景之上) -->
+  <view class="form-card">
+    
+    <!-- 字段1：投诉类别 (下拉框 Picker) -->
+    <view class="form-item border-bottom" bindtap="showVantPicker">
+      <view class="label-box">
+        <view class="label">投诉类别</view>
+        <view class="required">*</view>
       </view>
-      <picker 
-        mode="selector" 
-        range="{{ complaintCategories }}" 
-        range-key="name"
-        value="{{ categoryIndex }}"
-        bindchange="onCategoryChange"
-      >
-        <view class="picker-view">
-          <text class="picker-text {{ categoryIndex >= 0 ? '' : 'placeholder' }}">
-            {{ categoryIndex >= 0 ? complaintCategories[categoryIndex].name : '请选择投诉类别' }}
-          </text>
-          <text class="picker-arrow">›</text>
+      <view class="input-box picker-box">
+        <!-- 选中显示值，未选中显示 placeholder -->
+        <view class="{{index == -1 ? 'placeholder' : 'value'}}">
+          {{index == -1 ? '请选择投诉类别' : categories[index].name}}
         </view>
-      </picker>
-    </view>
-
-    <!-- 设备编号 -->
-    <view class="form-item">
-      <view class="item-label">
-        <text class="label-text">设备编号</text>
+        <!-- 右箭头图标 -->
+        <image class="icon-arrow" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQ0NDQ0NDIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTkgMThsNi02LTYtNiIvPjwvc3ZnPg=="></image>
       </view>
-      <input 
-        class="item-input"
-        type="text"
-        placeholder="请输入设备编号（选填）"
-        value="{{ deviceNumber }}"
-        bindinput="onDeviceNumberInput"
-        maxlength="50"
-      />
     </view>
+    
+    <!-- Vant Picker 弹出层 -->
+    <van-popup show="{{ showPicker }}" position="bottom" bind:close="onPickerClose">
+      <van-picker
+        show-toolbar
+        title="选择投诉类别"
+        columns="{{ pickerColumns }}"
+        bind:confirm="onPickerConfirm"
+        bind:cancel="onPickerClose"
+        item-height="50"
+      />
+    </van-popup>
 
-    <!-- 联系电话 -->
-    <view class="form-item">
-      <view class="item-label">
-        <text class="label-text">联系电话</text>
+    <!-- 字段2：设备编号 -->
+    <view class="form-item border-bottom">
+      <view class="label-box">
+        <text class="label">设备编号</text>
       </view>
-      <input 
-        class="item-input"
-        type="number"
-        placeholder="请输入联系电话（选填）"
-        value="{{ contactPhone }}"
-        bindinput="onPhoneInput"
-        maxlength="20"
-      />
+      <view class="input-box">
+        <input class="input" placeholder="请输入设备编号 (选填)" placeholder-class="placeholder" value="{{deviceSn}}" bindinput="onDeviceInput" maxlength="50" />
+      </view>
     </view>
 
-    <!-- 投诉内容 -->
-    <view class="form-item textarea-item">
-      <view class="item-label">
-        <text class="label-text">投诉内容</text>
+    <!-- 字段3：联系电话 -->
+    <view class="form-item border-bottom">
+      <view class="label-box">
+        <text class="label">联系电话</text>
+      </view>
+      <view class="input-box">
+        <input class="input" type="number" placeholder="请输入您的联系电话" placeholder-class="placeholder" value="{{phone}}" bindinput="onPhoneInput" maxlength="20" />
+      </view>
+    </view>
+
+    <!-- 字段4：投诉内容 (大文本域) -->
+    <view class="form-item-col">
+      <view class="label-box mb-2">
+        <text class="label">投诉内容</text>
         <text class="required">*</text>
       </view>
-      <textarea
-        class="item-textarea"
-        placeholder="请详细描述您的问题，我们会认真处理..."
-        value="{{ complaintContent }}"
-        bindinput="onContentInput"
-        maxlength="500"
-        auto-height
-      ></textarea>
-      <view class="input-counter">{{ complaintContent.length }}/500</view>
+      <view class="textarea-wrapper">
+        <textarea 
+          class="textarea" 
+          placeholder="请详细描述您的问题，我们会认真处理..." 
+          placeholder-class="placeholder"
+          maxlength="500"
+          value="{{content}}"
+          bindinput="handleInput"
+        ></textarea>
+        <view class="word-count">{{contentLength}}/500</view>
+      </view>
     </view>
+
   </view>
 
-  <!-- 温馨提示 -->
-  <view class="tips-card">
-    <view class="tips-title">
-      <text class="tips-icon">💡</text>
-      <text>温馨提示</text>
-    </view>
-    <view class="tips-content">
-      <view class="tip-item">• 我们将在24小时内处理您的投诉</view>
-      <view class="tip-item">• 请如实填写投诉内容，以便我们更好地为您服务</view>
-      <view class="tip-item">• 您的个人信息将被严格保密</view>
-    </view>
+  <!-- 3. 底部提交按钮 -->
+  <view class="footer-box">
+    <!-- 按钮增加 disabled 状态控制 -->
+    <button class="submit-btn {{canSubmit ? '' : 'disabled'}}" disabled="{{!canSubmit}}" bindtap="handleSubmit">提交投诉</button>
   </view>
 
-  <!-- 提交按钮 -->
-  <view class="submit-container">
-    <button 
-      class="submit-btn {{ canSubmit ? '' : 'disabled' }}" 
-      disabled="{{ !canSubmit }}"
-      bindtap="submitComplaint"
-    >
-      提交投诉
-    </button>
-  </view>
 </view>

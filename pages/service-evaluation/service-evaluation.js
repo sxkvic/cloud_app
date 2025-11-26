@@ -4,13 +4,41 @@ const { navigation, message } = require('../../utils/common');
 
 Page({
   data: {
-    // 三个评分项
-    ratings: {
-      response_speed: 0,    // 响应速度
-      service_quality: 0,   // 服务质量
-      service_attitude: 0   // 服务态度
+    statusBarHeight: 20,
+    
+    // 星星图标 (使用base64 SVG)
+    starFilled: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDQ4IDQ4Ij48cGF0aCBmaWxsPSIjRkZCODAwIiBkPSJNMjQgMzZsLTEyIDcgMy0xNC0xMS05IDEzLTEgNi0xMyA2IDEzIDEzIDEtMTEgOSAzIDE0eiIvPjwvc3ZnPg==',
+    starEmpty: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDQ4IDQ4Ij48cGF0aCBmaWxsPSIjRTBFMEUwIiBkPSJNMjQgMzZsLTEyIDcgMy0xNC0xMS05IDEzLTEgNi0xMyA2IDEzIDEzIDEtMTEgOSAzIDE0eiIvPjwvc3ZnPg==',
+    
+    // 评分数据
+    scores: {
+      response_speed: 5,
+      service_quality: 5,
+      service_attitude: 5
     },
-    canSubmit: false,
+
+    // 标签数据
+    tags: [
+      { name: '响应迅速', selected: false },
+      { name: '技术专业', selected: false },
+      { name: '准时到达', selected: false },
+      { name: '收费透明', selected: false },
+      { name: '态度很好', selected: false },
+      { name: '安装美观', selected: false }
+    ],
+    
+    comment: '',
+    commentLength: 0,
+    canSubmit: true,
+    
+    // 工单信息
+    orderInfo: {
+      serviceType: '宽带安装服务',
+      orderNo: '',
+      completeTime: ''
+    },
+    currentTime: '',
+    
     device_no: '',  // 设备编号
     openid: ''      // 用户openid
   },
@@ -18,10 +46,18 @@ Page({
   onLoad(options) {
     console.log('服务评价页面加载', options);
     
+    // 获取系统信息
+    const sys = wx.getSystemInfoSync();
+    this.setData({ 
+      statusBarHeight: sys.statusBarHeight,
+      currentTime: this.formatDateTime(new Date())
+    });
+    
     // 从页面参数获取设备编号
     if (options.device_no) {
       this.setData({
-        device_no: options.device_no
+        device_no: options.device_no,
+        'orderInfo.orderNo': options.device_no
       });
     }
     
@@ -34,46 +70,73 @@ Page({
     }
   },
 
-  // 设置评分
-  setRating(e) {
-    const { type, rating } = e.currentTarget.dataset;
-    const ratings = { ...this.data.ratings };
-    ratings[type] = rating;
-    
-    this.setData({ ratings });
-    this.checkCanSubmit();
+  // 格式化日期时间
+  formatDateTime(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hour = String(date.getHours()).padStart(2, '0');
+    const minute = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hour}:${minute}`;
+  },
+
+  // 返回上一页
+  handleBack() {
+    wx.navigateBack();
+  },
+
+  // 处理评分点击
+  handleRate(e) {
+    const { type, score } = e.currentTarget.dataset;
+    this.setData({
+      [`scores.${type}`]: score
+    });
     
     // 触觉反馈
     wx.vibrateShort({
       type: 'light'
     });
+    
+    this.checkCanSubmit();
   },
 
-  // 获取评分文字描述
-  getRatingText(rating) {
-    const texts = ['请评分', '很不满意', '不满意', '一般', '满意', '非常满意'];
-    return texts[rating] || '请评分';
+  // 处理标签选择
+  toggleTag(e) {
+    const index = e.currentTarget.dataset.index;
+    const key = `tags[${index}].selected`;
+    this.setData({
+      [key]: !this.data.tags[index].selected
+    });
+  },
+
+  // 处理评论输入
+  handleCommentInput(e) {
+    const comment = e.detail.value;
+    this.setData({
+      comment: comment,
+      commentLength: comment.length
+    });
   },
 
   // 检查是否可以提交
   checkCanSubmit() {
-    const { ratings } = this.data;
+    const { scores } = this.data;
     // 三个评分都必须大于0才能提交
-    const canSubmit = ratings.response_speed > 0 && 
-                     ratings.service_quality > 0 && 
-                     ratings.service_attitude > 0;
+    const canSubmit = scores.response_speed > 0 && 
+                     scores.service_quality > 0 && 
+                     scores.service_attitude > 0;
     
     this.setData({ canSubmit });
   },
 
   // 提交评价
-  async submitEvaluation() {
+  handleSubmit() {
     if (!this.data.canSubmit) {
       message.error('请完成所有评分项');
       return;
     }
 
-    const { ratings, openid, device_no } = this.data;
+    const { scores, tags, comment, openid, device_no } = this.data;
 
     // 验证openid
     if (!openid) {
@@ -83,6 +146,14 @@ Page({
       }, 1500);
       return;
     }
+
+    const selectedTags = tags.filter(t => t.selected).map(t => t.name);
+    
+    console.log('提交数据:', {
+      scores,
+      tags: selectedTags,
+      comment: comment
+    });
 
     // 确认提交
     wx.showModal({
@@ -100,7 +171,8 @@ Page({
 
   // 处理提交
   async processSubmit() {
-    const { ratings, openid, device_no } = this.data;
+    const { scores, tags, comment, openid, device_no } = this.data;
+    const selectedTags = tags.filter(t => t.selected).map(t => t.name);
 
     wx.showLoading({
       title: '提交中...',
@@ -110,9 +182,11 @@ Page({
     try {
       // 构建请求数据
       const evaluationData = {
-        response_speed: ratings.response_speed,
-        service_quality: ratings.service_quality,
-        service_attitude: ratings.service_attitude,
+        response_speed: scores.response_speed,
+        service_quality: scores.service_quality,
+        service_attitude: scores.service_attitude,
+        tags: selectedTags.join(','),
+        comment: comment,
         openid: openid
       };
 

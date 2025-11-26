@@ -11,6 +11,37 @@ view, text, image, button, input, textarea, picker, scroll-view, swiper, swiper-
   box-sizing: border-box;
 }
 
+/* 移除按钮默认边框 */
+button {
+  border: none !important;
+}
+
+button::after {
+  border: none !important;
+}
+
+/* 优化 Picker 选择器样式 */
+picker-view-column {
+  font-size: 36rpx !important;
+}
+
+picker-view-column view {
+  font-size: 36rpx !important;
+  line-height: 1.8 !important;
+}
+
+/* 修复选择器内容字体大小 */
+.picker-item {
+  font-size: 36rpx !important;
+  line-height: 1.8 !important;
+}
+
+/* 尝试修改原生 picker 弹出框样式 */
+.wx-picker-item {
+  font-size: 36rpx !important;
+  line-height: 1.8 !important;
+}
+
 /* 禁用选择和拖拽 */
 view, text, image, button, input, textarea, picker, scroll-view, swiper, swiper-item, navigator, audio, video, map, canvas, web-view, cover-view, cover-image {
   -webkit-touch-callout: none;
