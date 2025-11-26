@@ -243,7 +243,7 @@ const API = {
    */
   createMiniprogramPayment(paymentData) {
     return request({
-      url: '/api/v1/miniprogram/pay',
+      url: '/api/v1/payments/miniprogram/pay',
       method: 'POST',
       data: paymentData,
       needAuth: true
@@ -563,6 +563,48 @@ const API = {
    */
   checkPaymentStatus(orderNo) {
     return this.getPaymentStatus({ order_no: orderNo });
+  },
+
+  // ==================== 服务评价模块 ====================
+
+  /**
+   * 创建服务评价
+   * @param {Object} evaluationData 评价数据
+   * @param {Number} evaluationData.response_speed 响应速度评分（1-5）
+   * @param {Number} evaluationData.service_quality 服务质量评分（1-5）
+   * @param {Number} evaluationData.service_attitude 服务态度评分（1-5）
+   * @param {String} evaluationData.openid 用户openid
+   * @param {String} evaluationData.device_no 设备编号（可选）
+   * @returns {Promise} { success, data, message }
+   */
+  createEvaluation(evaluationData) {
+    return request({
+      url: '/api/v1/evaluations/createEvaluation',
+      method: 'POST',
+      data: evaluationData,
+      needAuth: true
+    });
+  },
+
+  // ==================== 投诉管理模块 ====================
+
+  /**
+   * 创建投诉
+   * @param {Object} complaintData 投诉数据
+   * @param {String} complaintData.complaint_category 投诉类别（1-10）
+   * @param {String} complaintData.complaint_content 投诉内容
+   * @param {String} complaintData.openid 用户openid
+   * @param {String} complaintData.device_number 设备编号（可选）
+   * @param {String} complaintData.contact_phone 联系电话（可选）
+   * @returns {Promise} { success, data, message }
+   */
+  createComplaint(complaintData) {
+    return request({
+      url: '/api/v1/complaints/createComplaint',
+      method: 'POST',
+      data: complaintData,
+      needAuth: true
+    });
   }
 };
 

@@ -19,8 +19,7 @@
     "pages/payment-collection/payment-collection",
     "pages/change-transfer/change-transfer",
     "pages/product-query/product-query",
-    "pages/complaint/complaint",
-    "pages/qrcode-payment/qrcode-payment"
+    "pages/complaint/complaint"
   ],
   "window": {
     "backgroundTextStyle": "light",

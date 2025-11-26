@@ -1,121 +1,82 @@
 <!--pages/service-evaluation/service-evaluation.wxml-->
-<view class="service-evaluation-page">
+<view class="evaluation-page">
   <!-- 页面头部 -->
   <view class="page-header">
+    <view class="header-icon">⭐</view>
     <text class="page-title">服务评价</text>
-    <text class="page-subtitle">您的评价对我们很重要</text>
+    <text class="page-subtitle">您的评价是我们前进的动力</text>
   </view>
 
-  <!-- 服务信息 -->
-  <view class="service-info">
-    <view class="service-header">
-      <view class="service-icon">📡</view>
-      <view class="service-details">
-        <view class="service-name">宽带安装服务</view>
-        <view class="service-date">服务时间：2024-12-19 14:30</view>
-        <view class="service-engineer">工程师：张师傅</view>
+  <!-- 评分卡片容器 -->
+  <view class="rating-cards">
+    <!-- 响应速度 -->
+    <view class="rating-card">
+      <view class="card-header">
+        <view class="card-icon">⚡</view>
+        <view class="card-title">响应速度</view>
       </view>
-    </view>
-  </view>
-
-  <!-- 整体评分 -->
-  <view class="overall-rating">
-    <view class="section-title">整体满意度</view>
-    <view class="rating-container">
-      <view 
-        class="star-item"
-        wx:for="{{ 5 }}"
-        wx:key="index"
-        bindtap="setOverallRating"
-        data-rating="{{ index + 1 }}"
-      >
-        <text class="star-icon {{ index < overallRating ? 'active' : '' }}">⭐</text>
-      </view>
-    </view>
-    <view class="rating-text">{{ ratingTexts[overallRating - 1] || '请评分' }}</view>
-  </view>
-
-  <!-- 详细评价 -->
-  <view class="detailed-rating">
-    <view class="section-title">详细评价</view>
-    
-    <view class="rating-items">
-      <view 
-        class="rating-item"
-        wx:for="{{ ratingCategories }}"
-        wx:key="id"
-      >
-        <view class="rating-label">{{ item.name }}</view>
-        <view class="star-group">
-          <view 
-            class="star-item small"
-            wx:for="{{ 5 }}"
-            wx:for-item="starIndex"
-            wx:key="starIndex"
-            bindtap="setCategoryRating"
-            data-category="{{ item.id }}"
-            data-rating="{{ starIndex + 1 }}"
-          >
-            <text class="star-icon {{ starIndex < item.rating ? 'active' : '' }}">⭐</text>
-          </view>
+      <view class="star-container">
+        <view 
+          class="star-item"
+          wx:for="{{ 5 }}"
+          wx:key="index"
+          bindtap="setRating"
+          data-type="response_speed"
+          data-rating="{{ index + 1 }}"
+        >
+          <text class="star {{ index < ratings.response_speed ? 'active' : '' }}">★</text>
         </view>
       </view>
+      <view class="rating-desc">{{ getRatingText(ratings.response_speed) }}</view>
+    </view>
+
+    <!-- 服务质量 -->
+    <view class="rating-card">
+      <view class="card-header">
+        <view class="card-icon">👍</view>
+        <view class="card-title">服务质量</view>
+      </view>
+      <view class="star-container">
+        <view 
+          class="star-item"
+          wx:for="{{ 5 }}"
+          wx:key="index"
+          bindtap="setRating"
+          data-type="service_quality"
+          data-rating="{{ index + 1 }}"
+        >
+          <text class="star {{ index < ratings.service_quality ? 'active' : '' }}">★</text>
+        </view>
+      </view>
+      <view class="rating-desc">{{ getRatingText(ratings.service_quality) }}</view>
+    </view>
+
+    <!-- 服务态度 -->
+    <view class="rating-card">
+      <view class="card-header">
+        <view class="card-icon">😊</view>
+        <view class="card-title">服务态度</view>
+      </view>
+      <view class="star-container">
+        <view 
+          class="star-item"
+          wx:for="{{ 5 }}"
+          wx:key="index"
+          bindtap="setRating"
+          data-type="service_attitude"
+          data-rating="{{ index + 1 }}"
+        >
+          <text class="star {{ index < ratings.service_attitude ? 'active' : '' }}">★</text>
+        </view>
+      </view>
+      <view class="rating-desc">{{ getRatingText(ratings.service_attitude) }}</view>
     </view>
   </view>
 
-  <!-- 文字评价 -->
-  <view class="text-evaluation">
-    <view class="section-title">文字评价</view>
-    <textarea
-      class="evaluation-input"
-      placeholder="请分享您对这次服务的感受和建议..."
-      value="{{ textEvaluation }}"
-      bindinput="onTextEvaluationInput"
-      maxlength="200"
-    ></textarea>
-    <view class="input-counter">{{ textEvaluation.length }}/200</view>
-  </view>
-
-  <!-- 标签选择 -->
-  <view class="tag-evaluation">
-    <view class="section-title">服务印象</view>
-    <view class="tag-list">
-      <view 
-        class="tag-item {{ selectedTags.includes(item) ? 'selected' : '' }}"
-        wx:for="{{ serviceTags }}"
-        wx:key="*this"
-        bindtap="toggleTag"
-        data-tag="{{ item }}"
-      >
-        {{ item }}
-      </view>
-    </view>
-  </view>
-
-  <!-- 匿名评价 -->
-  <view class="anonymous-option">
-    <view class="option-item">
-      <view class="option-info">
-        <text class="option-label">匿名评价</text>
-        <text class="option-desc">选择匿名后，您的个人信息将不会显示</text>
-      </view>
-      <view class="switch-container">
-        <switch 
-          checked="{{ isAnonymous }}"
-          bindchange="toggleAnonymous"
-          color="#2563eb"
-        />
-      </view>
-    </view>
-  </view>
-
-  <!-- 底部操作 -->
-  <view class="bottom-actions">
-    <button class="action-button secondary" bindtap="skipEvaluation">
-      暂时跳过
-    </button>
+  <!-- 提交按钮 -->
+  <view class="submit-container">
     <button 
-      class="action-button primary" 
+      class="submit-btn {{ canSubmit ? '' : 'disabled' }}" 
       disabled="{{ !canSubmit }}"
       bindtap="submitEvaluation"
     >

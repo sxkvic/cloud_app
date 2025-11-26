@@ -1,81 +1,67 @@
 // pages/complaint/complaint.js
+const API = require('../../utils/api');
 const { navigation, message } = require('../../utils/common');
 
 Page({
   data: {
-    selectedType: null,
+    // 投诉分类（1-10）
+    complaintCategories: [
+      { id: '1', name: '宽带/光纤无法连接' },
+      { id: '2', name: '宽带/光纤速率不达标' },
+      { id: '3', name: '网络信号覆盖差、去哪儿都、影响正常使用' },
+      { id: '4', name: 'WiFi信号覆盖差或速率慢效果不佳' },
+      { id: '5', name: '合约期内无法律维或改或降套餐' },
+      { id: '6', name: '进新购的运营商套餐+套餐合理' },
+      { id: '7', name: '进订/续约承诺是否兑现、按实际运营或设备赠送' },
+      { id: '8', name: '营业网点正反、问题无人处理' },
+      { id: '9', name: '套餐信息披露、问题无法处理' },
+      { id: '10', name: '其他问题（如骚扰电话、恶意营销等）' }
+    ],
+    categoryIndex: -1,
+    deviceNumber: '',
     contactPhone: '',
-    description: '',
-    uploadedImages: [],
+    complaintContent: '',
     canSubmit: false,
-    currentTime: '',
-    complaintTypes: [
-      {
-        id: 'network',
-        name: '网络问题',
-        description: '网速慢、断网、连接不稳定等',
-        icon: '🌐'
-      },
-      {
-        id: 'service',
-        name: '服务质量',
-        description: '客服态度、上门服务、技术支持等',
-        icon: '👥'
-      },
-      {
-        id: 'billing',
-        name: '计费问题',
-        description: '费用异常、扣费错误、账单问题等',
-        icon: '💰'
-      },
-      {
-        id: 'equipment',
-        name: '设备问题',
-        description: '路由器故障、设备损坏、安装问题等',
-        icon: '🔧'
-      },
-      {
-        id: 'other',
-        name: '其他问题',
-        description: '其他需要反馈的问题',
-        icon: '📝'
-      }
-    ]
+    openid: ''
   },
 
-  onLoad() {
-    console.log('举报投诉页面加载');
-    this.setCurrentTime();
-  },
-
-  onShow() {
-    console.log('举报投诉页面显示');
-  },
-
-  // 设置当前时间
-  setCurrentTime() {
-    const now = new Date();
-    const timeString = now.getFullYear() + '-' + 
-      String(now.getMonth() + 1).padStart(2, '0') + '-' + 
-      String(now.getDate()).padStart(2, '0') + ' ' + 
-      String(now.getHours()).padStart(2, '0') + ':' + 
-      String(now.getMinutes()).padStart(2, '0');
+  onLoad(options) {
+    console.log('投诉页面加载', options);
     
-    this.setData({
-      currentTime: timeString
-    });
+    // 从页面参数获取设备编号
+    if (options.device_number) {
+      this.setData({
+        deviceNumber: options.device_number
+      });
+    }
+    
+    // 从本地存储获取openid
+    const openid = wx.getStorageSync('openid');
+    if (openid) {
+      this.setData({ openid });
+    } else {
+      console.warn('未找到用户openid');
+    }
   },
 
-  // 选择投诉类型
-  selectType(e) {
-    const typeId = e.currentTarget.dataset.id;
+  // 选择投诉类别
+  onCategoryChange(e) {
     this.setData({
-      selectedType: typeId
+      categoryIndex: parseInt(e.detail.value)
     });
     this.checkCanSubmit();
     
     // 触觉反馈
-    wx.vibrateShort();
+    wx.vibrateShort({
+      type: 'light'
+    });
+  },
+
+  // 输入设备编号
+  onDeviceNumberInput(e) {
+    this.setData({
+      deviceNumber: e.detail.value
+    });
   },
 
   // 输入联系电话
@@ -83,149 +69,120 @@ Page({
     this.setData({
       contactPhone: e.detail.value
     });
-    this.checkCanSubmit();
   },
 
-  // 输入问题描述
-  onDescriptionInput(e) {
+  // 输入投诉内容
+  onContentInput(e) {
     this.setData({
-      description: e.detail.value
-    });
-    this.checkCanSubmit();
-  },
-
-  // 上传图片
-  uploadImage() {
-    if (this.data.uploadedImages.length >= 3) {
-      message.error('最多只能上传3张图片');
-      return;
-    }
-
-    wx.chooseImage({
-      count: 1,
-      sizeType: ['compressed'],
-      sourceType: ['album', 'camera'],
-      success: (res) => {
-        const tempFilePath = res.tempFilePaths[0];
-        this.setData({
-          uploadedImages: [...this.data.uploadedImages, tempFilePath]
-        });
-        this.checkCanSubmit();
-      },
-      fail: (err) => {
-        console.error('选择图片失败:', err);
-        message.error('选择图片失败，请重试');
-      }
-    });
-  },
-
-  // 删除图片
-  deleteImage(e) {
-    const index = e.currentTarget.dataset.index;
-    const images = this.data.uploadedImages;
-    images.splice(index, 1);
-    this.setData({
-      uploadedImages: images
+      complaintContent: e.detail.value
     });
     this.checkCanSubmit();
   },
 
   // 检查是否可以提交
   checkCanSubmit() {
-    const { selectedType, contactPhone, description } = this.data;
+    const { categoryIndex, complaintContent } = this.data;
     
-    const canSubmit = selectedType && 
-                     contactPhone.trim().length > 0 && 
-                     description.trim().length > 0 &&
-                     this.validatePhone(contactPhone);
+    // 必填项：投诉类别和投诉内容
+    const canSubmit = categoryIndex >= 0 && complaintContent.trim().length > 0;
     
     this.setData({ canSubmit });
   },
 
-  // 验证手机号
-  validatePhone(phone) {
-    const phoneRegex = /^1[3-9]\d{9}$/;
-    return phoneRegex.test(phone);
-  },
-
-  // 联系客服
-  contactService() {
-    wx.showModal({
-      title: '联系客服',
-      content: '紧急问题建议直接联系客服，我们将优先为您处理。\n\n客服电话：400-123-4567\n工作时间：7×24小时',
-      confirmText: '拨打电话',
-      cancelText: '在线咨询',
-      success: (res) => {
-        if (res.confirm) {
-          wx.makePhoneCall({
-            phoneNumber: '400-123-4567'
-          });
-        } else {
-          message.success('正在为您转接在线客服...');
-        }
-      }
-    });
-  },
-
   // 提交投诉
-  submitComplaint() {
+  async submitComplaint() {
     if (!this.data.canSubmit) {
-      message.error('请完善投诉信息');
+      message.error('请完善必填信息');
       return;
     }
 
-    if (!this.validatePhone(this.data.contactPhone)) {
-      message.error('请输入正确的手机号码');
+    const { categoryIndex, complaintCategories, complaintContent, openid, deviceNumber, contactPhone } = this.data;
+
+    // 验证openid
+    if (!openid) {
+      message.error('用户信息缺失，请重新登录');
+      setTimeout(() => {
+        navigation.navigateTo('/pages/login/login');
+      }, 1500);
       return;
     }
 
-    const selectedType = this.data.complaintTypes.find(type => type.id === this.data.selectedType);
-    
+    // 确认提交
+    const selectedCategory = complaintCategories[categoryIndex];
     wx.showModal({
       title: '确认提交',
-      content: `投诉类型：${selectedType.name}\n联系电话：${this.data.contactPhone}\n\n确认提交投诉申请？`,
-      confirmText: '确认提交',
+      content: `投诉类别：${selectedCategory.name}\n\n确认提交投诉？`,
+      confirmText: '确认',
       cancelText: '取消',
       success: (res) => {
         if (res.confirm) {
-          this.processComplaint();
+          this.processSubmit();
         }
       }
     });
   },
 
-  // 处理投诉
-  processComplaint() {
+  // 处理提交
+  async processSubmit() {
+    const { categoryIndex, complaintCategories, complaintContent, openid, deviceNumber, contactPhone } = this.data;
+
     wx.showLoading({
-      title: '正在提交...'
+      title: '提交中...',
+      mask: true
     });
 
-    // 模拟提交过程
-    setTimeout(() => {
+    try {
+      // 构建请求数据
+      const complaintData = {
+        complaint_category: complaintCategories[categoryIndex].id,
+        complaint_content: complaintContent.trim(),
+        openid: openid
+      };
+
+      // 添加可选参数
+      if (deviceNumber.trim()) {
+        complaintData.device_number = deviceNumber.trim();
+      }
+      if (contactPhone.trim()) {
+        complaintData.contact_phone = contactPhone.trim();
+      }
+
+      console.log('提交投诉数据：', complaintData);
+
+      // 调用API
+      const result = await API.createComplaint(complaintData);
+
       wx.hideLoading();
-      
-      message.success('投诉提交成功');
-      
-      setTimeout(() => {
-        wx.showModal({
-          title: '投诉已受理',
-          content: '您的投诉已成功提交！\n\n投诉编号：CP' + Date.now().toString().slice(-8) + '\n\n我们会在24小时内联系您了解详情，并尽快处理您的问题。\n\n您可以在"我的"页面查看投诉进度。',
-          showCancel: false,
-          confirmText: '知道了',
-          success: () => {
-            // 清空表单数据
-            this.setData({
-              selectedType: null,
-              contactPhone: '',
-              description: '',
-              uploadedImages: [],
-              canSubmit: false
-            });
-            // 返回首页
+
+      if (result.success) {
+        message.success('投诉提交成功');
+        
+        // 延迟返回
+        setTimeout(() => {
+          // 清空表单
+          this.setData({
+            categoryIndex: -1,
+            deviceNumber: '',
+            contactPhone: '',
+            complaintContent: '',
+            canSubmit: false
+          });
+          
+          // 返回上一页或首页
+          const pages = getCurrentPages();
+          if (pages.length > 1) {
+            navigation.navigateBack();
+          } else {
             navigation.switchTab('/pages/home/home');
           }
-        });
-      }, 1000);
-    }, 2000);
+        }, 1500);
+      } else {
+        message.error(result.message || '提交失败，请重试');
+      }
+    } catch (error) {
+      wx.hideLoading();
+      console.error('提交投诉失败：', error);
+      message.error('提交失败，请检查网络后重试');
+    }
   }
 });

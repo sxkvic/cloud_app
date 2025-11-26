@@ -2,124 +2,100 @@
 <view class="complaint-page">
   <!-- 页面头部 -->
   <view class="page-header">
-    <text class="page-title">举报投诉</text>
-    <text class="page-subtitle">我们重视您的每一个反馈</text>
+    <view class="header-icon">📢</view>
+    <text class="page-title">投诉建议</text>
+    <text class="page-subtitle">您的意见是我们改进的动力</text>
   </view>
 
-  <!-- 投诉类型选择 -->
-  <view class="complaint-types">
-    <view class="section-title">投诉类型</view>
-    <view class="type-list">
-      <view 
-        class="type-item"
-        wx:for="{{ complaintTypes }}"
-        wx:key="id"
-        bindtap="selectType"
-        data-id="{{ item.id }}"
+  <!-- 投诉表单 -->
+  <view class="complaint-form">
+    <!-- 投诉类别 -->
+    <view class="form-item">
+      <view class="item-label">
+        <text class="label-text">投诉类别</text>
+        <text class="required">*</text>
+      </view>
+      <picker 
+        mode="selector" 
+        range="{{ complaintCategories }}" 
+        range-key="name"
+        value="{{ categoryIndex }}"
+        bindchange="onCategoryChange"
       >
-        <view class="type-icon">{{ item.icon }}</view>
-        <view class="type-info">
-          <view class="type-name">{{ item.name }}</view>
-          <view class="type-description">{{ item.description }}</view>
+        <view class="picker-view">
+          <text class="picker-text {{ categoryIndex >= 0 ? '' : 'placeholder' }}">
+            {{ categoryIndex >= 0 ? complaintCategories[categoryIndex].name : '请选择投诉类别' }}
+          </text>
+          <text class="picker-arrow">›</text>
         </view>
-        <view class="type-radio {{ selectedType === item.id ? 'selected' : '' }}">
-          <view class="radio-inner"></view>
-        </view>
-      </view>
-    </view>
-  </view>
-
-  <!-- 投诉详情 -->
-  <view class="complaint-details" wx:if="{{ selectedType }}">
-    <view class="section-title">投诉详情</view>
-    
-    <!-- 基本信息 -->
-    <view class="info-section">
-      <view class="info-item">
-        <text class="info-label">服务账号</text>
-        <text class="info-value">138****8888</text>
-      </view>
-      <view class="info-item">
-        <text class="info-label">投诉时间</text>
-        <text class="info-value">{{ currentTime }}</text>
-      </view>
-      <view class="info-item">
-        <text class="info-label">联系电话</text>
-        <input 
-          class="info-input"
-          type="text"
-          placeholder="请输入您的联系电话"
-          value="{{ contactPhone }}"
-          bindinput="onPhoneInput"
-          maxlength="11"
-        />
-      </view>
+      </picker>
     </view>
 
-    <!-- 问题描述 -->
-    <view class="description-section">
-      <text class="section-label">问题描述</text>
+    <!-- 设备编号 -->
+    <view class="form-item">
+      <view class="item-label">
+        <text class="label-text">设备编号</text>
+      </view>
+      <input 
+        class="item-input"
+        type="text"
+        placeholder="请输入设备编号（选填）"
+        value="{{ deviceNumber }}"
+        bindinput="onDeviceNumberInput"
+        maxlength="50"
+      />
+    </view>
+
+    <!-- 联系电话 -->
+    <view class="form-item">
+      <view class="item-label">
+        <text class="label-text">联系电话</text>
+      </view>
+      <input 
+        class="item-input"
+        type="number"
+        placeholder="请输入联系电话（选填）"
+        value="{{ contactPhone }}"
+        bindinput="onPhoneInput"
+        maxlength="20"
+      />
+    </view>
+
+    <!-- 投诉内容 -->
+    <view class="form-item textarea-item">
+      <view class="item-label">
+        <text class="label-text">投诉内容</text>
+        <text class="required">*</text>
+      </view>
       <textarea
-        class="description-input"
-        placeholder="请详细描述您遇到的问题，我们会认真处理..."
-        value="{{ description }}"
-        bindinput="onDescriptionInput"
+        class="item-textarea"
+        placeholder="请详细描述您的问题，我们会认真处理..."
+        value="{{ complaintContent }}"
+        bindinput="onContentInput"
         maxlength="500"
+        auto-height
       ></textarea>
-      <view class="input-counter">{{ description.length }}/500</view>
-    </view>
-
-    <!-- 上传图片 -->
-    <view class="upload-section">
-      <text class="section-label">相关图片（可选）</text>
-      <view class="upload-area">
-        <view 
-          class="upload-item"
-          wx:for="{{ uploadedImages }}"
-          wx:key="index"
-        >
-          <image class="upload-image" src="{{ item }}" mode="aspectFill" />
-          <view class="delete-btn" bindtap="deleteImage" data-index="{{ index }}">×</view>
-        </view>
-        <view 
-          class="upload-btn {{ uploadedImages.length >= 3 ? 'disabled' : '' }}"
-          bindtap="uploadImage"
-          wx:if="{{ uploadedImages.length < 3 }}"
-        >
-          <text class="upload-icon">📷</text>
-          <text class="upload-text">添加图片</text>
-        </view>
-      </view>
-      <text class="upload-tip">最多上传3张图片，支持JPG、PNG格式</text>
+      <view class="input-counter">{{ complaintContent.length }}/500</view>
     </view>
   </view>
 
-  <!-- 处理说明 -->
-  <view class="process-info">
-    <view class="section-title">处理说明</view>
-    <view class="info-list">
-      <view class="info-item">
-        <text class="info-icon">📞</text>
-        <text class="info-text">我们会在24小时内联系您了解详情</text>
-      </view>
-      <view class="info-item">
-        <text class="info-icon">⚡</text>
-        <text class="info-text">紧急问题将优先处理</text>
-      </view>
-      <view class="info-item">
-        <text class="info-icon">🔒</text>
-        <text class="info-text">您的个人信息将被严格保密</text>
-      </view>
+  <!-- 温馨提示 -->
+  <view class="tips-card">
+    <view class="tips-title">
+      <text class="tips-icon">💡</text>
+      <text>温馨提示</text>
+    </view>
+    <view class="tips-content">
+      <view class="tip-item">• 我们将在24小时内处理您的投诉</view>
+      <view class="tip-item">• 请如实填写投诉内容，以便我们更好地为您服务</view>
+      <view class="tip-item">• 您的个人信息将被严格保密</view>
     </view>
   </view>
 
-  <!-- 底部操作 -->
-  <view class="bottom-actions">
-    <button class="action-button secondary" bindtap="contactService">
-      联系客服
-    </button>
+  <!-- 提交按钮 -->
+  <view class="submit-container">
     <button 
-      class="action-button primary" 
+      class="submit-btn {{ canSubmit ? '' : 'disabled' }}" 
       disabled="{{ !canSubmit }}"
       bindtap="submitComplaint"
     >
