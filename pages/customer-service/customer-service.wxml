@@ -1,51 +1,73 @@
 <!--pages/customer-service/customer-service.wxml-->
-<view class="service-center-page">
-  <view class="main-content">
-    <!-- 顶部欢迎卡片 -->
-    <view class="hero-card">
-      <image src="/images/logo.png" class="avatar" mode="aspectFill"></image>
-      <view class="welcome-title">您好，有什么可以帮您？</view>
-      <view class="service-time">我们的服务时间为：工作日 9:00 - 21:00</view>
-      <view class="status-tag">
-        <view class="status-dot"></view>
-        当前服务通畅
+<view class="container">
+  <!-- 顶部蓝色背景 -->
+  <view class="header-bg">
+    <!-- 自定义导航栏 -->
+    <view style="height: {{statusBarHeight}}px;"></view>
+    <view class="nav-bar">
+      <view class="back-btn" bindtap="handleBack">
+        <image class="icon-back" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0iI2ZmZmZmZiIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMTUuNDEgNy40MUwxNCA2bC02IDYgNiA2IDEuNDEtMS40MUwxMC44MyAxMnoiLz48L3N2Zz4=" mode="aspectFit"></image>
       </view>
+      <text class="nav-title">客户服务</text>
     </view>
 
-    <!-- 功能入口 -->
-    <view class="action-cards">
-      <!-- 在线客服 -->
-      <view class="action-card online-chat-card" bindtap="startChat">
-        <view class="icon">💬</view>
-        <view class="text-content">
-          <view class="title">在线客服</view>
-          <view class="subtitle">输入您的问题，我们将尽快为您解答</view>
-        </view>
-      </view>
+    <!-- 头部欢迎语 -->
+    <view class="header-text">
+      <view class="h1">您好，欢迎咨询</view>
+      <view class="p">中国移动智慧客服为您服务</view>
+    </view>
+  </view>
+
+  <view class="content-wrapper">
+
+    <!-- 核心功能区 -->
+    <view class="service-group">
       
-      <!-- 客服热线 -->
-      <view class="action-card hotline-card" bindtap="makeCall">
-        <view class="icon">📞</view>
-        <view class="text-content">
-          <view class="title">客服热线</view>
-          <view class="subtitle">拨打 10086-8-1 (宽带专线)</view>
+      <!-- 1. 在线客服 (原生客服按钮) -->
+      <!-- 注意：open-type="contact" 是小程序调起客服会话的关键 -->
+      <button class="card main-card btn-reset" open-type="contact" hover-class="card-hover">
+        <view class="card-left">
+          <view class="card-title-row">
+            <text class="card-title">在线客服</text>
+            <view class="live-badge">当前在线</view>
+          </view>
+          <text class="card-desc">7x24小时 智能+人工服务</text>
+        </view>
+        <!-- 右侧图标容器 -->
+        <view class="action-icon-box blue-gradient">
+          <image class="icon-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgZmlsbD0iI2ZmZmZmZiIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMjAgMkg0Yy0xLjEgMC0yIC45LTIgMnYxOGwyLTJoMTZjMS4xIDAgMi0uOSAyLTJWNGMwLTEuMS0uOS0yLTItMnptLTMgMTJINy45OWwtLjAxLS4wMUw2IDEybDEuOTktMi4wMUgxN1Y2aDJ2OHoiLz48L3N2Zz4=" mode="aspectFit"></image>
+        </view>
+      </button>
+
+      <!-- 2. 电话热线 -->
+      <view class="card sub-card" hover-class="card-hover" bindtap="handleCall">
+        <view class="card-left">
+          <text class="sub-card-label">宽带专线热线</text>
+          <text class="hotline-number">10086-8-1</text>
+        </view>
+        <view class="call-btn">
+          <image class="small-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0iIzRENkFGRiIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNNi42MiAxMC43OWMxLjQ0IDIuODMgMy43NiA1LjE0IDYuNTkgNi41OWwyLjItMi4yYy4yNy0uMjcuNjctLjM2IDEuMDItLjI0IDEuMTIuMzcgMi4zMy41NyAzLjU3LjU3LjU1IDAgMSAuNDUgMSAxVjIxYzAgLjU1LS40NSAxLTEgMS0xMC4wMSAwLTE4LTcuOTktMTgtMTggMC0uNTUuNDUtMSAxLTFoMy41Yy41NSAwIDEgLjQ1IDEgMSAwIDEuMjUuMiAyLjQ1LjU3IDMuNTcuMTEuMzUuMDMuNzQtLjI1IDEuMDJsLTIuMiAyLjJ6Ii8+PC9zdmc+" mode="aspectFit"></image>
+          <text>呼叫</text>
         </view>
       </view>
     </view>
 
-    <!-- 常见问题 -->
-    <view class="faq-section">
-      <view class="section-title">常见问题</view>
-      <van-collapse value="{{ activeFaq }}" bind:change="onFaqChange" class="faq-collapse">
-        <van-collapse-item 
-          wx:for="{{ faqList }}" 
-          wx:key="title"
-          title="{{ item.title }}"
-          name="{{ item.title }}"
-        >
-          <view class="faq-content">{{ item.content }}</view>
-        </van-collapse-item>
-      </van-collapse>
+    <!-- 常见问题列表 -->
+    <view class="section-title">常见问题</view>
+    <view class="faq-list">
+      <block wx:for="{{faqList}}" wx:key="id">
+        <view class="faq-item" bindtap="onFaqTap" data-index="{{index}}">
+          <text class="faq-text">{{item.title}}</text>
+          <view class="arrow-right"></view>
+        </view>
+      </block>
     </view>
+
+    <!-- 底部版权 -->
+    <view class="footer">
+      <text class="footer-brand">CHINA MOBILE</text>
+      <text class="footer-slogan">全心全意为您服务</text>
+    </view>
+
   </view>
 </view>

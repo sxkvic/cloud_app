@@ -1,164 +1,283 @@
 /* pages/customer-service/customer-service.wxss */
 
-/* --- 全局样式 --- */
-.service-center-page {
-  background-color: #f4f7f9;
+/* 基础变量与重置 */
+page {
+  background-color: #f5f6f7;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Segoe UI, Arial, Roboto, 'PingFang SC', 'miui', 'Hiragino Sans GB', 'Microsoft Yahei', sans-serif;
+}
+
+.container {
+  position: relative;
+  width: 100%;
   min-height: 100vh;
 }
 
-.main-content {
-  padding: 32rpx;
-  display: flex;
-  flex-direction: column;
-  gap: 48rpx;
+/* 顶部蓝色弧形背景 */
+.header-bg {
+  background: linear-gradient(135deg, #4D6AFF 0%, #2B4CFF 100%);
+  padding-bottom: 60rpx;
+  border-bottom-left-radius: 40rpx;
+  border-bottom-right-radius: 40rpx;
+  position: relative;
+  z-index: 0;
 }
 
-/* --- 欢迎卡片 --- */
-.hero-card {
-  background-color: white;
-  border-radius: 32rpx;
-  padding: 48rpx;
-  text-align: center;
-  box-shadow: 0 8rpx 32rpx rgba(0,0,0,0.06);
-}
-
-.avatar {
-  width: 160rpx;
-  height: 160rpx;
-  border-radius: 50%;
-  border: 8rpx solid white;
-  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.1);
-  margin: 0 auto;
-  object-fit: cover;
-}
-
-.welcome-title {
-  margin-top: 32rpx;
-  font-size: 36rpx;
-  font-weight: bold;
-  color: #1f2937;
-}
-
-.service-time {
-  margin-top: 8rpx;
-  font-size: 26rpx;
-  color: #6b7280;
-}
-
-.status-tag {
-  margin-top: 24rpx;
-  display: inline-flex;
-  align-items: center;
-  background-color: #dcfce7;
-  color: #166534;
-  font-size: 24rpx;
-  font-weight: 500;
-  padding: 8rpx 24rpx;
-  border-radius: 999rpx;
-}
-
-.status-dot {
-  width: 16rpx;
-  height: 16rpx;
-  background-color: #22c55e;
-  border-radius: 50%;
-  margin-right: 12rpx;
-}
-
-/* --- 功能卡片 --- */
-.action-cards {
-  display: flex;
-  flex-direction: column;
-  gap: 32rpx;
-}
-
-.action-card {
+/* 自定义导航栏 */
+.nav-bar {
   display: flex;
   align-items: center;
-  padding: 48rpx;
-  border-radius: 32rpx;
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  justify-content: center;
+  position: relative;
+  height: 44px;
 }
 
-.action-card:active {
-  transform: translateY(-8rpx);
-}
-
-.action-card .icon {
-  font-size: 64rpx;
-  margin-right: 40rpx;
-  width: 64rpx;
-  height: 64rpx;
+.back-btn {
+  position: absolute;
+  left: 20rpx;
+  width: 60rpx;
+  height: 60rpx;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.action-card .text-content {
-  flex: 1;
+.icon-back {
+  width: 36rpx;
+  height: 36rpx;
 }
 
-.action-card .text-content .title {
-  font-size: 36rpx;
-  font-weight: bold;
+.nav-title {
+  color: #fff;
+  font-size: 34rpx;
+  font-weight: 500;
 }
 
-.action-card .text-content .subtitle {
+/* 头部文字 */
+.header-text {
+  padding: 20rpx 32rpx 0;
+  color: #ffffff;
+}
+
+.header-text .h1 {
+  font-size: 44rpx;
+  font-weight: 600;
+  margin-bottom: 10rpx;
+}
+
+.header-text .p {
   font-size: 26rpx;
-  margin-top: 8rpx;
+  opacity: 0.9;
 }
 
-.online-chat-card {
-  background: linear-gradient(90deg, #2563eb, #1cb0f6);
-  color: white;
-  box-shadow: 0 16rpx 32rpx rgba(59, 130, 246, 0.25);
+.content-wrapper {
+  position: relative;
+  z-index: 1;
+  padding: 30rpx 32rpx;
+  margin-top: -60rpx;
 }
 
-.online-chat-card:active {
-  box-shadow: 0 24rpx 48rpx rgba(59, 130, 246, 0.3);
+/* 卡片通用样式 */
+.card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+  overflow: hidden;
 }
 
-.online-chat-card .subtitle {
-  color: rgba(255,255,255,0.9);
+.card-hover {
+  transform: scale(0.99);
+  opacity: 0.9;
+  transition: all 0.1s;
 }
 
-.hotline-card {
-  background-color: white;
-  box-shadow: 0 8rpx 32rpx rgba(0,0,0,0.06);
+/* 按钮样式重置 (针对 button 标签) */
+.btn-reset {
+  padding: 0;
+  margin: 0;
+  background-color: #fff;
+  border: none;
+  text-align: left;
+  line-height: normal;
+  display: flex; /* 保持 flex 布局 */
+}
+.btn-reset::after {
+  border: none;
 }
 
-.hotline-card:active {
-  box-shadow: 0 12rpx 40rpx rgba(0,0,0,0.08);
-}
-
-.hotline-card .icon {
-  color: #2563eb;
-}
-
-.hotline-card .title {
-  color: #1f2937;
-}
-
-.hotline-card .subtitle {
-  color: #6b7280;
-}
-
-/* --- 常见问题 --- */
-.faq-section .section-title {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #1f2937;
+/* 主卡片 (在线客服) */
+.main-card {
+  padding: 40rpx 30rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 24rpx;
+  position: relative;
 }
 
-.faq-collapse {
+/* 背景装饰圆圈 */
+.main-card::before {
+  content: '';
+  position: absolute;
+  right: -30rpx;
+  top: -30rpx;
+  width: 160rpx;
+  height: 160rpx;
+  background: radial-gradient(circle, rgba(41, 121, 255, 0.08) 0%, rgba(255,255,255,0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.card-left {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 24rpx;
 }
 
-.faq-content {
+.card-title-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.card-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.live-badge {
+  font-size: 20rpx;
+  background: #e8edff;
+  color: #4D6AFF;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  margin-left: 16rpx;
+}
+
+.card-desc {
+  font-size: 26rpx;
+  color: #999;
+}
+
+.action-icon-box {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 20rpx rgba(77, 106, 255, 0.25);
+}
+
+.blue-gradient {
+  background: linear-gradient(135deg, #4D6AFF 0%, #2B4CFF 100%);
+}
+
+.icon-img {
+  width: 48rpx;
+  height: 48rpx;
+}
+
+/* 次级卡片 (电话) */
+.sub-card {
+  padding: 30rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40rpx;
+}
+
+.sub-card-label {
   font-size: 28rpx;
-  color: #6b7280;
-  line-height: 1.7;
+  color: #666;
+  display: block;
+  margin-bottom: 6rpx;
+}
+
+.hotline-number {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #4D6AFF;
+  font-family: 'DINAlternate-Bold', sans-serif;
+}
+
+.call-btn {
+  background: #e8edff;
+  color: #4D6AFF;
+  padding: 12rpx 24rpx;
+  border-radius: 32rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.small-icon {
+  width: 24rpx;
+  height: 24rpx;
+  margin-right: 8rpx;
+}
+
+/* 常见问题 */
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20rpx;
+  padding-left: 8rpx;
+}
+
+.faq-list {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 0 30rpx;
+}
+
+.faq-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.faq-item:last-child {
+  border-bottom: none;
+}
+
+.faq-text {
+  font-size: 28rpx;
+  color: #333;
+  flex: 1;
+  padding-right: 20rpx;
+}
+
+/* CSS绘制右箭头 */
+.arrow-right {
+  width: 16rpx;
+  height: 16rpx;
+  border-top: 3rpx solid #ccc;
+  border-right: 3rpx solid #ccc;
+  transform: rotate(45deg);
+}
+
+/* 底部 */
+.footer {
+  margin-top: 60rpx;
+  text-align: center;
+  opacity: 0.3;
+}
+
+.footer-brand {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 800;
+  letter-spacing: 2rpx;
+  color: #000;
+}
+
+.footer-slogan {
+  font-size: 22rpx;
+  margin-top: 8rpx;
+  display: block;
 }

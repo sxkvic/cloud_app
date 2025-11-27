@@ -25,22 +25,30 @@ page {
 .nav-bar {
   display: flex;
   align-items: center;
-  padding-left: 20rpx;
+  justify-content: center;
   position: relative;
+  height: 44px;
 }
 
 .back-btn {
+  position: absolute;
+  left: 20rpx;
   width: 60rpx;
   height: 60rpx;
-  display: flex; align-items: center; justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.icon-back { width: 36rpx; height: 36rpx; }
+
+.icon-back {
+  width: 36rpx;
+  height: 36rpx;
+}
 
 .nav-title {
   color: #fff;
   font-size: 34rpx;
   font-weight: 500;
-  margin-left: 8rpx;
 }
 
 .account-info {
