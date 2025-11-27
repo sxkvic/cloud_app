@@ -17,37 +17,51 @@ page {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: linear-gradient(180deg, #2B75F6 0%, #F0F2F5 100%);
-  padding: 0 32rpx 32rpx;
+  background: linear-gradient(135deg, #4D6AFF 0%, #2B4CFF 100%);
+  padding: 0 0 32rpx;
+  border-bottom-left-radius: 40rpx;
+  border-bottom-right-radius: 40rpx;
 }
 
 .nav-bar {
   height: 44px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  position: relative;
   margin-bottom: 16rpx;
 }
 
 .back-btn {
+  position: absolute;
+  left: 20rpx;
   width: 60rpx;
   height: 60rpx;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
-.icon-back { width: 36rpx; height: 36rpx; }
+
+.icon-back {
+  width: 36rpx;
+  height: 36rpx;
+}
 
 .nav-title {
   color: #fff;
   font-size: 34rpx;
-  font-weight: bold;
+  font-weight: 500;
 }
-.nav-placeholder { width: 60rpx; }
+
+.nav-placeholder {
+  display: none;
+}
 
 /* 搜索框 */
 .search-wrapper {
-  padding: 0 4rpx;
+  padding: 0 32rpx;
 }
+
 .search-box {
   background: #fff;
   height: 80rpx;
@@ -55,25 +69,35 @@ page {
   display: flex;
   align-items: center;
   padding: 0 24rpx;
-  box-shadow: 0 8rpx 24rpx rgba(30, 64, 175, 0.1);
+  box-shadow: 0 8rpx 24rpx rgba(77, 106, 255, 0.15);
 }
-.icon-search { width: 40rpx; height: 40rpx; }
+
+.icon-search {
+  width: 40rpx;
+  height: 40rpx;
+}
+
 .search-input {
   flex: 1;
   margin-left: 16rpx;
   font-size: 28rpx;
   color: #333;
 }
-.placeholder { color: #9CA3AF; }
+
+.placeholder {
+  color: #9CA3AF;
+}
+
 .divider {
   width: 2rpx;
   height: 32rpx;
   background: #E5E7EB;
   margin: 0 16rpx;
 }
+
 .search-btn {
   font-size: 28rpx;
-  color: #2B75F6;
+  color: #4D6AFF;
   font-weight: bold;
   padding: 0 8rpx;
 }
@@ -211,13 +235,26 @@ page {
 .copy-btn {
   display: flex;
   align-items: center;
-  background: #EFF6FF;
+  background: #e8edff;
   padding: 4rpx 12rpx;
   border-radius: 8rpx;
 }
-.copy-btn:active { background: #DBEAFE; }
-.copy-btn text { font-size: 22rpx; color: #3B82F6; font-weight: 500; }
-.icon-copy { width: 24rpx; height: 24rpx; margin-right: 4rpx; }
+
+.copy-btn:active {
+  background: #d4dcff;
+}
+
+.copy-btn text {
+  font-size: 22rpx;
+  color: #4D6AFF;
+  font-weight: 500;
+}
+
+.icon-copy {
+  width: 24rpx;
+  height: 24rpx;
+  margin-right: 4rpx;
+}
 
 /* 备注 */
 .remark-box {
@@ -261,11 +298,11 @@ page {
 
 .help-link {
   font-size: 26rpx;
-  color: #2B75F6;
+  color: #4D6AFF;
   display: inline-flex;
   align-items: center;
   padding: 12rpx 24rpx;
-  background: #EFF6FF;
+  background: #e8edff;
   border-radius: 20rpx;
 }
 
