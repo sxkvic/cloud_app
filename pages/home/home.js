@@ -144,7 +144,10 @@ Page({
   navigateToPage(e) {
     const route = e.currentTarget.dataset.route;
     if (route) {
-      navigation.navigateTo(route);
+      // 使用带过渡动画的跳转
+      navigation.navigateWithTransition(route, {
+        text: '加载中...'
+      });
     } else {
       message.error('功能开发中，敬请期待');
     }
@@ -154,8 +157,9 @@ Page({
   onTabChange(event) {
     const index = event.detail;
     if (index === 1) {
-      wx.redirectTo({
-        url: '/pages/my/my'
+      // 使用带过渡动画的Tab切换
+      navigation.switchTabWithTransition('/pages/my/my', {
+        text: '加载中...'
       });
     }
   }

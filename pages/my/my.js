@@ -23,8 +23,9 @@ Page({
     ],
     settingsList: [
       { id: '1', name: '个人资料', icon: '👤', action: 'profile' },
-      { id: '2', name: '关于我们', icon: 'ℹ️', action: 'about' },
-      { id: '3', name: '联系客服', icon: '📞', action: 'contact' }
+      { id: '2', name: '重新绑定设备', icon: '🔄', action: 'rebind' },
+      { id: '3', name: '关于我们', icon: 'ℹ️', action: 'about' },
+      { id: '4', name: '联系客服', icon: '📞', action: 'contact' }
     ]
   },
 
@@ -60,6 +61,9 @@ Page({
       case 'profile':
         message.success('跳转到个人资料页面');
         break;
+      case 'rebind':
+        this.rebindDevice();
+        break;
       case 'about':
         this.showAboutInfo();
         break;
@@ -67,6 +71,25 @@ Page({
         this.contactService();
         break;
     }
+  },
+
+  // 重新绑定设备
+  rebindDevice() {
+    const currentDeviceCode = wx.getStorageSync('deviceCode');
+    const deviceName = wx.getStorageSync('device_info')?.device_name || '未知设备';
+    
+    wx.showModal({
+      title: '重新绑定设备',
+      content: `当前绑定：${deviceName}\n设备码：${currentDeviceCode || '无'}\n\n确定要重新绑定设备吗？`,
+      confirmText: '重新绑定',
+      cancelText: '取消',
+      success: (res) => {
+        if (res.confirm) {
+          // 跳转到绑定页面，带上 rebind 参数
+          navigation.navigateTo('/pages/bind-device-code/bind-device-code?rebind=true');
+        }
+      }
+    });
   },
 
   // 显示关于信息

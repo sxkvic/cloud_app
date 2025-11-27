@@ -22,6 +22,71 @@ const navigation = {
   // 返回上一页
   navigateBack(delta = 1) {
     wx.navigateBack({ delta });
+  },
+
+  // 带过渡动画的跳转
+  navigateWithTransition(url, options = {}) {
+    const pages = getCurrentPages();
+    const currentPage = pages[pages.length - 1];
+    
+    // 获取页面的过渡组件实例
+    const transition = currentPage.selectComponent('#pageTransition');
+    
+    if (transition) {
+      // 显示过渡动画
+      transition.showLoading(options.text || '加载中...');
+      
+      // 延迟跳转，让动画先显示
+      setTimeout(() => {
+        const navigateMethod = options.redirect ? 'redirectTo' : 'navigateTo';
+        wx[navigateMethod]({
+          url,
+          success: () => {
+            // 跳转成功后隐藏动画
+            setTimeout(() => {
+              transition.hideLoading();
+            }, 300);
+          },
+          fail: () => {
+            transition.hideLoading();
+            message.error('页面跳转失败');
+          }
+        });
+      }, 200);
+    } else {
+      // 如果没有过渡组件，直接跳转
+      const navigateMethod = options.redirect ? 'redirectTo' : 'navigateTo';
+      wx[navigateMethod]({ url });
+    }
+  },
+
+  // 带过渡动画的Tab切换
+  switchTabWithTransition(url, options = {}) {
+    const pages = getCurrentPages();
+    const currentPage = pages[pages.length - 1];
+    
+    const transition = currentPage.selectComponent('#pageTransition');
+    
+    if (transition) {
+      transition.showLoading(options.text || '加载中...');
+      
+      setTimeout(() => {
+        wx.redirectTo({
+          url,
+          success: () => {
+            setTimeout(() => {
+              transition.hideLoading();
+            }, 300);
+          },
+          fail: () => {
+            transition.hideLoading();
+            message.error('页面跳转失败');
+          }
+        });
+      }, 200);
+    } else {
+      wx.redirectTo({ url });
+    }
   }
 };
 
@@ -38,8 +103,8 @@ const message = {
     });
   },
   
-  // 错误提示
-  error(title, duration = 2000) {
+  // 错误提示 - 延长默认显示时间到3秒
+  error(title, duration = 3000) {
     wx.showToast({
       title,
       icon: 'none',

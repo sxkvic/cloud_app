@@ -6,7 +6,8 @@
   "enablePullDownRefresh": false,
   "usingComponents": {
     "van-tabbar": "@vant/weapp/tabbar/index",
-    "van-tabbar-item": "@vant/weapp/tabbar-item/index"
+    "van-tabbar-item": "@vant/weapp/tabbar-item/index",
+    "page-transition": "/components/page-transition/page-transition"
   }
 }
 

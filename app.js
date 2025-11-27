@@ -39,13 +39,31 @@ App({
         console.log('用户信息已恢复');
       }
 
-      // 恢复设备绑定状态
+      // 恢复设备绑定状态和完整设备信息
       const deviceBound = wx.getStorageSync('deviceBound');
-      const deviceCode = wx.getStorageSync('deviceCode');
-      if (deviceBound && deviceCode) {
+      const device_no = wx.getStorageSync('device_no');
+      const device_info = wx.getStorageSync('device_info');
+      const customer_info = wx.getStorageSync('customer_info');
+      const binding_info = wx.getStorageSync('binding_info');
+      
+      if (deviceBound && device_no) {
         this.globalData.deviceBound = true;
-        this.globalData.deviceCode = deviceCode;
-        console.log('设备绑定状态已恢复');
+        this.globalData.device_no = device_no;
+        this.globalData.device_info = device_info;
+        this.globalData.customer_info = customer_info;
+        this.globalData.binding_info = binding_info;
+        console.log('✅ 设备绑定状态已恢复:', {
+          device_no,
+          device_name: device_info?.device_name
+        });
+      }
+      
+      // 清理旧的 deviceCode 缓存（如果存在）
+      const oldDeviceCode = wx.getStorageSync('deviceCode');
+      if (oldDeviceCode) {
+        console.log('⚠️ 检测到旧的 deviceCode 缓存，正在清除...');
+        wx.removeStorageSync('deviceCode');
+        console.log('✅ 旧缓存已清除');
       }
     } catch (error) {
       console.error('恢复本地数据失败:', error);
@@ -77,8 +95,11 @@ App({
     token: null,
     openid: null,
 
-    // 设备信息
-    deviceCode: null,
+    // 设备信息（使用 device_no 替代旧的 deviceCode）
+    device_no: null,
+    device_info: null,
+    customer_info: null,
+    binding_info: null,
     deviceBound: false
   }
 })

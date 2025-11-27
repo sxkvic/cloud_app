@@ -1,0 +1,28 @@
+<!-- 页面过渡加载动画组件 -->
+<view class="page-transition {{show ? 'show' : ''}}" wx:if="{{show || animating}}">
+  <view class="transition-content">
+    <!-- 加载动画 -->
+    <view class="loading-container">
+      <!-- 旋转圆环 -->
+      <view class="spinner-ring"></view>
+      
+      <!-- 中心图标 -->
+      <view class="center-icon">
+        <view class="cloud-icon">
+          <view class="cloud-top"></view>
+          <view class="cloud-bottom"></view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 加载文字 -->
+    <view class="loading-text">{{text || '加载中...'}}</view>
+    
+    <!-- 进度点 -->
+    <view class="loading-dots">
+      <view class="dot dot-1"></view>
+      <view class="dot dot-2"></view>
+      <view class="dot dot-3"></view>
+    </view>
+  </view>
+</view>
