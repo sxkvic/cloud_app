@@ -6,7 +6,7 @@ Page({
   data: {
     bills: [],
     loading: true,
-    deviceCode: 'DEV00845211',  // 调试用固定设备码
+    deviceCode: '',              // 设备编号，从缓存读取
     customerInfo: null,          // 客户信息
     billDetail: null,            // 当前账单详情
     showDetail: false            // 是否显示详情页面
@@ -14,6 +14,21 @@ Page({
 
   async onLoad() {
     console.log('我的账单页面加载');
+    
+    // 从本地缓存读取设备编号
+    const device_no = wx.getStorageSync('device_no') || wx.getStorageSync('deviceCode');
+    
+    if (!device_no) {
+      message.error('未找到设备信息，请先绑定设备');
+      setTimeout(() => {
+        navigation.navigateTo('/pages/bind-device-code/bind-device-code');
+      }, 1500);
+      return;
+    }
+    
+    this.setData({ deviceCode: device_no });
+    console.log('读取到设备编号:', device_no);
+    
     await this.loadCustomerInfo();
     await this.loadBills();
   },

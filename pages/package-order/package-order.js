@@ -10,13 +10,28 @@ Page({
     packages: [],
     loading: true,
     // 客户信息相关
-    deviceCode: 'DEV00845211',  // 调试用固定设备码
+    deviceCode: '',              // 设备编号，从缓存读取
     customerInfo: null,          // 客户信息
     isLoadingCustomer: false     // 加载客户信息状态
   },
 
   async onLoad() {
     console.log('套餐订购页面加载');
+    
+    // 从本地缓存读取设备编号
+    const device_no = wx.getStorageSync('device_no') || wx.getStorageSync('deviceCode');
+    
+    if (!device_no) {
+      message.error('未找到设备信息，请先绑定设备');
+      setTimeout(() => {
+        navigation.navigateTo('/pages/bind-device-code/bind-device-code');
+      }, 1500);
+      return;
+    }
+    
+    this.setData({ deviceCode: device_no });
+    console.log('读取到设备编号:', device_no);
+    
     await this.loadPackages();
     await this.loadCustomerInfo();
   },
