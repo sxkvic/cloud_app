@@ -22,7 +22,8 @@ function request(options) {
       data = {},
       needAuth = true,
       showLoading = true,
-      loadingText = '加载中...'
+      loadingText = '加载中...',
+      minDuration = 600  // 全局 Loading 最小显示时长（0.6秒）
     } = options;
 
     // 构建完整URL
@@ -39,6 +40,9 @@ function request(options) {
       header['Authorization'] = `Bearer ${app.globalData.token}`;
     }
 
+    // 记录开始时间
+    const startTime = Date.now();
+
     // 显示加载提示
     if (showLoading) {
       wx.showLoading({
@@ -47,16 +51,29 @@ function request(options) {
       });
     }
 
+    // 隐藏 Loading 的辅助函数（确保最小显示时长）
+    const hideLoadingWithMinDuration = async () => {
+      if (showLoading) {
+        const elapsed = Date.now() - startTime;
+        const remaining = minDuration - elapsed;
+        
+        if (remaining > 0) {
+          // 等待剩余时间
+          await new Promise(resolve => setTimeout(resolve, remaining));
+        }
+        
+        wx.hideLoading();
+      }
+    };
+
     // 发起请求
     wx.request({
       url: fullUrl,
       method: method,
       data: data,
       header: header,
-      success: (res) => {
-        if (showLoading) {
-          wx.hideLoading();
-        }
+      success: async (res) => {
+        await hideLoadingWithMinDuration();
 
         // 统一处理响应
         if (res.statusCode === 200) {
@@ -131,10 +148,8 @@ function request(options) {
           reject(res);
         }
       },
-      fail: (err) => {
-        if (showLoading) {
-          wx.hideLoading();
-        }
+      fail: async (err) => {
+        await hideLoadingWithMinDuration();
 
         // 网络错误
         wx.showToast({

@@ -5,6 +5,7 @@ Page({
   data: {
     selectedType: null,
     canSubmit: false,
+    submitLoading: false,  // 添加提交 loading 状态
     formData: {
       name: '',
       idCard: '',
@@ -247,23 +248,43 @@ Page({
     });
   },
 
-  // 处理申请
-  processApplication() {
-    wx.showLoading({
-      title: '正在提交...'
-    });
+  // 处理申请 - 带最小时长的优化版本
+  async processApplication() {
+    // 使用按钮 loading 状态
+    this.setData({ submitLoading: true });
 
-    setTimeout(() => {
-      wx.hideLoading();
+    try {
+      // 使用 withMinLoading 确保 loading 至少显示 800ms
+      await message.withMinLoading(
+        async () => {
+          // 模拟 API 调用（实际中替换为真实 API）
+          // 即使接口很快（比如 100ms），loading 也会显示至少 800ms
+          await new Promise(resolve => setTimeout(resolve, 300));
+          
+          // 返回结果
+          return { success: true };
+        },
+        {
+          minDuration: 800,  // 最小显示 800ms，避免闪烁
+          successText: '',   // 不在这里显示成功提示
+          errorText: '提交失败，请重试'
+        }
+      );
       
+      // 提交成功
+      const applicationId = 'BA' + Date.now().toString().slice(-8);
+      const businessType = this.data.businessTypes.find(t => t.id === this.data.selectedType);
+      
+      this.setData({ submitLoading: false });
+      
+      // 显示成功提示
       message.success('申请提交成功');
       
+      // 延迟显示详情弹窗
       setTimeout(() => {
-        const applicationId = 'BA' + Date.now().toString().slice(-8);
-        
         wx.showModal({
           title: '申请已受理',
-          content: `您的申请已成功提交！\n\n申请编号：${applicationId}\n业务类型：${this.data.businessTypes.find(t => t.id === this.data.selectedType).name}\n\n我们会在24小时内联系您确认申请详情，请保持电话畅通。`,
+          content: `您的申请已成功提交！\n\n申请编号：${applicationId}\n业务类型：${businessType.name}\n\n我们会在24小时内联系您确认申请详情，请保持电话畅通。`,
           showCancel: false,
           confirmText: '知道了',
           success: () => {
@@ -286,7 +307,10 @@ Page({
             navigation.switchTab('/pages/home/home');
           }
         });
-      }, 1000);
-    }, 2000);
+      }, 600);
+    } catch (error) {
+      this.setData({ submitLoading: false });
+      // 错误提示已在 withMinLoading 中处理
+    }
   }
 });

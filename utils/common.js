@@ -22,71 +22,6 @@ const navigation = {
   // 返回上一页
   navigateBack(delta = 1) {
     wx.navigateBack({ delta });
-  },
-
-  // 带过渡动画的跳转
-  navigateWithTransition(url, options = {}) {
-    const pages = getCurrentPages();
-    const currentPage = pages[pages.length - 1];
-    
-    // 获取页面的过渡组件实例
-    const transition = currentPage.selectComponent('#pageTransition');
-    
-    if (transition) {
-      // 显示过渡动画
-      transition.showLoading(options.text || '加载中...');
-      
-      // 延迟跳转，让动画先显示
-      setTimeout(() => {
-        const navigateMethod = options.redirect ? 'redirectTo' : 'navigateTo';
-        wx[navigateMethod]({
-          url,
-          success: () => {
-            // 跳转成功后隐藏动画
-            setTimeout(() => {
-              transition.hideLoading();
-            }, 300);
-          },
-          fail: () => {
-            transition.hideLoading();
-            message.error('页面跳转失败');
-          }
-        });
-      }, 200);
-    } else {
-      // 如果没有过渡组件，直接跳转
-      const navigateMethod = options.redirect ? 'redirectTo' : 'navigateTo';
-      wx[navigateMethod]({ url });
-    }
-  },
-
-  // 带过渡动画的Tab切换
-  switchTabWithTransition(url, options = {}) {
-    const pages = getCurrentPages();
-    const currentPage = pages[pages.length - 1];
-    
-    const transition = currentPage.selectComponent('#pageTransition');
-    
-    if (transition) {
-      transition.showLoading(options.text || '加载中...');
-      
-      setTimeout(() => {
-        wx.redirectTo({
-          url,
-          success: () => {
-            setTimeout(() => {
-              transition.hideLoading();
-            }, 300);
-          },
-          fail: () => {
-            transition.hideLoading();
-            message.error('页面跳转失败');
-          }
-        });
-      }, 200);
-    } else {
-      wx.redirectTo({ url });
-    }
   }
 };
 
@@ -95,7 +30,7 @@ const navigation = {
  */
 const message = {
   // 成功提示
-  success(title, duration = 1500) {
+  success(title, duration = 600) {
     wx.showToast({
       title,
       icon: 'success',
@@ -103,8 +38,8 @@ const message = {
     });
   },
   
-  // 错误提示 - 延长默认显示时间到3秒
-  error(title, duration = 3000) {
+  // 错误提示 - 延长默认显示时间到2秒
+  error(title, duration = 2000) {
     wx.showToast({
       title,
       icon: 'none',
@@ -112,12 +47,87 @@ const message = {
     });
   },
   
-  // 加载提示
-  loading(title = '加载中...') {
-    wx.showLoading({ title });
+  // 智能加载提示 - 只在慢速操作时显示
+  smartLoading(title = '加载中...', delay = 500) {
+    let timer = null;
+    let isShowing = false;
+    
+    // 延迟显示 loading
+    timer = setTimeout(() => {
+      wx.showLoading({ title, mask: true });
+      isShowing = true;
+    }, delay);
+    
+    // 返回隐藏函数
+    return () => {
+      if (timer) clearTimeout(timer);
+      if (isShowing) wx.hideLoading();
+    };
   },
   
-  // 隐藏加载
+  /**
+   * 带最小显示时长的 Loading 包装器
+   * 解决接口太快导致 loading 闪烁的问题
+   * @param {Function} asyncFn - 异步函数
+   * @param {Object} options - 配置选项
+   * @param {number} options.minDuration - 最小显示时长（毫秒），默认 800ms
+   * @param {string} options.loadingText - loading 文字
+   * @param {string} options.successText - 成功提示文字
+   * @param {string} options.errorText - 失败提示文字
+   * @returns {Promise} 返回异步函数的结果
+   */
+  async withMinLoading(asyncFn, options = {}) {
+    const {
+      minDuration = 800,
+      loadingText = '加载中...',
+      successText = '',
+      errorText = '操作失败'
+    } = options;
+    
+    const startTime = Date.now();
+    
+    try {
+      // 执行异步函数
+      const result = await asyncFn();
+      
+      // 计算已经过去的时间
+      const elapsed = Date.now() - startTime;
+      const remaining = minDuration - elapsed;
+      
+      // 如果不足最小时间，等待剩余时间
+      if (remaining > 0) {
+        await new Promise(resolve => setTimeout(resolve, remaining));
+      }
+      
+      // 显示成功提示
+      if (successText) {
+        this.success(successText);
+      }
+      
+      return result;
+    } catch (error) {
+      // 错误时也保持最小时间
+      const elapsed = Date.now() - startTime;
+      const remaining = minDuration - elapsed;
+      if (remaining > 0) {
+        await new Promise(resolve => setTimeout(resolve, remaining));
+      }
+      
+      // 显示错误提示
+      if (errorText) {
+        this.error(errorText);
+      }
+      
+      throw error;
+    }
+  },
+  
+  // 立即显示加载提示（用于必须显示的场景）
+  loading(title = '加载中...') {
+    wx.showLoading({ title, mask: true });
+  },
+  
+  // 隐藏加载提示
   hideLoading() {
     wx.hideLoading();
   },

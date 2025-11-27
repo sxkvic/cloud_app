@@ -119,7 +119,8 @@ const API = {
     return request({
       url: `/api/v1/customer-device-bindings/getCustomerByDeviceCode/${deviceCode}`,
       method: 'GET',
-      needAuth: true
+      needAuth: true,
+      showLoading: false  // 关闭全局 Loading，页面有骨架屏
     });
   },
 
@@ -138,7 +139,8 @@ const API = {
       url: '/api/v1/packages/getPackagesList',
       method: 'GET',
       data: params,
-      needAuth: false
+      needAuth: false,
+      showLoading: false  // 关闭全局 Loading，使用骨架屏
     });
   },
 

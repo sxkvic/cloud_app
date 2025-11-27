@@ -164,10 +164,11 @@
     </button>
     <button 
       class="action-button primary" 
-      disabled="{{ !canSubmit }}"
+      disabled="{{ !canSubmit || submitLoading }}"
+      loading="{{ submitLoading }}"
       bindtap="submitApplication"
     >
-      提交申请
+      {{ submitLoading ? '提交中...' : '提交申请' }}
     </button>
   </view>
 </view>

@@ -2,8 +2,24 @@
 <view class="package-order-page">
     <!-- 可滚动内容区域 -->
     <scroll-view class="content-wrapper" scroll-y enhanced show-scrollbar="{{false}}">
-        <!-- 套餐列表 -->
-        <view class="package-list">
+        
+        <!-- 骨架屏 - 加载中显示 -->
+        <view wx:if="{{ loading }}" class="skeleton-wrapper">
+            <view class="skeleton-card" wx:for="{{[1,2,3,4,5]}}" wx:key="*this">
+                <view class="skeleton-thumb"></view>
+                <view class="skeleton-content">
+                    <view class="skeleton-line skeleton-title"></view>
+                    <view class="skeleton-line skeleton-desc"></view>
+                    <view class="skeleton-tags">
+                        <view class="skeleton-tag"></view>
+                        <view class="skeleton-tag"></view>
+                    </view>
+                </view>
+            </view>
+        </view>
+        
+        <!-- 套餐列表 - 数据加载完成后显示 -->
+        <view wx:else class="package-list fade-in">
             <view wx:for="{{ packages }}" wx:key="id" class="package-card {{ selectedPackage === item.id ? 'selected' : '' }}" bindtap="selectPackage" data-id="{{ item.id }}">
                 <!-- 热门角标 -->
                 <view class="popular-badge" wx:if="{{ item.isPopular }}">特惠</view>
@@ -76,8 +92,13 @@
             </view>
         </view>
 
-        <button class="order-button {{ selectedPackage && customerInfo ? 'active' : 'disabled' }}" disabled="{{ !selectedPackage || !customerInfo }}" bindtap="confirmOrder">
-            <text class="btn-text">{{ selectedPackage && customerInfo ? '立即订购' : (customerInfo ? '请先选择套餐' : '加载客户信息中...') }}</text>
+        <button 
+            class="order-button {{ selectedPackage && customerInfo ? 'active' : 'disabled' }}" 
+            disabled="{{ !selectedPackage || !customerInfo || submitLoading }}"
+            loading="{{ submitLoading }}"
+            bindtap="confirmOrder"
+        >
+            {{ submitLoading ? '订购中...' : (selectedPackage && customerInfo ? '立即订购' : '请先选择套餐') }}
         </button>
     </view>
 </view>
