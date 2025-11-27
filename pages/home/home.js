@@ -11,7 +11,7 @@ Page({
       {
         title: '套餐订购',
         subtitle: '升级您的网络',
-        iconText: '🛒',
+        iconClass: 'icon-gouwuche',
         bgColor: '#f0f6ff',
         iconBgColor: '#409eff',
         route: '/pages/package-order/package-order'
@@ -19,7 +19,7 @@ Page({
       {
         title: '我的账单',
         subtitle: '查看消费明细',
-        iconText: '📄',
+        iconClass: 'icon-zhangdan',
         bgColor: '#f0f9f3',
         iconBgColor: '#52c41a',
         route: '/pages/my-bill/my-bill'
@@ -27,7 +27,7 @@ Page({
       {
         title: '在线客服',
         subtitle: '7x24小时支持',
-        iconText: '💬',
+        iconClass: 'icon-kefu',
         bgColor: '#f6f2ff',
         iconBgColor: '#722ed1',
         route: '/pages/customer-service/customer-service'
@@ -35,23 +35,23 @@ Page({
       {
         title: '业务退订',
         subtitle: '退订业务',
-        iconText: '🔄',
+        iconClass: 'icon-tuiding',
         bgColor: '#fffbe6',
         iconBgColor: '#faad14',
         route: '/pages/business-cancellation/business-cancellation'
       }
     ],
     allFeatures: [
-      { iconText: '🔍', text: '产品查询', color: '#409eff', route: '/pages/product-query/product-query' },
-      { iconText: '💰', text: '预充值', color: '#52c41a', route: '/pages/pre-recharge/pre-recharge' },
-      { iconText: '🔄', text: '变更过户', color: '#722ed1', route: '/pages/change-transfer/change-transfer' },
-      { iconText: '📅', text: '自助续费', color: '#f5222d', route: '/pages/self-renewal/self-renewal' },
-      { iconText: '📝', text: '业务申请', color: '#3071a9', route: '/pages/business-application/business-application' },
-      { iconText: '📋', text: '电子协议', color: '#13c2c2', route: '/pages/electronic-agreement/electronic-agreement' },
-      { iconText: '🧾', text: '开票', color: '#fa8c16', route: '/pages/invoice/invoice' },
-      { iconText: '⚠️', text: '举报投诉', color: '#8c8c8c', route: '/pages/complaint/complaint' },
-      { iconText: '⭐', text: '服务评价', color: '#faad14', route: '/pages/service-evaluation/service-evaluation' },
-      { iconText: '💳', text: '代缴代扣', color: '#eb2f96', route: '/pages/payment-collection/payment-collection' }
+      { iconClass: 'icon-chaxun', text: '产品查询', color: '#409eff', route: '/pages/product-query/product-query' },
+      { iconClass: 'icon-chongzhi', text: '预充值', color: '#52c41a', route: '/pages/pre-recharge/pre-recharge' },
+      { iconClass: 'icon-guohu', text: '变更过户', color: '#722ed1', route: '/pages/change-transfer/change-transfer' },
+      { iconClass: 'icon-xufei', text: '自助续费', color: '#f5222d', route: '/pages/self-renewal/self-renewal' },
+      { iconClass: 'icon-shenqing', text: '业务申请', color: '#3071a9', route: '/pages/business-application/business-application' },
+      { iconClass: 'icon-xieyi', text: '电子协议', color: '#13c2c2', route: '/pages/electronic-agreement/electronic-agreement' },
+      { iconClass: 'icon-kaipiao', text: '开票', color: '#fa8c16', route: '/pages/invoice/invoice' },
+      { iconClass: 'icon-tousu', text: '举报投诉', color: '#8c8c8c', route: '/pages/complaint/complaint' },
+      { iconClass: 'icon-pingjia', text: '服务评价', color: '#faad14', route: '/pages/service-evaluation/service-evaluation' },
+      { iconClass: 'icon-daikou', text: '代缴代扣', color: '#eb2f96', route: '/pages/payment-collection/payment-collection' }
     ]
   },
 

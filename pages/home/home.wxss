@@ -1,5 +1,6 @@
 /* pages/home/home.wxss */
 @import "../../styles/common.wxss";
+@import "../../styles/iconfont.wxss";
 
 /* 整体页面样式 */
 .home-page {
@@ -220,13 +221,33 @@
 }
 
 .feature-icon {
-  width: 80rpx;
-  height: 80rpx;
+  width: 100rpx;
+  height: 100rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16rpx;
+  margin-bottom: 12rpx;
   font-size: 52rpx;
+  border-radius: 50%;
+  position: relative;
+}
+
+/* 浅色圆形背景 */
+.feature-icon::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.1;
+  z-index: 0;
+}
+
+/* 图标本身 */
+.feature-icon .iconfont {
+  position: relative;
+  z-index: 1;
 }
 
 .feature-text {

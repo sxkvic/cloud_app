@@ -7,7 +7,7 @@
       <text class="user-name">王女士</text>
     </view>
     <view class="notification-icon" bindtap="showNotifications">
-      <text class="bell-icon">🔔</text>
+      <text class="iconfont icon-tongzhi bell-icon"></text>
       <view class="notification-dot"></view>
     </view>
   </view>
@@ -50,7 +50,7 @@
           data-route="{{item.route}}"
         >
           <view class="icon-wrapper" style="background-color: {{item.iconBgColor}}">
-            <text class="service-icon">{{item.iconText}}</text>
+            <text class="iconfont {{item.iconClass}} service-icon"></text>
           </view>
           <view class="text-wrapper">
             <text class="service-title">{{item.title}}</text>
@@ -72,7 +72,7 @@
           data-route="{{item.route}}"
         >
           <view class="feature-icon" style="color: {{item.color}}">
-            <text>{{item.iconText}}</text>
+            <text class="iconfont {{item.iconClass}}"></text>
           </view>
           <text class="feature-text">{{item.text}}</text>
         </view>
