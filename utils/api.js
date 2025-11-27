@@ -72,14 +72,14 @@ const API = {
 
   /**
    * 绑定设备
-   * @param {String} deviceCode 设备码（16位）
+   * @param {String} device_no 设备编号
    * @returns {Promise} { success, data, message }
    */
-  bindDevice(deviceCode) {
+  bindDevice(device_no) {
     return request({
       url: '/api/v1/wx/bindDevice',
       method: 'POST',
-      data: { deviceCode },
+      data: { device_no },
       needAuth: true
     });
   },
@@ -98,14 +98,14 @@ const API = {
 
   /**
    * 解绑设备
-   * @param {String} deviceCode 设备码
+   * @param {String} device_no 设备编号
    * @returns {Promise} { success, data, message }
    */
-  unbindDevice(deviceCode) {
+  unbindDevice(device_no) {
     return request({
       url: '/api/v1/wx/unbindDevice',
       method: 'POST',
-      data: { deviceCode },
+      data: { device_no },
       needAuth: true
     });
   },

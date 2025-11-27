@@ -37,8 +37,10 @@ Page({
 
   // 输入框内容变化
   onInputChange(e) {
+    // 自动去除空格，转换为大写
+    const value = e.detail.value.replace(/\s+/g, '').toUpperCase();
     this.setData({
-      deviceCode: e.detail.value
+      deviceCode: value
     });
   },
 
@@ -48,9 +50,10 @@ Page({
       scanType: ['barCode', 'qrCode'], // 支持条形码和二维码
       success: (res) => {
         console.log('扫码成功:', res);
-        // 将扫码结果填入输入框
+        // 将扫码结果填入输入框，去除空格并转换为大写
+        const cleanCode = res.result.replace(/\s+/g, '').toUpperCase();
         this.setData({
-          deviceCode: res.result
+          deviceCode: cleanCode
         });
         message.success('扫码成功');
       },
@@ -67,11 +70,20 @@ Page({
 
   // 手动提交绑定
   async onManualSubmit() {
-    const { deviceCode } = this.data;
+    let { deviceCode } = this.data;
+
+    // 去除所有空格并转换为大写
+    deviceCode = deviceCode.replace(/\s+/g, '').toUpperCase();
 
     // 验证设备码是否为空
-    if (!deviceCode || deviceCode.trim().length === 0) {
+    if (!deviceCode || deviceCode.length === 0) {
       message.error('请输入设备绑定码');
+      return;
+    }
+
+    // 验证设备码格式（可选，根据实际需求调整）
+    if (deviceCode.length < 6) {
+      message.error('设备码格式不正确，请检查后重试');
       return;
     }
 
