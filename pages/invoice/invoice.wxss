@@ -485,6 +485,10 @@
   box-shadow: none;
 }
 
+.action-button:disabled::after {
+  border: none;
+}
+
 .action-button:active:not(:disabled) {
   opacity: 0.8;
 }

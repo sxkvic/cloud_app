@@ -442,6 +442,10 @@
   border: 2rpx dashed #d1d5db;
 }
 
+.order-button.disabled::after {
+  border: none;
+}
+
 .order-button:active:not(:disabled) {
   transform: scale(0.98);
   box-shadow: 0 8rpx 20rpx rgba(16, 185, 129, 0.3);

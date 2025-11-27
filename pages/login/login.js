@@ -160,17 +160,6 @@ Page({
     }
   },
 
-  // 获取用户信息回调
-  onGetUserInfo(e) {
-    console.log('用户信息:', e.detail);
-    if (e.detail.userInfo) {
-      // 用户点击了允许授权
-      this.onWeChatLogin();
-    } else {
-      // 用户点击了拒绝授权
-      message.error('需要授权才能继续使用');
-    }
-  },
 
   // 显示协议
   showAgreement(e) {

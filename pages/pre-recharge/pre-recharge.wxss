@@ -358,6 +358,10 @@ page {
   box-shadow: none;
 }
 
+.recharge-btn.disabled::after {
+  border: none;
+}
+
 .recharge-btn.loading {
   background: #94a3b8;
   box-shadow: none;

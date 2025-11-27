@@ -267,6 +267,10 @@
   box-shadow: none;
 }
 
+.action-button:disabled::after {
+  border: none;
+}
+
 .action-button:active:not(:disabled) {
   transform: scale(0.98);
 }

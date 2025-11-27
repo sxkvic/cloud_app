@@ -44,11 +44,10 @@
       <button 
         class="wechat-btn {{loading ? 'loading' : ''}}" 
         disabled="{{loading}}"
-        open-type="getUserInfo"
-        bindgetuserinfo="onGetUserInfo"
+        bindtap="onWeChatLogin"
         hover-class="wechat-btn-hover"
       >
-        <text>{{loading ? '授权中...' : '微信一键登录'}}</text>
+        <text>{{loading ? '登录中...' : '微信一键登录'}}</text>
       </button>
 
       <!-- 协议 -->
