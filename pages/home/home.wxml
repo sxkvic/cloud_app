@@ -1,43 +1,25 @@
 <!--pages/home/home.wxml-->
 <view class="home-page">
-  <!-- 1. 顶部欢迎区域 -->
+  <!-- 1. 顶部账户信息卡片 -->
   <view class="header-section">
-    <view class="user-info">
-      <text class="welcome-text">欢迎回来,</text>
-      <text class="user-name">王女士</text>
-    </view>
-    <view class="notification-icon" bindtap="showNotifications">
-      <text class="iconfont icon-tongzhi bell-icon"></text>
-      <view class="notification-dot"></view>
+    <view class="account-card">
+      <view class="account-info">
+        <view class="user-row">
+          <text class="customer-name">{{customerName || '用户名称'}}</text>
+        </view>
+        <view class="balance-row">
+          <text class="balance-label">账户余额 (元)</text>
+          <text class="balance-amount">￥{{balance || '0.00'}}</text>
+        </view>
+      </view>
+      <view class="recharge-btn" bindtap="navigateToRecharge">
+        <text>立即充值</text>
+      </view>
     </view>
   </view>
 
   <view class="content-body">
-    <!-- 2. 轮播图广告 -->
-    <view class="swipe-section">
-      <swiper 
-        class="promo-swipe" 
-        autoplay="{{true}}" 
-        interval="5000" 
-        duration="500"
-        indicator-dots="{{true}}"
-        indicator-color="rgba(255,255,255,0.5)"
-        indicator-active-color="white"
-        circular="{{true}}"
-      >
-        <swiper-item wx:for="{{slides}}" wx:key="index">
-          <view class="swipe-item">
-            <image src="{{item.image}}" class="swipe-image" mode="aspectFill" />
-            <view class="swipe-caption">
-              <text class="swipe-title">{{item.title}}</text>
-              <text class="swipe-subtitle">{{item.subtitle}}</text>
-            </view>
-          </view>
-        </swiper-item>
-      </swiper>
-    </view>
-
-    <!-- 3. 常用服务 -->
+    <!-- 2. 常用服务 -->
     <view class="common-services-section">
       <text class="section-title">常用服务</text>
       <view class="services-grid">
@@ -58,6 +40,26 @@
           </view>
         </view>
       </view>
+    </view>
+
+    <!-- 3. 轮播图广告 -->
+    <view class="swipe-section">
+      <swiper 
+        class="promo-swipe" 
+        autoplay="{{true}}" 
+        interval="5000" 
+        duration="500"
+        indicator-dots="{{true}}"
+        indicator-color="rgba(0,0,0,0.3)"
+        indicator-active-color="#4D6AFF"
+        circular="{{true}}"
+      >
+        <swiper-item wx:for="{{slides}}" wx:key="index">
+          <view class="swipe-item">
+            <image src="{{item.image}}" class="swipe-image" mode="aspectFill" />
+          </view>
+        </swiper-item>
+      </swiper>
     </view>
 
     <!-- 4. 全部功能 -->

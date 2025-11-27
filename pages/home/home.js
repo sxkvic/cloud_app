@@ -4,6 +4,8 @@ const API = require('../../utils/api');
 
 Page({
   data: {
+    customerName: '',
+    balance: '0.00',
     slides: [],
     articles: [],
     loading: true,
@@ -66,12 +68,57 @@ Page({
   async onLoad() {
     console.log('首页加载');
     await this.loadBanners();
+    await this.loadAccountInfo();
   },
 
   async onShow() {
     console.log('首页显示');
     // 页面显示时不自动刷新，避免与onLoad重复调用接口
     // 如需刷新数据，可使用下拉刷新功能
+  },
+
+  // 加载账户信息
+  async loadAccountInfo() {
+    try {
+      // 从缓存读取设备编号
+      const device_no = wx.getStorageSync('device_no') || wx.getStorageSync('deviceCode');
+      
+      if (!device_no) {
+        console.log('未找到设备编号');
+        return;
+      }
+
+      console.log('查询客户信息，设备码:', device_no);
+      
+      // 使用getBindingsList接口获取完整信息（包含余额）
+      const result = await API.getBindingsList({
+        deviceNo: device_no,
+        page: 1,
+        pageSize: 10
+      });
+      
+      console.log('绑定列表查询成功:', result.data);
+      
+      // 获取第一条绑定记录
+      if (result.data && result.data.list && result.data.list.length > 0) {
+        const binding = result.data.list[0];
+        
+        this.setData({
+          customerName: binding.customer_name || '用户名称',
+          balance: binding.balance || '0.00'
+        });
+        
+        console.log('客户名称:', binding.customer_name, '余额:', binding.balance);
+      }
+      
+    } catch (error) {
+      console.error('加载账户信息失败:', error);
+    }
+  },
+
+  // 跳转到充值页面
+  navigateToRecharge() {
+    navigation.navigateTo('/pages/pre-recharge/pre-recharge');
   },
 
   // 加载Banner轮播图

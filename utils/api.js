@@ -124,6 +124,24 @@ const API = {
     });
   },
 
+  /**
+   * 获取设备绑定列表（包含余额信息）
+   * @param {Object} params 查询参数
+   * @param {String} params.deviceNo 设备编号
+   * @param {Number} params.page 页码
+   * @param {Number} params.pageSize 每页数量
+   * @returns {Promise} { success, data: { list, total }, message }
+   */
+  getBindingsList(params) {
+    return request({
+      url: '/api/v1/customer-device-bindings/getBindingsList',
+      method: 'GET',
+      data: params,
+      needAuth: true,
+      showLoading: false
+    });
+  },
+
   // ==================== 套餐管理模块 ====================
 
   /**
