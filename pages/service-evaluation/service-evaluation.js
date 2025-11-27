@@ -53,12 +53,30 @@ Page({
       currentTime: this.formatDateTime(new Date())
     });
     
-    // 从页面参数获取设备编号
-    if (options.device_no) {
+    // 从页面参数或本地缓存获取设备编号
+    let device_no = options.device_no;
+    
+    if (!device_no) {
+      // 如果页面参数没有，尝试从本地缓存读取
+      device_no = wx.getStorageSync('device_no') || wx.getStorageSync('deviceCode');
+      console.log('从本地缓存读取设备编号:', device_no);
+    }
+    
+    if (device_no) {
       this.setData({
-        device_no: options.device_no,
-        'orderInfo.orderNo': options.device_no
+        device_no: device_no,
+        'orderInfo.orderNo': device_no
       });
+      
+      // 尝试加载设备信息用于显示
+      const device_info = wx.getStorageSync('device_info');
+      if (device_info && device_info.device_name) {
+        this.setData({
+          'orderInfo.serviceType': device_info.device_name + '服务'
+        });
+      }
+    } else {
+      console.warn('未找到设备编号，请先绑定设备');
     }
     
     // 从本地存储获取openid

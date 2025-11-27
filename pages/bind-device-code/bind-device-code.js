@@ -83,14 +83,37 @@ Page({
       console.log('调用绑定接口...');
       await API.bindDevice(deviceCode);
 
+      // 绑定成功后，查询完整的设备信息
+      console.log('查询设备详细信息...');
+      const deviceInfoResult = await API.getCustomerByDeviceCode(deviceCode);
+      
+      if (deviceInfoResult.success && deviceInfoResult.data) {
+        const { customer, binding_info, device_info } = deviceInfoResult.data;
+        
+        // 存储完整的设备信息到本地缓存
+        wx.setStorageSync('deviceBound', true);
+        wx.setStorageSync('deviceCode', deviceCode);
+        wx.setStorageSync('device_no', device_info?.device_no || deviceCode);
+        wx.setStorageSync('device_info', device_info);
+        wx.setStorageSync('customer_info', customer);
+        wx.setStorageSync('binding_info', binding_info);
+        
+        // 同步到全局数据
+        app.globalData.deviceBound = true;
+        app.globalData.deviceCode = deviceCode;
+        app.globalData.device_no = device_info?.device_no || deviceCode;
+        app.globalData.device_info = device_info;
+        app.globalData.customer_info = customer;
+        
+        console.log('设备信息已存储:', {
+          device_no: device_info?.device_no,
+          device_name: device_info?.device_name,
+          customer_name: customer?.customer_name
+        });
+      }
+
       this.setData({ isLoading: false });
       message.success('设备绑定成功！');
-
-      // 保存绑定状态到本地和全局
-      wx.setStorageSync('deviceBound', true);
-      wx.setStorageSync('deviceCode', deviceCode);
-      app.globalData.deviceBound = true;
-      app.globalData.deviceCode = deviceCode;
 
       // 清空输入框
       this.setData({ deviceCode: '' });
