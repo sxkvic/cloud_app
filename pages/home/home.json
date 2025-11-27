@@ -1,13 +1,12 @@
 {
-  "navigationBarTitleText": "云网宽带",
+  "navigationBarTitleText": "云宽带",
   "navigationBarBackgroundColor": "#ffffff",
   "navigationBarTextStyle": "black",
   "backgroundColor": "#f7f8fa",
   "enablePullDownRefresh": false,
   "usingComponents": {
     "van-tabbar": "@vant/weapp/tabbar/index",
-    "van-tabbar-item": "@vant/weapp/tabbar-item/index",
-    "page-transition": "/components/page-transition/page-transition"
+    "van-tabbar-item": "@vant/weapp/tabbar-item/index"
   }
 }
 

@@ -1,6 +1,5 @@
 {
-  "usingComponents": {
-    "van-button": "@vant/weapp/button/index"
-  },
-  "navigationBarTitleText": "我的产品查询"
+  "navigationStyle": "custom",
+  "navigationBarTitleText": "产品查询",
+  "navigationBarTextStyle": "white"
 }

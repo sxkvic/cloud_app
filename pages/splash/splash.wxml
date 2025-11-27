@@ -18,7 +18,7 @@
 
     <!-- 底部 Slogan 区域 -->
     <view class="footer-section">
-      <text class="slogan-cn">云网宽带</text>
+      <text class="slogan-cn">云宽带</text>
       
       <view class="slogan-en-box">
         <view class="line"></view>

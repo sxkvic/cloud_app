@@ -5,19 +5,41 @@ const app = getApp();
 
 Page({
   data: {
+    statusBarHeight: 0,
+    navBarHeight: 44,
     deviceCode: "", // 设备编号，从缓存读取
     rechargeAmount: "",
     paymentType: "1", // 支付类型：1-微信支付
     remark: "",
     isLoading: false,
     isLoadingCustomer: false, // 客户信息加载状态
-    selectedAmount: null,
-    quickAmounts: [50, 100, 150, 200, 300, 500],
+    selectedIndex: -1,
+    customAmount: "",
+    payAmount: "0.00",
+    amountList: [
+      { value: 50, isRecommend: false },
+      { value: 100, isRecommend: false },
+      { value: 150, isRecommend: false },
+      { value: 200, isRecommend: true },
+      { value: 300, isRecommend: false },
+      { value: 500, isRecommend: false }
+    ],
     customerInfo: null, // 客户信息
   },
 
   onLoad() {
     console.log("预充值页面加载");
+
+    // 获取系统信息设置状态栏高度
+    const systemInfo = wx.getSystemInfoSync();
+    const statusBarHeight = systemInfo.statusBarHeight || 0;
+    const menuButtonInfo = wx.getMenuButtonBoundingClientRect();
+    const navBarHeight = menuButtonInfo.height + (menuButtonInfo.top - statusBarHeight) * 2;
+    
+    this.setData({
+      statusBarHeight,
+      navBarHeight
+    });
 
     // 从本地缓存读取设备编号
     const device_no =
@@ -75,18 +97,26 @@ Page({
     }
   },
 
-  // 选择快捷金额
-  selectQuickAmount(e) {
-    const amount = e.currentTarget.dataset.amount;
-    this.setData({
-      selectedAmount: amount,
-      rechargeAmount: amount.toString(),
-    });
-    wx.vibrateShort(); // 触觉反馈
+  // 返回上一页
+  handleBack() {
+    wx.navigateBack();
   },
 
-  // 金额输入
-  onAmountInput(e) {
+  // 选择金额
+  selectAmount(e) {
+    const index = e.currentTarget.dataset.index;
+    const item = this.data.amountList[index];
+    this.setData({
+      selectedIndex: index,
+      customAmount: "",
+      rechargeAmount: item.value.toString(),
+      payAmount: item.value.toFixed(2)
+    });
+    wx.vibrateShort();
+  },
+
+  // 自定义金额输入
+  handleCustomInput(e) {
     let value = e.detail.value;
     // 只允许数字和小数点
     value = value.replace(/[^\d.]/g, "");
@@ -100,11 +130,20 @@ Page({
       value = parts[0] + "." + parts[1].substring(0, 2);
     }
 
+    const numValue = parseFloat(value) || 0;
     this.setData({
+      customAmount: value,
+      selectedIndex: value ? -1 : this.data.selectedIndex,
       rechargeAmount: value,
-      selectedAmount: value ? "custom" : null,
+      payAmount: numValue.toFixed(2)
     });
   },
+
+  // 立即充值
+  handlePay() {
+    this.createRechargeOrder();
+  },
+
 
   // 备注输入
   onRemarkInput(e) {
@@ -406,7 +445,9 @@ Page({
   resetForm() {
     this.setData({
       rechargeAmount: "",
-      selectedAmount: null,
+      selectedIndex: -1,
+      customAmount: "",
+      payAmount: "0.00",
       remark: "",
     });
   },

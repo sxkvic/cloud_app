@@ -8,6 +8,7 @@ Page({
      * 页面的初始数据
      */
     data: {
+        statusBarHeight: 20,
         queryInput: '',
         isLoading: false,
         queryResult: null,
@@ -18,7 +19,9 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad(options) {
-
+        // 适配刘海屏
+        const sys = wx.getSystemInfoSync();
+        this.setData({ statusBarHeight: sys.statusBarHeight });
     },
 
     /**
@@ -143,6 +146,35 @@ Page({
             queryInput: '',
             queryResult: null,
             showResult: false
+        });
+    },
+
+    /**
+     * 返回上一页
+     */
+    handleBack() {
+        const pages = getCurrentPages();
+        if (pages.length > 1) {
+            // 有上一页，正常返回
+            wx.navigateBack();
+        } else {
+            // 没有上一页，跳转到首页
+            wx.switchTab({
+                url: '/pages/home/home'
+            });
+        }
+    },
+
+    /**
+     * 复制 SN 码
+     */
+    handleCopy(e) {
+        const text = e.currentTarget.dataset.text;
+        wx.setClipboardData({
+            data: text,
+            success: () => {
+                wx.showToast({ title: '已复制 SN', icon: 'none' });
+            }
         });
     },
 

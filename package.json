@@ -1,7 +1,7 @@
 {
   "name": "cloud-broadband-miniprogram",
   "version": "1.0.0",
-  "description": "云网宽带微信小程序",
+  "description": "云宽带微信小程序",
   "main": "app.js",
   "scripts": {
     "build": "npm run build:npm",

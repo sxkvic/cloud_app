@@ -1,7 +1,7 @@
 // app.js
 App({
   onLaunch() {
-    console.log('云网宽带小程序启动');
+    console.log('云宽带小程序启动');
 
     // 展示本地存储能力
     const logs = wx.getStorageSync('logs') || [];

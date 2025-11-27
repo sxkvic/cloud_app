@@ -87,5 +87,3 @@
   <van-tabbar-item icon="user-o">我的</van-tabbar-item>
 </van-tabbar>
 
-<!-- 页面过渡动画 -->
-<page-transition id="pageTransition"></page-transition>

@@ -20,7 +20,7 @@
     <view class="welcome-section">
       <view class="title">
         <text>欢迎使用</text>
-        <text>云网宽带服务</text>
+        <text>云宽带服务</text>
       </view>
       <text class="subtitle">高速 · 稳定 · 智能连接您的生活</text>
     </view>

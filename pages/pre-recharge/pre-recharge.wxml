@@ -1,80 +1,112 @@
 <!--pages/pre-recharge/pre-recharge.wxml-->
-<view class="pre-recharge-page">
-  <!-- 头部标题 -->
-  <view class="page-header">
-    <text class="page-title">账户充值</text>
-    <text class="page-subtitle">为您的宽带账户充值</text>
-  </view>
+<view class="container">
 
-  <!-- 主体内容 -->
-  <view class="main-content">
-    <!-- 加载状态 -->
-    <view class="loading-section" wx:if="{{isLoadingCustomer}}">
-      <view class="loading-card">
-        <view class="loading-icon">⏳</view>
-        <text class="loading-text">正在加载客户信息...</text>
+  <!-- 1. 沉浸式头部 -->
+  <view class="header-bg">
+    <!-- 状态栏占位 (动态高度) -->
+    <view style="height: {{statusBarHeight}}px;"></view>
+    
+    <!-- 导航栏 (动态高度，对齐胶囊) -->
+    <view class="nav-bar" style="height: {{navBarHeight}}px; line-height: {{navBarHeight}}px;">
+      <view class="back-btn" bindtap="handleBack">
+        <image class="icon-back" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTE1IDE5bC03LTcgNy03Ii8+PC9zdmc+" mode="aspectFit"></image>
+      </view>
+      <text class="nav-title">账户充值</text>
+    </view>
+
+    <!-- 账户信息 -->
+    <view class="account-info" wx:if="{{customerInfo && !isLoadingCustomer}}">
+      <view class="info-left">
+        <text class="label">当前宽带账户</text>
+        <text class="phone">{{customerInfo.customer.customer_name || '未知'}}</text>
+      </view>
+      <view class="info-right">
+        <text class="label">设备信息</text>
+        <text class="device">{{customerInfo.device_info.device_name || '未绑定'}}</text>
       </view>
     </view>
 
-    <!-- 充值金额选择 -->
-    <view class="amount-section">
-      <view class="section-title">选择充值金额</view>
-      <view class="amount-grid">
-        <view 
-          class="amount-item {{selectedAmount == item ? 'selected' : ''}}"
-          wx:for="{{quickAmounts}}" 
-          wx:key="*this"
-          bindtap="selectQuickAmount"
-          data-amount="{{item}}"
-        >
-          <text class="amount-value">¥{{item}}</text>
-          <text class="amount-label" wx:if="{{item >= 200}}">送{{item >= 500 ? '50' : item >= 200 ? '20' : '10'}}元</text>
-        </view>
+    <!-- 加载状态 -->
+    <view class="account-info" wx:if="{{isLoadingCustomer}}">
+      <view class="loading-wrapper">
+        <text class="loading-icon">⏳</text>
+        <text class="loading-text">正在加载客户信息...</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 2. 内容区域 (向上浮动) -->
+  <view class="content-body">
+    
+    <!-- 充值面板 -->
+    <view class="card">
+      <view class="card-title">选择充值金额</view>
+
+      <!-- 金额网格 -->
+      <view class="grid-box">
+        <block wx:for="{{amountList}}" wx:key="value">
+          <view 
+            class="grid-item {{selectedIndex === index ? 'active' : ''}}" 
+            bindtap="selectAmount" 
+            data-index="{{index}}"
+          >
+            <!-- 推荐角标 -->
+            <view class="recommend-tag" wx:if="{{item.isRecommend}}">推荐</view>
+            
+            <text class="amount">¥{{item.value}}</text>
+            <text class="desc">售价 ¥{{item.value}}</text>
+            
+            <!-- 选中态的勾勾 (纯CSS绘制的三角形和勾在WXSS里) -->
+            <view class="check-mark" wx:if="{{selectedIndex === index}}">✓</view>
+          </view>
+        </block>
       </view>
 
       <!-- 自定义金额 -->
-      <view class="custom-amount-section">
-        <view class="custom-title">自定义金额</view>
-        <view class="amount-input-wrapper">
-          <text class="currency-symbol">¥</text>
-          <input
-            class="amount-input"
-            type="digit"
-            placeholder="0.00"
-            value="{{rechargeAmount}}"
-            bindinput="onAmountInput"
+      <view class="custom-row">
+        <text class="custom-label">自定义金额</text>
+        <view class="custom-input-box {{selectedIndex === -1 && customAmount ? 'active-border' : ''}}">
+          <text class="symbol">¥</text>
+          <input 
+            class="input" 
+            type="digit" 
+            placeholder="请输入金额" 
+            placeholder-class="placeholder" 
+            value="{{customAmount}}"
+            bindinput="handleCustomInput"
           />
         </view>
       </view>
     </view>
 
-    <!-- 备注信息 -->
-    <view class="remark-section">
-      <view class="section-title">备注信息（可选）</view>
-      <textarea
-        class="remark-input"
-        placeholder="请输入备注信息"
-        value="{{remark}}"
-        bindinput="onRemarkInput"
-        maxlength="100"
-      />
+    <!-- 说明文案 -->
+    <view class="tips-box">
+      <view class="tips-title">充值说明</view>
+      <view class="tips-item">• 充值金额通常在 1-5 分钟内到账。</view>
+      <view class="tips-item">• 赠送金额将直接存入余额，不可提现。</view>
+      <view class="tips-item">• 如遇网络繁忙，到账可能延迟，请耐心等待。</view>
+    </view>
+
+  </view>
+
+  <!-- 3. 底部悬浮支付栏 -->
+  <view class="footer-bar">
+    <view class="footer-content">
+      <view class="price-box">
+        <text class="label">实付金额：</text>
+        <text class="price">¥{{payAmount}}</text>
+      </view>
+      <button 
+        class="pay-btn" 
+        bindtap="handlePay"
+        disabled="{{!payAmount || !customerInfo || isLoading || isLoadingCustomer}}"
+      >
+        <text wx:if="{{isLoading}}">处理中...</text>
+        <text wx:elif="{{isLoadingCustomer}}">加载中...</text>
+        <text wx:elif="{{!customerInfo}}">客户信息加载失败</text>
+        <text wx:else>立即充值</text>
+      </button>
     </view>
   </view>
 
-  <!-- 底部充值按钮 -->
-  <view class="bottom-action">
-    <view class="recharge-summary" wx:if="{{rechargeAmount}}">
-      <text class="summary-text">充值金额：¥{{rechargeAmount}}</text>
-    </view>
-    <button 
-      class="recharge-btn {{!rechargeAmount || !customerInfo || isLoadingCustomer ? 'disabled' : ''}} {{isLoading ? 'loading' : ''}}" 
-      bindtap="createRechargeOrder"
-      disabled="{{!rechargeAmount || !customerInfo || isLoading || isLoadingCustomer}}"
-    >
-      <text wx:if="{{isLoading}}">处理中...</text>
-      <text wx:elif="{{isLoadingCustomer}}">加载中...</text>
-      <text wx:elif="{{!customerInfo}}">客户信息加载失败</text>
-      <text wx:else>立即充值</text>
-    </button>
-  </view>
 </view>

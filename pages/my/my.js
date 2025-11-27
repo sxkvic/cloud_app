@@ -96,7 +96,7 @@ Page({
   showAboutInfo() {
     wx.showModal({
       title: '关于我们',
-      content: '云网宽带小程序\n版本：v1.0.0\n\n为您提供便捷的宽带服务管理功能。',
+      content: '云宽带小程序\n版本：v1.0.0\n\n为您提供便捷的宽带服务管理功能。',
       showCancel: false,
       confirmText: '知道了'
     });

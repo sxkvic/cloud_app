@@ -33,16 +33,24 @@ Page({
         route: '/pages/customer-service/customer-service'
       },
       {
-        title: '业务退订',
-        subtitle: '退订业务',
-        iconClass: 'icon-tuiding',
-        bgColor: '#fffbe6',
-        iconBgColor: '#faad14',
-        route: '/pages/business-cancellation/business-cancellation'
+        title: '产品查询',
+        subtitle: '查询产品信息',
+        iconClass: 'icon-chaxun',
+        bgColor: '#f0f6ff',
+        iconBgColor: '#409eff',
+        route: '/pages/product-query/product-query'
       }
+      // 暂时隐藏业务退订入口
+      // {
+      //   title: '业务退订',
+      //   subtitle: '退订业务',
+      //   iconClass: 'icon-tuiding',
+      //   bgColor: '#fffbe6',
+      //   iconBgColor: '#faad14',
+      //   route: '/pages/business-cancellation/business-cancellation'
+      // }
     ],
     allFeatures: [
-      { iconClass: 'icon-chaxun', text: '产品查询', color: '#409eff', route: '/pages/product-query/product-query' },
       { iconClass: 'icon-chongzhi', text: '预充值', color: '#52c41a', route: '/pages/pre-recharge/pre-recharge' },
       { iconClass: 'icon-guohu', text: '变更过户', color: '#722ed1', route: '/pages/change-transfer/change-transfer' },
       { iconClass: 'icon-xufei', text: '自助续费', color: '#f5222d', route: '/pages/self-renewal/self-renewal' },

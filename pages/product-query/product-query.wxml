@@ -1,100 +1,125 @@
 <!--pages/product-query/product-query.wxml-->
-<view class="product-query-page">
-  <!-- 查询表单区域 -->
-  <view class="query-section" wx:if="{{!showResult}}">
-    <view class="main-content">
-      <view class="query-card">
-        <view class="card-title">查询您的宽带产品信息</view>
-        
-        <form bindsubmit="onSubmit" class="query-form">
-          <!-- 输入框 -->
-          <view class="input-wrapper">
-            <input
-              type="text"
-              value="{{ queryInput }}"
-              bindinput="onInputChange"
-              class="custom-input"
-              placeholder="输入设备码 / 宽带账号"
-              placeholder-style="color: #9ca3af"
-            />
-          </view>
+<view class="container">
 
-          <!-- 查询按钮 -->
-          <view class="button-wrapper">
-            <button
-              form-type="submit"
-              class="submit-button"
-              disabled="{{ isLoading }}"
-            >
-              <text wx:if="{{ isLoading }}" class="loading-icon">⟳</text>
-              {{ isLoading ? '查询中...' : '立即查询' }}
-            </button>
-          </view>
-        </form>
-        
-        <view class="help-link-wrapper">
-          <view class="help-link" bindtap="showHelp">
-            <text class="help-icon">❓</text>
-            如何找到我的设备码？
-          </view>
+  <!-- 1. 顶部搜索栏 (吸顶) -->
+  <view class="header-section">
+    <!-- 状态栏占位 -->
+    <view style="height: {{statusBarHeight}}px;"></view>
+    
+    <!-- 标题行 -->
+    <view class="nav-bar">
+      <view class="back-btn" bindtap="handleBack">
+        <image class="icon-back" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTE1IDE5bC03LTcgNy03Ii8+PC9zdmc+"></image>
+      </view>
+      <text class="nav-title">产品查询</text>
+      <view class="nav-placeholder"></view>
+    </view>
+
+    <!-- 搜索框 -->
+    <view class="search-wrapper">
+      <view class="search-box">
+        <image class="icon-search" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOUNBM0FGIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTIxIDIxbC02LTZtMi01YTcgNyAwIDExLTE0IDAgNyA3IDAgMDExNCAweiIvPjwvc3ZnPg=="></image>
+        <input class="search-input" placeholder="请输入设备码..." placeholder-class="placeholder" value="{{queryInput}}" bindinput="onInputChange" confirm-type="search" bindconfirm="onSubmit" />
+        <view class="divider"></view>
+        <view class="search-btn" bindtap="onSubmit">
+          <text wx:if="{{isLoading}}" class="loading-icon">⟳</text>
+          <text wx:else>搜索</text>
         </view>
       </view>
     </view>
   </view>
 
-  <!-- 查询结果区域 -->
-  <view class="result-section" wx:if="{{showResult && queryResult}}">
-    <!-- 结果头部 -->
-    <view class="result-header">
-      <view class="header-content">
-        <view class="result-title">设备信息</view>
-        <view class="result-subtitle">共找到 {{queryResult.total}} 条记录</view>
-      </view>
-      <view class="header-actions">
-        <button class="new-query-btn" bindtap="resetQuery">重新查询</button>
-      </view>
-    </view>
+  <!-- 2. 统计条 -->
+  <view class="stats-bar" wx:if="{{showResult}}">
+    <text class="stats-text">共 {{queryResult ? queryResult.total : 0}} 条记录</text>
+    <view class="tag-update">实时数据</view>
+  </view>
 
-    <!-- 设备列表 -->
-    <view class="devices-list">
-      <view class="device-card" wx:for="{{queryResult.data}}" wx:key="id">
-        <!-- 设备头部信息 -->
-        <view class="device-header">
-          <view class="device-name">{{item.device_name || item.created_by_username || '未命名设备'}}</view>
-          <view class="device-status" data-status="{{item.status || '1'}}">
-            <text class="status-dot"></text>
-            <text class="status-text">{{item.status == '2' ? '运行中' : '待分配'}}</text>
+  <!-- 3. 设备列表 -->
+  <view class="list-container" wx:if="{{showResult && queryResult}}">
+    <block wx:for="{{queryResult.data}}" wx:key="id">
+      
+      <view class="card">
+        <!-- 顶部彩色条 (根据状态变色) -->
+        <view class="status-stripe {{item.status === '2' ? 'bg-green' : 'bg-orange'}}"></view>
+        
+        <view class="card-body">
+          <!-- 头部信息 -->
+          <view class="card-header">
+            <view class="header-left">
+              <view class="title-row">
+                <text class="device-name">{{item.device_name || item.created_by_username || '未命名设备'}}</text>
+                <view class="status-tag {{item.status === '2' ? 'tag-using' : 'tag-pending'}}">
+                  {{item.status == '2' ? '运行中' : '待分配'}}
+                </view>
+              </view>
+            </view>
+            <view class="header-right">
+              <view class="price-box">
+                <text class="currency">¥</text>
+                <text class="amount">{{item.amount || '0.00'}}</text>
+              </view>
+            </view>
           </view>
-        </view>
 
-        <!-- 设备详细信息 -->
-        <view class="device-details">
-          <view class="detail-row">
-            <view class="detail-label">设备编号</view>
-            <view class="detail-value">{{item.device_no}}</view>
+          <!-- 核心数据区 (灰色背景) -->
+          <view class="core-data-box">
+            <view class="grid-layout">
+              <!-- SN 码 -->
+              <view class="grid-item col-span-2">
+                <text class="label">设备编号 (SN)</text>
+                <view class="sn-row">
+                  <text class="value-mono">{{item.device_no}}</text>
+                  <view class="copy-btn" bindtap="handleCopy" data-text="{{item.device_no}}">
+                    <image class="icon-copy" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDc3MkZGIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTggMTZINmEyIDIgMCAwMS0yLTJWNmEyIDIgMCAwMTItMmg4YTIgMiAwIDAxMiAydjJtLTYgMTJoOGEyIDIgMCAwMDItMnYtOGEyIDIgMCAwMC0yLTJoLThhMiAyIDAgMDAtMiAydjhhMiAyIDAgMDAyIDJ6Ii8+PC9zdmc+"></image>
+                    <text>复制</text>
+                  </view>
+                </view>
+              </view>
+              
+              <!-- 规格 -->
+              <view class="grid-item">
+                <text class="label">规格配置</text>
+                <text class="value">{{item.specification || '-'}}</text>
+              </view>
+              
+              <!-- 时间 -->
+              <view class="grid-item">
+                <text class="label">创建时间</text>
+                <text class="value">{{item.created_at || '-'}}</text>
+              </view>
+            </view>
+
+            <!-- 额外信息 -->
+            <view class="extra-info" wx:if="{{item.description || item.created_by_username}}">
+              <view class="grid-layout">
+                <view class="grid-item col-span-2" wx:if="{{item.created_by_username}}">
+                  <text class="label">创建人</text>
+                  <text class="value">{{item.created_by_username}}</text>
+                </view>
+                <view class="grid-item col-span-2" wx:if="{{item.description}}">
+                  <text class="label">备注说明</text>
+                  <view class="remark-box">
+                    {{item.description}}
+                  </view>
+                </view>
+              </view>
+            </view>
           </view>
-          <view class="detail-row">
-            <view class="detail-label">设备类型</view>
-            <view class="detail-value">{{item.device_type}}</view>
-          </view>
-          <view class="detail-row">
-            <view class="detail-label">规格配置</view>
-            <view class="detail-value">{{item.specification}}</view>
-          </view>
-          <view class="detail-row">
-            <view class="detail-label">费用金额</view>
-            <view class="detail-value amount">¥{{item.amount}}</view>
-          </view>
-          <view class="detail-row">
-            <view class="detail-label">创建时间</view>
-            <view class="detail-value">{{item.created_at}}</view>
-          </view>
-          <view class="detail-row" wx:if="{{item.description}}">
-            <view class="detail-label">备注说明</view>
-            <view class="detail-value">{{item.description}}</view>
-          </view>
+
         </view>
       </view>
+
+    </block>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!showResult}}">
+    <view class="empty-icon">🔍</view>
+    <text class="empty-text">请输入设备编号或宽带账号进行查询</text>
+    <view class="help-link" bindtap="showHelp">
+      <text class="help-icon">❓</text>
+      如何找到我的设备码？
     </view>
   </view>
 </view>

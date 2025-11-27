@@ -67,31 +67,6 @@
 
     <!-- 订购按钮 -->
     <view class="order-section">
-        <!-- 未选择时显示引导 -->
-        <view class="order-guide" wx:if="{{ !selectedPackage }}">
-            <text class="guide-icon">👆</text>
-            <text class="guide-text">请在上方选择您需要的套餐</text>
-        </view>
-
-        <!-- 已选择时显示摘要 -->
-        <view class="order-summary" wx:if="{{ selectedPackage && customerInfo }}">
-            <view class="summary-row">
-                <view class="summary-info">
-                    <text class="summary-label">客户</text>
-                    <text class="summary-value">{{ customerInfo.customer_name || '未知' }}</text>
-                </view>
-                <view class="summary-info">
-                    <text class="summary-label">已选套餐</text>
-                    <text class="summary-value">{{ selectedPackageName }}</text>
-                </view>
-            </view>
-            <view class="summary-divider"></view>
-            <view class="summary-price-row">
-                <text class="price-label">金额</text>
-                <text class="price-amount">¥{{ selectedPackagePrice }}</text>
-            </view>
-        </view>
-
         <button 
             class="order-button {{ selectedPackage && customerInfo ? 'active' : 'disabled' }}" 
             disabled="{{ !selectedPackage || !customerInfo || submitLoading }}"
