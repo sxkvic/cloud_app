@@ -68,14 +68,6 @@ Page({
     },
 
     /**
-     * 用户点击右上角分享
-     */
-    onShareAppMessage() {
-
-    },
-
-
-    /**
      * 返回按钮
      */
     handleBack() {
@@ -125,9 +117,13 @@ Page({
      * 用户点击右上角分享
      */
     onShareAppMessage() {
+        const app = getApp();
+        const shareImageUrl = `${app.globalData.apiBaseUrl}/api/v1/files/download/93`;
+        
         return {
-            title: '客户服务中心',
-            path: '/pages/customer-service/customer-service'
+            title: '客户服务中心 - 云宽带',
+            path: '/pages/customer-service/customer-service',
+            imageUrl: shareImageUrl
         };
     }
 })

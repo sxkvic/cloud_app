@@ -1,12 +1,11 @@
 // pages/change-transfer/change-transfer.js
 const { navigation, message } = require('../../utils/common');
 const API = require('../../utils/api');
+const { getShareConfig, getTimelineShareConfig } = require('../../utils/share');
 const app = getApp();
 
 Page({
   data: {
-    statusBarHeight: 0,
-    navBarHeight: 44,
     deviceCode: '',
     loading: true,
     submitLoading: false,
@@ -20,17 +19,6 @@ Page({
 
   async onLoad() {
     console.log('变更过户页面加载');
-    
-    // 获取系统信息设置状态栏高度
-    const systemInfo = wx.getSystemInfoSync();
-    const statusBarHeight = systemInfo.statusBarHeight || 0;
-    const menuButtonInfo = wx.getMenuButtonBoundingClientRect();
-    const navBarHeight = menuButtonInfo.height + (menuButtonInfo.top - statusBarHeight) * 2;
-    
-    this.setData({
-      statusBarHeight,
-      navBarHeight
-    });
 
     // 从本地缓存读取设备编号
     const device_no = wx.getStorageSync('device_no') || wx.getStorageSync('deviceCode');
@@ -79,11 +67,6 @@ Page({
       console.error('查询客户信息失败:', error);
       this.setData({ loading: false });
     }
-  },
-
-  // 返回上一页
-  handleBack() {
-    wx.navigateBack();
   },
 
   // 输入客户名称
@@ -220,5 +203,20 @@ Page({
       this.setData({ submitLoading: false });
       console.error('提交过户申请失败:', error);
     }
+  },
+
+  // 分享给好友
+  onShareAppMessage() {
+    return getShareConfig({
+      title: '变更过户 - 云宽带',
+      path: '/pages/change-transfer/change-transfer'
+    });
+  },
+
+  // 分享到朋友圈
+  onShareTimeline() {
+    return getTimelineShareConfig({
+      title: '变更过户 - 云宽带'
+    });
   }
 });

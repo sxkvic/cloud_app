@@ -1,6 +1,7 @@
 // pages/home/home.js
 const { navigation, message } = require('../../utils/common');
 const API = require('../../utils/api');
+const { getShareConfig, getTimelineShareConfig } = require('../../utils/share');
 
 Page({
   data: {
@@ -213,5 +214,20 @@ Page({
       // 直接切换Tab
       navigation.switchTab('/pages/my/my');
     }
+  },
+
+  // 分享给好友
+  onShareAppMessage() {
+    return getShareConfig({
+      title: '云宽带 - 智能网络管理',
+      path: '/pages/splash/splash'
+    });
+  },
+
+  // 分享到朋友圈
+  onShareTimeline() {
+    return getTimelineShareConfig({
+      title: '云宽带 - 智能网络管理'
+    });
   }
 });

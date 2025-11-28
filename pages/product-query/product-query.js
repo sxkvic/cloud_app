@@ -67,13 +67,6 @@ Page({
     },
 
     /**
-     * 用户点击右上角分享
-     */
-    onShareAppMessage() {
-
-    },
-
-    /**
      * 输入框内容变化
      */
     onInputChange(event) {

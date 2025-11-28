@@ -1,110 +1,110 @@
 <!--pages/change-transfer/change-transfer.wxml-->
+
+<!-- 顶部蓝色装饰背景 -->
+<view class="blue-header"></view>
+
 <view class="container">
-
-  <!-- 1. 沉浸式头部 -->
-  <view class="header-bg">
-    <!-- 状态栏占位 (动态高度) -->
-    <view style="height: {{statusBarHeight}}px;"></view>
-    
-    <!-- 导航栏 (动态高度，对齐胶囊) -->
-    <view class="nav-bar" style="height: {{navBarHeight}}px; line-height: {{navBarHeight}}px;">
-      <view class="back-btn" bindtap="handleBack">
-        <image class="icon-back" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTE1IDE5bC03LTcgNy03Ii8+PC9zdmc+" mode="aspectFit"></image>
-      </view>
-      <text class="nav-title">变更过户</text>
+  
+  <!-- 骨架屏 - 加载中显示 -->
+  <view wx:if="{{loading}}" class="skeleton-wrapper">
+    <view class="skeleton-card info-card-skeleton">
+      <view class="skeleton-line skeleton-title"></view>
+      <view class="skeleton-line skeleton-desc"></view>
     </view>
-
-    <!-- 账户信息 -->
-    <view class="account-info" wx:if="{{customerInfo && !loading}}">
-      <view class="info-left">
-        <text class="label">当前户主</text>
-        <text class="name">{{customerInfo.customer.customer_name || '未知'}}</text>
-      </view>
-      <view class="info-right">
-        <text class="label">设备信息</text>
-        <text class="device">{{customerInfo.device_info.device_name || '未绑定'}}</text>
-      </view>
-    </view>
-
-    <!-- 加载状态 -->
-    <view class="account-info" wx:if="{{loading}}">
-      <view class="loading-wrapper">
-        <text class="loading-icon">⏳</text>
-        <text class="loading-text">正在加载客户信息...</text>
-      </view>
+    <view class="skeleton-card">
+      <view class="skeleton-line skeleton-title"></view>
+      <view class="skeleton-line skeleton-desc"></view>
+      <view class="skeleton-line skeleton-input"></view>
+      <view class="skeleton-line skeleton-input"></view>
     </view>
   </view>
 
-  <!-- 2. 内容区域 (向上浮动) -->
-  <view class="content-body">
+  <!-- 内容区域 - 数据加载完成后显示 -->
+  <view wx:else class="fade-in">
     
-    <!-- 骨架屏 - 加载中显示 -->
-    <view wx:if="{{ loading }}" class="skeleton-wrapper">
-      <view class="skeleton-card">
-        <view class="skeleton-line skeleton-title"></view>
-        <view class="skeleton-line skeleton-desc"></view>
-        <view class="skeleton-line skeleton-desc"></view>
+    <!-- 当前户主信息卡片 (玻璃态效果) -->
+    <view class="card info-card">
+      <view class="info-row">
+        <view class="info-item">
+          <view class="info-label">当前户主</view>
+          <view class="info-value">{{customerInfo.customer.customer_name || '未知'}}</view>
+        </view>
+        <view class="info-item right-align">
+          <view class="info-label">设备信息</view>
+          <view class="device-tag">
+            <text class="tag-bold">{{customerInfo.device_info.device_type === '1' ? '5G' : '4G'}}</text>
+            {{customerInfo.device_info.device_name || '未绑定'}}
+          </view>
+        </view>
       </view>
     </view>
-    
-    <!-- 过户表单 - 数据加载完成后显示 -->
-    <view wx:else class="card fade-in">
-      <view class="card-title">过户信息</view>
-      <view class="card-desc">请填写新户主的真实信息</view>
 
-      <!-- 表单项 -->
-      <view class="form-section">
-        <view class="form-item">
-          <text class="form-label">新户主姓名</text>
+    <!-- 表单区域 -->
+    <view class="card form-card">
+      <view class="form-title">新户主信息</view>
+      <view class="form-subtitle">请填写真实有效的身份信息，需与身份证一致</view>
+
+      <!-- 姓名输入 -->
+      <view class="form-group">
+        <view class="label">新户主姓名</view>
+        <view class="input-wrapper">
           <input 
-            class="form-input"
-            type="text"
-            placeholder="请输入新户主姓名"
-            value="{{ formData.customerName }}"
+            class="weui-input" 
+            type="text" 
+            placeholder="请输入姓名" 
+            placeholder-class="placeholder-style"
+            value="{{formData.customerName}}"
             bindinput="onCustomerNameInput"
           />
         </view>
-        
-        <view class="form-item">
-          <text class="form-label">身份证号</text>
+      </view>
+
+      <!-- 身份证输入 -->
+      <view class="form-group">
+        <view class="label">身份证号</view>
+        <view class="input-wrapper">
           <input 
-            class="form-input"
-            type="text"
-            placeholder="请输入新户主身份证号"
-            value="{{ formData.idNumber }}"
+            class="weui-input" 
+            type="idcard" 
+            placeholder="请输入18位身份证号码" 
+            maxlength="18" 
+            placeholder-class="placeholder-style"
+            value="{{formData.idNumber}}"
             bindinput="onIdNumberInput"
-            maxlength="18"
           />
         </view>
       </view>
     </view>
 
     <!-- 注意事项 -->
-    <view class="tips-box" wx:if="{{!loading}}">
-      <view class="tips-title">注意事项</view>
-      <view class="tips-item">• 请确保填写信息真实有效，过户后无法撤销</view>
-      <view class="tips-item">• 过户需要双方身份证原件和相关费用</view>
-      <view class="tips-item">• 过户申请将在3-5个工作日内处理完成</view>
-      <view class="tips-item">• 我们会在24小时内联系您确认申请详情</view>
+    <view class="notes-section">
+      <view class="notes-header">
+        <view class="icon-info">!</view>
+        <text>注意事项</text>
+      </view>
+      <view class="notes-list">
+        <view class="note-item">请确保填写信息真实有效，过户提交后无法撤销。</view>
+        <view class="note-item">过户需要双方身份证原件及在场确认，可能产生相关费用。</view>
+        <view class="note-item">过户申请将在 3-5 个工作日内处理完成，请留意短信通知。</view>
+      </view>
     </view>
 
   </view>
 
-  <!-- 3. 底部悬浮操作栏 -->
-  <view class="footer-bar">
-    <view class="footer-content">
-      <button 
-        class="submit-btn" 
-        bindtap="submitTransfer"
-        disabled="{{!canSubmit || !customerInfo || loading || submitLoading}}"
-        loading="{{submitLoading}}"
-      >
-        <text wx:if="{{submitLoading}}">提交中...</text>
-        <text wx:elif="{{loading}}">加载中...</text>
-        <text wx:elif="{{!customerInfo}}">客户信息加载失败</text>
-        <text wx:else>提交过户申请</text>
-      </button>
-    </view>
-  </view>
+</view>
 
+<!-- 底部固定按钮 -->
+<view class="footer-action safe-area-bottom">
+  <button 
+    class="btn-submit" 
+    hover-class="btn-hover" 
+    bindtap="submitTransfer"
+    disabled="{{!canSubmit || !customerInfo || loading || submitLoading}}"
+    loading="{{submitLoading}}"
+  >
+    <text wx:if="{{submitLoading}}">提交中...</text>
+    <text wx:elif="{{loading}}">加载中...</text>
+    <text wx:elif="{{!customerInfo}}">客户信息加载失败</text>
+    <text wx:else>提交过户申请</text>
+  </button>
 </view>

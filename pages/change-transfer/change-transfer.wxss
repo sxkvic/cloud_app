@@ -1,203 +1,195 @@
 /* pages/change-transfer/change-transfer.wxss */
 
-/* 页面容器 */
-.container {
-  min-height: 100vh;
-  background: #f5f7fa;
-  padding-bottom: 160rpx;
+page {
+  background-color: #F5F6F8;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Segoe UI, Arial, Roboto, 'PingFang SC', 'miui', 'Hiragino Sans GB', 'Microsoft Yahei', sans-serif;
+  padding-bottom: 180rpx;
 }
 
-/* ========== 1. 沉浸式头部 ========== */
-.header-bg {
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-  padding: 0 32rpx 40rpx;
-  position: relative;
-}
-
-.nav-bar {
-  display: flex;
-  align-items: center;
-  position: relative;
-  color: #fff;
-}
-
-.back-btn {
-  width: 48rpx;
-  height: 48rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* ========== 1. 顶部蓝色装饰背景 ========== */
+.blue-header {
+  height: 320rpx;
+  background: linear-gradient(135deg, #2B7FF0 0%, #1E64D8 100%);
+  border-bottom-left-radius: 40rpx;
+  border-bottom-right-radius: 40rpx;
+  width: 100%;
   position: absolute;
-  left: 0;
-  z-index: 10;
+  top: 0;
+  z-index: 0;
 }
 
-.icon-back {
-  width: 24rpx;
-  height: 24rpx;
+.container {
+  padding: 0 32rpx;
+  position: relative;
+  z-index: 1;
+  margin-top: 40rpx;
 }
 
-.nav-title {
-  flex: 1;
-  text-align: center;
-  font-size: 34rpx;
-  font-weight: 600;
+/* ========== 2. 卡片通用样式 ========== */
+.card {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 40rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.03);
+}
+
+/* 信息卡片 (玻璃态效果) */
+.info-card {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1rpx solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
   color: #fff;
 }
 
-/* 账户信息卡片 */
-.account-info {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10rpx);
-  border-radius: 20rpx;
-  padding: 24rpx;
-  margin-top: 24rpx;
+.info-row {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
-.info-left,
-.info-right {
+.info-item {
   flex: 1;
 }
 
-.info-left .label,
-.info-right .label {
-  display: block;
-  font-size: 24rpx;
-  color: rgba(255, 255, 255, 0.8);
+.info-label {
+  font-size: 26rpx;
+  opacity: 0.9;
   margin-bottom: 8rpx;
 }
 
-.info-left .name,
-.info-right .device {
-  display: block;
-  font-size: 28rpx;
+.info-value {
+  font-size: 40rpx;
   font-weight: 600;
-  color: #fff;
 }
 
-.info-right {
+.right-align {
   text-align: right;
 }
 
-/* 加载状态 */
-.loading-wrapper {
-  display: flex;
+.device-tag {
+  background: rgba(255, 255, 255, 0.25);
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 16rpx;
 }
 
-.loading-icon {
-  font-size: 32rpx;
-  animation: rotate 1.5s linear infinite;
+.tag-bold {
+  font-weight: bold;
+  margin-right: 6rpx;
 }
 
-.loading-text {
-  font-size: 26rpx;
-  color: rgba(255, 255, 255, 0.9);
-}
-
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* ========== 2. 内容区域 ========== */
-.content-body {
-  margin-top: -20rpx;
-  padding: 0 32rpx;
-}
-
-/* 卡片样式 */
-.card {
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 32rpx;
-  margin-bottom: 24rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-}
-
-.card-title {
-  font-size: 32rpx;
+/* ========== 3. 表单区域 ========== */
+.form-title {
+  font-size: 34rpx;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #333;
   margin-bottom: 8rpx;
 }
 
-.card-desc {
-  font-size: 26rpx;
+.form-subtitle {
+  font-size: 24rpx;
   color: #999;
-  margin-bottom: 32rpx;
+  margin-bottom: 40rpx;
 }
 
-/* 表单区域 */
-.form-section {
-  display: flex;
-  flex-direction: column;
-  gap: 24rpx;
+.form-group {
+  margin-bottom: 40rpx;
 }
 
-.form-item {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-label {
-  font-size: 28rpx;
-  font-weight: 500;
-  color: #333;
-  margin-bottom: 12rpx;
-}
-
-.form-input {
-  height: 88rpx;
-  padding: 0 24rpx;
-  background: #f7f8fa;
-  border: 2rpx solid #e8e8e8;
-  border-radius: 16rpx;
-  font-size: 28rpx;
-  color: #333;
-  transition: all 0.3s;
-}
-
-.form-input:focus {
-  background: #fff;
-  border-color: #2563eb;
-}
-
-/* 提示说明 */
-.tips-box {
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 32rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-}
-
-.tips-title {
-  font-size: 28rpx;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 20rpx;
-}
-
-.tips-item {
-  font-size: 26rpx;
-  color: #666;
-  line-height: 1.8;
-  margin-bottom: 12rpx;
-}
-
-.tips-item:last-child {
+.form-group:last-child {
   margin-bottom: 0;
 }
 
-/* ========== 3. 骨架屏 ========== */
+.label {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 16rpx;
+  font-weight: 500;
+}
+
+.input-wrapper {
+  background: #F7F8FA;
+  border-radius: 16rpx;
+  padding: 0 24rpx;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  border: 2rpx solid transparent;
+  transition: all 0.2s;
+}
+
+.input-wrapper:focus-within {
+  background: #fff;
+  border-color: #2B7FF0;
+}
+
+.weui-input {
+  flex: 1;
+  height: 100%;
+  font-size: 32rpx;
+  color: #333;
+}
+
+.placeholder-style {
+  color: #C0C4CC;
+  font-size: 30rpx;
+}
+
+/* ========== 4. 注意事项 ========== */
+.notes-section {
+  padding: 0 20rpx;
+}
+
+.notes-header {
+  display: flex;
+  align-items: center;
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 20rpx;
+}
+
+.icon-info {
+  width: 32rpx;
+  height: 32rpx;
+  background: #FF9800;
+  color: #fff;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 32rpx;
+  font-size: 20rpx;
+  font-weight: bold;
+  margin-right: 12rpx;
+}
+
+.notes-list {
+  padding-left: 10rpx;
+}
+
+.note-item {
+  font-size: 24rpx;
+  color: #999;
+  line-height: 1.6;
+  margin-bottom: 12rpx;
+  position: relative;
+  padding-left: 24rpx;
+}
+
+.note-item::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #ccc;
+}
+
+.note-item:last-child {
+  margin-bottom: 0;
+}
+
+/* ========== 5. 骨架屏 ========== */
 .skeleton-wrapper {
   padding: 0;
 }
@@ -205,9 +197,14 @@
 .skeleton-card {
   background: #fff;
   border-radius: 24rpx;
-  padding: 32rpx;
-  margin-bottom: 24rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+  padding: 40rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.03);
+}
+
+.info-card-skeleton {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1rpx solid rgba(255, 255, 255, 0.3);
 }
 
 .skeleton-line {
@@ -225,8 +222,14 @@
 }
 
 .skeleton-desc {
+  width: 70%;
+  height: 32rpx;
+}
+
+.skeleton-input {
   width: 100%;
-  height: 88rpx;
+  height: 96rpx;
+  margin-bottom: 24rpx;
 }
 
 @keyframes skeleton-loading {
@@ -254,60 +257,63 @@
   }
 }
 
-/* ========== 4. 底部操作栏 ========== */
-.footer-bar {
+/* ========== 6. 底部按钮 ========== */
+.footer-action {
   position: fixed;
   bottom: 0;
   left: 0;
-  right: 0;
+  width: 100%;
   background: #fff;
   padding: 24rpx 32rpx;
-  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
-  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.08);
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
   z-index: 100;
+  box-sizing: border-box;
 }
 
-.footer-content {
-  display: flex;
-  align-items: center;
+/* 适配全面屏底部安全区 */
+.safe-area-bottom {
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
-.submit-btn {
-  flex: 1;
+.btn-submit {
+  width: 100% !important;
   height: 96rpx;
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  line-height: 96rpx;
+  background: linear-gradient(135deg, #2B7FF0 0%, #1E64D8 100%);
   color: #fff;
+  border-radius: 48rpx;
   font-size: 32rpx;
   font-weight: 600;
-  border-radius: 48rpx;
+  padding: 0;
+  margin: 0;
   border: none;
-  box-shadow: 0 8rpx 24rpx rgba(37, 99, 235, 0.4);
+  box-shadow: 0 8rpx 24rpx rgba(43, 127, 240, 0.4);
   transition: all 0.3s;
 }
 
-.submit-btn:active:not([disabled]) {
-  transform: scale(0.98);
-  box-shadow: 0 4rpx 12rpx rgba(37, 99, 235, 0.3);
+.btn-submit::after {
+  border: none;
 }
 
-.submit-btn[disabled] {
+.btn-hover {
+  opacity: 0.9;
+  transform: scale(0.99);
+}
+
+.btn-submit[disabled] {
   background: #e0e0e0;
   color: #999;
   box-shadow: none;
 }
 
-.submit-btn::after {
-  border: none;
-}
-
-/* ========== 5. 响应式设计 ========== */
+/* ========== 7. 响应式设计 ========== */
 @media (max-width: 375px) {
-  .content-body {
+  .container {
     padding: 0 24rpx;
   }
   
-  .card,
-  .tips-box {
-    padding: 24rpx;
+  .card {
+    padding: 32rpx 24rpx;
   }
 }
