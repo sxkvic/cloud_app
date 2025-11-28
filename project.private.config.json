@@ -3,7 +3,7 @@
     "projectname": "cloud-broadband-miniprogram",
     "setting": {
         "compileHotReLoad": true,
-        "urlCheck": false
+        "urlCheck": true
     },
     "condition": {
         "miniprogram": {
@@ -17,5 +17,6 @@
                 }
             ]
         }
-    }
+    },
+    "libVersion": "3.11.2"
 }

@@ -625,6 +625,27 @@ const API = {
       data: complaintData,
       needAuth: true
     });
+  },
+
+  // ==================== 变更过户模块 ====================
+
+  /**
+   * 创建变更过户申请
+   * @param {Object} transferData 过户数据
+   * @param {Number} transferData.user_type 用户类型（1=个人）
+   * @param {String} transferData.customer_name 客户名称
+   * @param {String} transferData.id_number 证件号
+   * @param {String} transferData.device_no 设备号
+   * @param {String} transferData.openid 申请人openid
+   * @returns {Promise} { success, data, message }
+   */
+  createTransferApplication(transferData) {
+    return request({
+      url: '/api/v1/transfer-applications/create',
+      method: 'POST',
+      data: transferData,
+      needAuth: true
+    });
   }
 };
 
