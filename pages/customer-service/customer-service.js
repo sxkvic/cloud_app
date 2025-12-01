@@ -86,7 +86,7 @@ Page({
      */
     handleCall() {
         wx.makePhoneCall({
-            phoneNumber: '10086',
+            phoneNumber: '4009677726',
             success: function() {
                 console.log("拨打成功");
             },

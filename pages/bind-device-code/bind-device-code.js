@@ -35,9 +35,9 @@ Page({
       }
     } else {
       // 重新绑定时，显示当前绑定的设备信息
-      const currentDeviceCode = wx.getStorageSync('deviceCode');
-      if (currentDeviceCode) {
-        console.log('当前绑定的设备码:', currentDeviceCode);
+      const currentDeviceNo = wx.getStorageSync('device_no');
+      if (currentDeviceNo) {
+        console.log('当前绑定的设备码:', currentDeviceNo);
         wx.showToast({
           title: '可以重新绑定设备',
           icon: 'none',

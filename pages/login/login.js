@@ -118,13 +118,14 @@ Page({
   // 检查设备绑定状态并导航
   async checkDeviceBindingAndNavigate() {
     try {
-      console.log('检查用户设备绑定状态...');
+      console.log('🔍 检查用户设备绑定状态...');
       
       // 调用API获取用户绑定的设备列表
       const devicesResult = await API.getUserDevices();
       const devices = devicesResult.data.devices || [];
       
-      console.log('用户绑定的设备:', devices);
+      console.log('📋 服务器返回的设备列表:', devices);
+      console.log('📊 设备数量:', devices.length);
       
       if (devices.length > 0) {
         // 用户已绑定设备
@@ -190,8 +191,25 @@ Page({
           navigation.switchTab('/pages/home/home');
         }, 300);
       } else {
-        // 用户未绑定设备，直接跳转不显示提示
-        console.log('用户未绑定设备，跳转设备绑定页面');
+        // 用户未绑定设备
+        console.log('⚠️ 用户未绑定设备，清除可能存在的旧缓存');
+        
+        // 清除所有设备相关缓存（防止使用过期数据）
+        wx.removeStorageSync('deviceBound');
+        wx.removeStorageSync('device_no');
+        wx.removeStorageSync('device_info');
+        wx.removeStorageSync('customer_info');
+        wx.removeStorageSync('binding_info');
+        
+        // 清除全局数据
+        app.globalData.deviceBound = false;
+        app.globalData.device_no = null;
+        app.globalData.device_info = null;
+        app.globalData.customer_info = null;
+        app.globalData.binding_info = null;
+        
+        console.log('✅ 旧缓存已清除，跳转设备绑定页面');
+        
         setTimeout(() => {
           this.setData({ loading: false });
           navigation.navigateTo('/pages/bind-device-code/bind-device-code');

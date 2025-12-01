@@ -14,7 +14,7 @@
     <!-- 头部欢迎语 -->
     <view class="header-text">
       <view class="h1">您好，欢迎咨询</view>
-      <view class="p">中国移动智慧客服为您服务</view>
+      <view class="p">云联网智慧客服为您服务</view>
     </view>
   </view>
 
@@ -35,7 +35,7 @@
         </view>
         <!-- 右侧图标容器 -->
         <view class="action-icon-box blue-gradient">
-          <image class="icon-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgZmlsbD0iI2ZmZmZmZiIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMjAgMkg0Yy0xLjEgMC0yIC45LTIgMnYxOGwyLTJoMTZjMS4xIDAgMi0uOSAyLTJWNGMwLTEuMS0uOS0yLTItMnptLTMgMTJINy45OWwtLjAxLS4wMUw2IDEybDEuOTktMi4wMUgxN1Y2aDJ2OHoiLz48L3N2Zz4=" mode="aspectFit"></image>
+          <van-icon name="service-o" size="32px" color="#ffffff" />
         </view>
       </button>
 
@@ -43,7 +43,7 @@
       <view class="card sub-card" hover-class="card-hover" bindtap="handleCall">
         <view class="card-left">
           <text class="sub-card-label">宽带专线热线</text>
-          <text class="hotline-number">10086-8-1</text>
+          <text class="hotline-number">4009677726</text>
         </view>
         <view class="call-btn">
           <image class="small-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0iIzRENkFGRiIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNNi42MiAxMC43OWMxLjQ0IDIuODMgMy43NiA1LjE0IDYuNTkgNi41OWwyLjItMi4yYy4yNy0uMjcuNjctLjM2IDEuMDItLjI0IDEuMTIuMzcgMi4zMy41NyAzLjU3LjU3LjU1IDAgMSAuNDUgMSAxVjIxYzAgLjU1LS40NSAxLTEgMS0xMC4wMSAwLTE4LTcuOTktMTgtMTggMC0uNTUuNDUtMSAxLTFoMy41Yy41NSAwIDEgLjQ1IDEgMSAwIDEuMjUuMiAyLjQ1LjU3IDMuNTcuMTEuMzUuMDMuNzQtLjI1IDEuMDJsLTIuMiAyLjJ6Ii8+PC9zdmc+" mode="aspectFit"></image>

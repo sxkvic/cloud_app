@@ -19,22 +19,20 @@ Page({
   async onLoad() {
     console.log('套餐订购页面加载');
     
-    // 从本地缓存读取设备编号
+    // 从本地缓存读取设备编号（允许为空，可以浏览套餐）
     const device_no = wx.getStorageSync('device_no') || wx.getStorageSync('deviceCode');
     
-    if (!device_no) {
-      message.error('未找到设备信息，请先绑定设备');
-      setTimeout(() => {
-        navigation.navigateTo('/pages/bind-device-code/bind-device-code');
-      }, 1500);
-      return;
+    if (device_no) {
+      this.setData({ deviceCode: device_no });
+      console.log('读取到设备编号:', device_no);
+      // 有设备号时加载客户信息
+      await this.loadCustomerInfo();
+    } else {
+      console.log('⚠️ 未绑定设备，仅允许浏览套餐');
     }
     
-    this.setData({ deviceCode: device_no });
-    console.log('读取到设备编号:', device_no);
-    
+    // 无论是否绑定设备，都加载套餐列表供浏览
     await this.loadPackages();
-    await this.loadCustomerInfo();
   },
 
   async onShow() {
@@ -167,6 +165,22 @@ Page({
   confirmOrder() {
     if (!this.data.selectedPackage) {
       message.error('请先选择套餐');
+      return;
+    }
+    
+    // 检查是否已绑定设备
+    if (!this.data.deviceCode) {
+      wx.showModal({
+        title: '需要绑定设备',
+        content: '订购套餐前需要先绑定设备，是否前往绑定？',
+        confirmText: '去绑定',
+        cancelText: '取消',
+        success: (res) => {
+          if (res.confirm) {
+            navigation.navigateTo('/pages/bind-device-code/bind-device-code');
+          }
+        }
+      });
       return;
     }
     
