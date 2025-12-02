@@ -1,5 +1,5 @@
 // pages/bind-device-code/bind-device-code.js
-const { navigation, message } = require('../../utils/common');
+const { navigation, message, cacheManager } = require('../../utils/common');
 const API = require('../../utils/api');
 const app = getApp();
 
@@ -108,22 +108,7 @@ Page({
 
     try {
       // 清除旧的设备缓存数据
-      console.log('🗑️ 清除旧的设备缓存...');
-      wx.removeStorageSync('deviceBound');
-      wx.removeStorageSync('deviceCode');  // 旧参数，需要清除
-      wx.removeStorageSync('device_no');
-      wx.removeStorageSync('device_info');
-      wx.removeStorageSync('customer_info');
-      wx.removeStorageSync('binding_info');
-      
-      // 清除全局数据
-      app.globalData.deviceBound = false;
-      app.globalData.device_no = '';
-      app.globalData.device_info = null;
-      app.globalData.customer_info = null;
-      app.globalData.binding_info = null;
-      
-      console.log('✅ 旧缓存已清除');
+      cacheManager.clearDeviceCache();
       
       // 直接调用绑定接口，后端会处理所有验证逻辑
       console.log('调用绑定接口...');

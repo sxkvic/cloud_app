@@ -14,7 +14,7 @@ page {
 
 /* 顶部蓝色弧形背景 */
 .header-bg {
-  background: linear-gradient(135deg, #4D6AFF 0%, #2B4CFF 100%);
+  background: linear-gradient(135deg, #2B7FF0 0%, #1E64D8 100%);
   padding-bottom: 60rpx;
   border-bottom-left-radius: 40rpx;
   border-bottom-right-radius: 40rpx;
@@ -148,7 +148,7 @@ page {
 .live-badge {
   font-size: 20rpx;
   background: #e8edff;
-  color: #4D6AFF;
+  color: #2B7FF0;
   padding: 4rpx 12rpx;
   border-radius: 8rpx;
   margin-left: 16rpx;
@@ -170,7 +170,7 @@ page {
 }
 
 .blue-gradient {
-  background: linear-gradient(135deg, #4D6AFF 0%, #2B4CFF 100%);
+  background: linear-gradient(135deg, #2B7FF0 0%, #1E64D8 100%);
 }
 
 .icon-img {
@@ -197,13 +197,13 @@ page {
 .hotline-number {
   font-size: 40rpx;
   font-weight: bold;
-  color: #4D6AFF;
+  color: #2B7FF0;
   font-family: 'DINAlternate-Bold', sans-serif;
 }
 
 .call-btn {
   background: #e8edff;
-  color: #4D6AFF;
+  color: #2B7FF0;
   padding: 12rpx 24rpx;
   border-radius: 32rpx;
   font-size: 26rpx;

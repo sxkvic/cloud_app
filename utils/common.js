@@ -1,6 +1,86 @@
 // utils/common.js - 通用工具函数
 
 /**
+ * 缓存清理工具 - 统一清理设备相关的缓存数据
+ */
+const cacheManager = {
+  // 清除所有设备相关缓存
+  clearDeviceCache() {
+    console.log('🗑️ 清除所有设备相关缓存...');
+    
+    // 清除存储缓存
+    const deviceKeys = [
+      'deviceBound',
+      'device_no', 
+      'device_info',
+      'customer_info',
+      'binding_info',
+      'deviceCode',  // 旧版本兼容
+      'bindingSkipped'  // 跳过绑定状态
+    ];
+    
+    deviceKeys.forEach(key => {
+      try {
+        wx.removeStorageSync(key);
+      } catch (error) {
+        console.warn(`清除缓存 ${key} 失败:`, error);
+      }
+    });
+    
+    // 清除全局数据
+    const app = getApp();
+    if (app && app.globalData) {
+      app.globalData.deviceBound = false;
+      app.globalData.device_no = '';
+      app.globalData.device_info = null;
+      app.globalData.customer_info = null;
+      app.globalData.binding_info = null;
+    }
+    
+    console.log('✅ 设备缓存清理完成');
+  },
+
+  // 清除用户相关缓存（但保留设备信息）
+  clearUserCache() {
+    console.log('🗑️ 清除用户相关缓存...');
+    
+    const userKeys = [
+      'token',
+      'openid',
+      'userInfo',
+      'isLoggedIn'
+    ];
+    
+    userKeys.forEach(key => {
+      try {
+        wx.removeStorageSync(key);
+      } catch (error) {
+        console.warn(`清除缓存 ${key} 失败:`, error);
+      }
+    });
+    
+    // 清除全局数据
+    const app = getApp();
+    if (app && app.globalData) {
+      app.globalData.token = '';
+      app.globalData.openid = '';
+      app.globalData.userInfo = null;
+      app.globalData.isLoggedIn = false;
+    }
+    
+    console.log('✅ 用户缓存清理完成');
+  },
+
+  // 完全清除所有缓存（登出时使用）
+  clearAllCache() {
+    console.log('🗑️ 清除所有应用缓存...');
+    this.clearDeviceCache();
+    this.clearUserCache();
+    console.log('✅ 所有缓存清理完成');
+  }
+};
+
+/**
  * 页面跳转工具
  */
 const navigation = {
@@ -272,6 +352,7 @@ module.exports = {
   message,
   storage,
   format,
-  getIconName
+  getIconName,
+  cacheManager
 };
 

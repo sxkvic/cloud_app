@@ -1,5 +1,5 @@
 // pages/home/home.js
-const { navigation, message } = require('../../utils/common');
+const { navigation, message, cacheManager } = require('../../utils/common');
 const API = require('../../utils/api');
 const { getShareConfig, getTimelineShareConfig } = require('../../utils/share');
 
@@ -107,14 +107,7 @@ Page({
           console.log('❌ 设备已解绑，清除本地缓存');
           
           // 清除所有设备相关缓存
-          wx.removeStorageSync('deviceBound');
-          wx.removeStorageSync('device_no');
-          wx.removeStorageSync('device_info');
-          wx.removeStorageSync('customer_info');
-          wx.removeStorageSync('binding_info');
-          
-          // 清除全局数据
-          app.globalData.deviceBound = false;
+          cacheManager.clearDeviceCache();
           app.globalData.device_no = null;
           app.globalData.device_info = null;
           app.globalData.customer_info = null;

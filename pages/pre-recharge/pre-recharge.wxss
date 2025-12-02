@@ -14,7 +14,7 @@ page {
 
 /* --- 头部样式 --- */
 .header-bg {
-  background: linear-gradient(135deg, #4D6AFF 0%, #2B4CFF 100%);
+  background: linear-gradient(135deg, #2B7FF0 0%, #1E64D8 100%);
   padding-bottom: 120rpx;
   border-bottom-left-radius: 40rpx;
   border-bottom-right-radius: 40rpx;
@@ -135,7 +135,7 @@ page {
 
 /* 选中态 */
 .grid-item.active {
-  border-color: #4D6AFF;
+  border-color: #2B7FF0;
   background-color: #EEF2FF;
 }
 
@@ -144,14 +144,14 @@ page {
   font-weight: bold;
   color: #333;
 }
-.grid-item.active .amount { color: #4D6AFF; }
+.grid-item.active .amount { color: #2B7FF0; }
 
 .desc {
   font-size: 22rpx;
   color: #999;
   margin-top: 4rpx;
 }
-.grid-item.active .desc { color: #4D6AFF; }
+.grid-item.active .desc { color: #2B7FF0; }
 
 /* 推荐角标 */
 .recommend-tag {
@@ -173,7 +173,7 @@ page {
   width: 0; height: 0;
   border-style: solid;
   border-width: 0 0 40rpx 48rpx;
-  border-color: transparent transparent #4D6AFF transparent;
+  border-color: transparent transparent #2B7FF0 transparent;
 }
 .check-mark {
   position: absolute;
@@ -213,7 +213,7 @@ page {
 }
 
 .custom-input-box.active-border {
-  border-color: #4D6AFF;
+  border-color: #2B7FF0;
   background: #fff;
 }
 
@@ -273,7 +273,7 @@ page {
 .price-box .price { font-size: 44rpx; color: #FF4D4F; font-weight: bold; }
 
 .pay-btn {
-  background: linear-gradient(90deg, #4D6AFF 0%, #2B4CFF 100%);
+  background: linear-gradient(90deg, #2B7FF0 0%, #1E64D8 100%);
   color: #fff;
   font-size: 30rpx;
   font-weight: bold;

@@ -17,7 +17,7 @@ page {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: linear-gradient(135deg, #4D6AFF 0%, #2B4CFF 100%);
+  background: linear-gradient(135deg, #2B7FF0 0%, #1E64D8 100%);
   padding: 0 0 32rpx;
   border-bottom-left-radius: 40rpx;
   border-bottom-right-radius: 40rpx;
@@ -97,7 +97,7 @@ page {
 
 .search-btn {
   font-size: 28rpx;
-  color: #4D6AFF;
+  color: #2B7FF0;
   font-weight: bold;
   padding: 0 8rpx;
 }
@@ -246,7 +246,7 @@ page {
 
 .copy-btn text {
   font-size: 22rpx;
-  color: #4D6AFF;
+  color: #2B7FF0;
   font-weight: 500;
 }
 
@@ -298,7 +298,7 @@ page {
 
 .help-link {
   font-size: 26rpx;
-  color: #4D6AFF;
+  color: #2B7FF0;
   display: inline-flex;
   align-items: center;
   padding: 12rpx 24rpx;

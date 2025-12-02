@@ -74,7 +74,7 @@ page {
   position: absolute;
   bottom: 0; left: 0;
   width: 36rpx; height: 36rpx;
-  border: 6rpx solid #4D6AFF;
+  border: 6rpx solid #2B7FF0;
   border-radius: 50%;
   border-right-color: transparent;
   box-sizing: border-box;
@@ -160,7 +160,7 @@ page {
 .signal-center {
   width: 16rpx;
   height: 16rpx;
-  background: linear-gradient(135deg, #5CD3F6 0%, #4D6AFF 100%);
+  background: linear-gradient(135deg, #5CD3F6 0%, #2B7FF0 100%);
   border-radius: 50%;
   position: relative;
   z-index: 10;
@@ -236,7 +236,7 @@ page {
 }
 
 .agreement-link {
-  color: #4D6AFF;
+  color: #2B7FF0;
   font-weight: bold;
 }
   
