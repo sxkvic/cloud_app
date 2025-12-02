@@ -152,15 +152,32 @@ page {
 .share-button {
   background: transparent;
   border: none;
-  padding: 0;
+  padding: 24rpx 0;
   margin: 0;
   line-height: normal;
   text-align: left;
   width: 100%;
+  display: flex;
+  align-items: center;
+  border-bottom: 1rpx solid #F7F8FA;
+  border-radius: 0;
+  transition: all 0.2s;
 }
 
 .share-button::after {
   border: none;
+}
+
+.share-button:active {
+  background: #F7F8FA;
+  border-radius: 12rpx;
+  margin: 0 -20rpx;
+  padding: 24rpx 20rpx;
+}
+
+/* 如果分享按钮是最后一项，移除底部边框 */
+.menu-list .share-button:last-child {
+  border-bottom: none;
 }
 
 .menu-icon {

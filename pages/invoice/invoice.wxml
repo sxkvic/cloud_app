@@ -31,7 +31,6 @@
         <view class="info-item right-align">
           <view class="info-label">设备信息</view>
           <view class="device-tag">
-            <text class="tag-bold">{{customerInfo.device_info.device_type === '1' ? '5G' : '4G'}}</text>
             {{customerInfo.device_info.device_name || '未绑定'}}
           </view>
         </view>

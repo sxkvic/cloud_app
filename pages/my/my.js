@@ -42,7 +42,7 @@ Page({
       }
 
       // 设置设备状态文本
-      const statusText = this.getDeviceStatusText(bindingInfo);
+      const statusText = this.getDeviceStatusText(deviceInfo);
       
       this.setData({
         deviceInfo: {
@@ -81,7 +81,7 @@ Page({
         wx.setStorageSync('binding_info', binding_info);
         
         // 更新页面数据
-        const statusText = this.getDeviceStatusText(binding_info);
+        const statusText = this.getDeviceStatusText(device_info);
         
         this.setData({
           deviceInfo: {
@@ -104,18 +104,21 @@ Page({
   },
 
   // 获取设备状态文本
-  getDeviceStatusText(bindingInfo) {
-    if (!bindingInfo || !bindingInfo.expire_time) {
+  getDeviceStatusText(deviceInfo) {
+    if (!deviceInfo || !deviceInfo.status) {
       return '未知状态';
     }
     
-    const expireTime = new Date(bindingInfo.expire_time);
-    const now = new Date();
-    
-    if (expireTime > now) {
-      return '正常服务';
-    } else {
-      return '已过期';
+    // status: 1-待分配, 2-运行中
+    switch (deviceInfo.status) {
+      case '1':
+      case 1:
+        return '待分配';
+      case '2':
+      case 2:
+        return '运行中';
+      default:
+        return '未知状态';
     }
   },
 
