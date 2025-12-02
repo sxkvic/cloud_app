@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "业务申请",
+  "navigationBarBackgroundColor": "#2979ff",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#f5f6f7",
+  "usingComponents": {
+    "van-popup": "@vant/weapp/popup/index",
+    "van-picker": "@vant/weapp/picker/index"
+  }
+}

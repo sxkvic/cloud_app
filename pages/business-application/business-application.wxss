@@ -1,291 +1,288 @@
 /* pages/business-application/business-application.wxss */
 
-/* 页面整体样式 */
-.business-application-page {
-  background-color: #f8fafc;
-  min-height: 100vh;
-  padding: 32rpx;
-  padding-bottom: 120rpx;
+page {
+  background-color: #F5F6F8;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Segoe UI, Arial, Roboto, 'PingFang SC', 'miui', 'Hiragino Sans GB', 'Microsoft Yahei', sans-serif;
+  padding-bottom: 180rpx;
 }
 
-/* 页面头部 */
-.page-header {
-  text-align: center;
-  margin-bottom: 40rpx;
+/* ========== 1. 顶部蓝色装饰背景 ========== */
+.blue-header {
+  height: 320rpx;
+  background: linear-gradient(135deg, #2B7FF0 0%, #1E64D8 100%);
+  border-bottom-left-radius: 40rpx;
+  border-bottom-right-radius: 40rpx;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  z-index: 0;
 }
 
-.page-title {
-  display: block;
-  font-size: 48rpx;
-  font-weight: bold;
-  color: #1f2937;
-  margin-bottom: 16rpx;
+.container {
+  padding: 0 32rpx;
+  position: relative;
+  z-index: 1;
+  margin-top: 40rpx;
 }
 
-.page-subtitle {
-  display: block;
-  font-size: 28rpx;
-  color: #6b7280;
-}
-
-/* 业务类型 */
-.business-types {
-  background: white;
-  border-radius: 20rpx;
-  padding: 32rpx;
+/* ========== 2. 卡片通用样式 ========== */
+.card {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 40rpx;
   margin-bottom: 32rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.03);
 }
 
-.section-title {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #1f2937;
-  margin-bottom: 24rpx;
+/* 客户类型切换 */
+.type-card {
+  padding: 20rpx;
 }
 
-.type-list {
+.type-switch {
   display: flex;
-  flex-direction: column;
-  gap: 16rpx;
+  background: #F0F2F5;
+  border-radius: 16rpx;
+  padding: 8rpx;
 }
 
 .type-item {
-  display: flex;
-  align-items: center;
-  padding: 24rpx;
-  border: 2rpx solid #e5e7eb;
-  border-radius: 16rpx;
-  transition: all 0.3s ease;
-}
-
-.type-item:active {
-  border-color: #2563eb;
-  background: #f8fafc;
-  transform: translateX(8rpx);
-}
-
-.type-icon {
-  font-size: 48rpx;
-  margin-right: 20rpx;
-}
-
-.type-info {
   flex: 1;
+  text-align: center;
+  font-size: 28rpx;
+  color: #666;
+  padding: 16rpx 0;
+  border-radius: 12rpx;
+  transition: all 0.3s;
 }
 
-.type-name {
-  font-size: 30rpx;
+.type-item.active {
+  background: #fff;
+  color: #2B7FF0;
   font-weight: 600;
-  color: #1f2937;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.1);
+}
+
+/* ========== 3. 表单区域 ========== */
+.form-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #333;
   margin-bottom: 8rpx;
 }
 
-.type-description {
-  font-size: 26rpx;
-  color: #6b7280;
-  margin-bottom: 4rpx;
-}
-
-.type-price {
+.form-subtitle {
   font-size: 24rpx;
-  color: #ef4444;
-  font-weight: 500;
+  color: #999;
+  margin-bottom: 40rpx;
 }
 
-.type-arrow {
-  font-size: 24rpx;
-  color: #9ca3af;
+.form-group {
+  margin-bottom: 40rpx;
 }
 
-/* 申请表单 */
-.application-form {
-  background: white;
-  border-radius: 20rpx;
-  padding: 32rpx;
-  margin-bottom: 32rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
-}
-
-.form-section {
-  margin-bottom: 32rpx;
-}
-
-.form-section:last-child {
+.form-group:last-child {
   margin-bottom: 0;
 }
 
-.form-item {
-  margin-bottom: 24rpx;
-}
-
-.form-item:last-child {
-  margin-bottom: 0;
-}
-
-.form-label {
-  display: block;
+.label {
   font-size: 28rpx;
+  color: #333;
+  margin-bottom: 16rpx;
   font-weight: 500;
-  color: #374151;
-  margin-bottom: 12rpx;
 }
 
-.form-input {
-  width: 100%;
-  height: 80rpx;
-  padding: 0 20rpx;
-  border: 2rpx solid #e5e7eb;
-  border-radius: 12rpx;
-  font-size: 28rpx;
-  color: #374151;
-  background: #f9fafb;
-  box-sizing: border-box;
-  transition: all 0.3s ease;
-}
-
-.form-input:focus {
-  border-color: #2563eb;
-  background: white;
-}
-
-.picker-input {
-  width: 100%;
-  height: 80rpx;
-  padding: 0 20rpx;
-  border: 2rpx solid #e5e7eb;
-  border-radius: 12rpx;
-  font-size: 28rpx;
-  color: #374151;
-  background: #f9fafb;
+.input-wrapper {
+  background: #F7F8FA;
+  border-radius: 16rpx;
+  padding: 0 24rpx;
+  height: 96rpx;
   display: flex;
   align-items: center;
-  transition: all 0.3s ease;
+  border: 2rpx solid transparent;
+  transition: all 0.2s;
 }
 
-.picker-input:active {
-  border-color: #2563eb;
-  background: white;
+.input-wrapper:focus-within {
+  background: #fff;
+  border-color: #2B7FF0;
 }
 
-.form-textarea {
+.weui-input {
+  flex: 1;
+  height: 100%;
+  font-size: 32rpx;
+  color: #333;
+}
+
+.placeholder-style {
+  color: #C0C4CC;
+  font-size: 30rpx;
+}
+
+/* Picker 包装器 */
+.picker-wrapper {
+  justify-content: space-between;
+}
+
+.picker-value {
+  flex: 1;
+  color: #333;
+  font-size: 32rpx;
+}
+
+.picker-wrapper .placeholder-style {
+  flex: 1;
+  color: #C0C4CC;
+  font-size: 30rpx;
+}
+
+/* 纯CSS绘制右箭头 */
+.arrow {
+  width: 16rpx;
+  height: 16rpx;
+  border-top: 3rpx solid #ccc;
+  border-right: 3rpx solid #ccc;
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+
+/* 多行文本框 */
+.textarea-wrapper {
+  background: #F7F8FA;
+  border-radius: 16rpx;
+  padding: 20rpx 24rpx;
+  border: 2rpx solid transparent;
+  transition: all 0.2s;
+}
+
+.textarea-wrapper:focus-within {
+  background: #fff;
+  border-color: #2B7FF0;
+}
+
+.weui-textarea {
   width: 100%;
-  min-height: 160rpx;
-  padding: 20rpx;
-  border: 2rpx solid #e5e7eb;
-  border-radius: 12rpx;
-  font-size: 28rpx;
-  color: #374151;
-  background: #f9fafb;
-  box-sizing: border-box;
-  line-height: 1.5;
+  font-size: 32rpx;
+  color: #333;
+  line-height: 1.6;
 }
 
-.form-textarea:focus {
-  border-color: #2563eb;
-  background: white;
-}
-
-.input-counter {
+.char-count {
   text-align: right;
   font-size: 24rpx;
-  color: #9ca3af;
+  color: #999;
   margin-top: 8rpx;
 }
 
-/* 申请须知 */
-.application-notice {
-  background: white;
-  border-radius: 20rpx;
-  padding: 32rpx;
-  margin-bottom: 32rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+/* ========== 4. 注意事项 ========== */
+.notes-section {
+  padding: 0 20rpx;
 }
 
-.notice-list {
+.notes-header {
   display: flex;
-  flex-direction: column;
-  gap: 16rpx;
+  align-items: center;
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 20rpx;
 }
 
-.notice-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 12rpx;
+.icon-info {
+  width: 32rpx;
+  height: 32rpx;
+  background: #FF9800;
+  color: #fff;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 32rpx;
+  font-size: 20rpx;
+  font-weight: bold;
+  margin-right: 12rpx;
 }
 
-.notice-icon {
-  font-size: 32rpx;
-  margin-top: 4rpx;
+.notes-list {
+  padding-left: 10rpx;
 }
 
-.notice-text {
-  font-size: 26rpx;
-  color: #6b7280;
-  line-height: 1.5;
-  flex: 1;
+.note-item {
+  font-size: 24rpx;
+  color: #999;
+  line-height: 1.6;
+  margin-bottom: 12rpx;
+  position: relative;
+  padding-left: 24rpx;
 }
 
-/* 底部操作 */
-.bottom-actions {
+.note-item::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #ccc;
+}
+
+.note-item:last-child {
+  margin-bottom: 0;
+}
+
+/* ========== 5. 底部按钮 ========== */
+.footer-action {
   position: fixed;
   bottom: 0;
   left: 0;
-  right: 0;
-  background: white;
-  padding: 32rpx;
-  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.1);
-  border-top: 1rpx solid #e5e7eb;
-  display: flex;
-  gap: 24rpx;
+  width: 100%;
+  background: #fff;
+  padding: 24rpx 32rpx;
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.05);
+  z-index: 100;
+  box-sizing: border-box;
 }
 
-.action-button {
-  flex: 1;
-  height: 88rpx;
-  font-size: 30rpx;
+/* 适配全面屏底部安全区 */
+.safe-area-bottom {
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.btn-submit {
+  width: 100% !important;
+  height: 96rpx;
+  line-height: 96rpx;
+  background: linear-gradient(135deg, #2B7FF0 0%, #1E64D8 100%);
+  color: #fff;
+  border-radius: 48rpx;
+  font-size: 32rpx;
   font-weight: 600;
+  padding: 0;
+  margin: 0;
   border: none;
-  border-radius: 24rpx;
-  transition: all 0.3s ease;
+  box-shadow: 0 8rpx 24rpx rgba(43, 127, 240, 0.4);
+  transition: all 0.3s;
 }
 
-.action-button.secondary {
-  background: #f3f4f6;
-  color: #374151;
+.btn-submit::after {
+  border: none;
 }
 
-.action-button.primary {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  color: white;
-  box-shadow: 0 8rpx 24rpx rgba(37, 99, 235, 0.3);
+.btn-hover {
+  opacity: 0.9;
+  transform: scale(0.99);
 }
 
-.action-button:disabled {
-  background: #d1d5db;
-  color: #9ca3af;
+.btn-submit[disabled] {
+  background: #e0e0e0;
+  color: #999;
   box-shadow: none;
 }
 
-.action-button:disabled::after {
-  border: none;
-}
-
-.action-button:active:not(:disabled) {
-  transform: scale(0.98);
-}
-
-/* 响应式设计 */
+/* ========== 6. 响应式设计 ========== */
 @media (max-width: 375px) {
-  .business-application-page {
-    padding: 24rpx;
+  .container {
+    padding: 0 24rpx;
   }
   
-  .business-types,
-  .application-form,
-  .application-notice {
-    padding: 24rpx;
+  .card {
+    padding: 32rpx 24rpx;
   }
 }
-
-

@@ -1,120 +1,179 @@
 // pages/business-application/business-application.js
 const { navigation, message } = require('../../utils/common');
+const request = require('../../utils/request');
+const API = require('../../utils/api');
 
 Page({
   data: {
-    selectedType: null,
     canSubmit: false,
-    submitLoading: false,  // 添加提交 loading 状态
+    submitLoading: false,
+    // 省市选择器状态
+    showProvincePicker: false,
+    showCityPicker: false,
+    // 选中的省份和城市
+    selectedProvince: null,
+    selectedCity: null,
+    // Picker的列数据
+    provinceColumns: [],
+    cityColumns: [],
     formData: {
-      name: '',
-      idCard: '',
-      phone: '',
-      address: '',
-      installAddress: '',
-      appointmentDate: '',
-      timeSlotIndex: null,
-      remark: ''
-    },
-    timeSlots: [
-      '上午 9:00-12:00',
-      '下午 14:00-17:00',
-      '晚上 18:00-20:00'
-    ],
-    businessTypes: [
-      {
-        id: 'new_installation',
-        name: '新装宽带',
-        description: '首次安装宽带服务',
-        price: '安装费 ¥200',
-        icon: '🔌'
-      },
-      {
-        id: 'upgrade',
-        name: '套餐升级',
-        description: '升级到更高速率的套餐',
-        price: '免费',
-        icon: '⬆️'
-      },
-      {
-        id: 'transfer',
-        name: '过户申请',
-        description: '宽带账户过户给他人',
-        price: '手续费 ¥50',
-        icon: '👥'
-      },
-      {
-        id: 'relocation',
-        name: '移机申请',
-        description: '宽带服务地址迁移',
-        price: '移机费 ¥100',
-        icon: '🚚'
-      },
-      {
-        id: 'suspension',
-        name: '暂停服务',
-        description: '临时暂停宽带服务',
-        price: '免费',
-        icon: '⏸️'
-      },
-      {
-        id: 'resume',
-        name: '恢复服务',
-        description: '恢复暂停的宽带服务',
-        price: '免费',
-        icon: '▶️'
-      }
-    ]
+      customer_name: '',
+      user_type: 1,  // 1=个人, 2=企业
+      id_number: '',
+      contact_person: '',
+      contact_phone: '',
+      city: '',
+      install_address: '',
+      install_requirement: '',
+      status: 1  // 默认启用
+    }
   },
 
-  onLoad() {
+  async onLoad() {
     console.log('业务申请页面加载');
+    // 页面加载时只加载省份数据
+    await this.loadProvinces();
   },
 
   onShow() {
     console.log('业务申请页面显示');
   },
 
-  // 选择业务类型
-  selectBusinessType(e) {
-    const typeId = e.currentTarget.dataset.id;
+  // 切换客户类型
+  switchUserType(e) {
+    const type = parseInt(e.currentTarget.dataset.type);
     this.setData({
-      selectedType: typeId
+      'formData.user_type': type,
+      'formData.id_number': ''  // 切换类型时清空证件号
     });
-    this.checkCanSubmit();
-    
-    // 触觉反馈
     wx.vibrateShort();
+    this.checkCanSubmit();
   },
 
-  // 输入姓名
-  onNameInput(e) {
+  // 输入客户名称
+  onCustomerNameInput(e) {
     this.setData({
-      'formData.name': e.detail.value
+      'formData.customer_name': e.detail.value
     });
     this.checkCanSubmit();
   },
 
-  // 输入身份证号
-  onIdCardInput(e) {
+  // 输入证件号
+  onIdNumberInput(e) {
     this.setData({
-      'formData.idCard': e.detail.value
+      'formData.id_number': e.detail.value
     });
     this.checkCanSubmit();
   },
 
-  // 输入手机号
-  onPhoneInput(e) {
+  // 输入联系人姓名
+  onContactPersonInput(e) {
     this.setData({
-      'formData.phone': e.detail.value
+      'formData.contact_person': e.detail.value
     });
     this.checkCanSubmit();
   },
 
-  // 输入地址
-  onAddressInput(e) {
+  // 输入联系电话
+  onContactPhoneInput(e) {
     this.setData({
-      'formData.address': e.detail.value
+      'formData.contact_phone': e.detail.value
+    });
+    this.checkCanSubmit();
+  },
+
+  // ========== 省市选择器逻辑 ==========
+  
+  // 加载省份列表（页面加载时调用）
+  async loadProvinces() {
+    try {
+      const result = await API.getProvinces();
+      if (result.success && Array.isArray(result.data)) {
+        const columns = result.data.map(item => ({
+          text: item.name,
+          value: item.id
+        }));
+        this.setData({ provinceColumns: columns });
+        console.log('省份数据加载完成:', columns.length);
+      }
+    } catch (error) {
+      console.error('加载省份数据失败:', error);
+      message.error('加载省份数据失败');
+    }
+  },
+
+  // 加载城市列表（选择省份后调用）
+  async loadCities(provinceId, provinceName) {
+    try {
+      wx.showLoading({ title: '加载城市...' });
+      const result = await API.getCities(provinceId);
+      wx.hideLoading();
+      
+      if (result.success && Array.isArray(result.data)) {
+        const columns = result.data.map(item => ({
+          text: item.name,
+          value: item.id
+        }));
+        this.setData({ cityColumns: columns });
+        console.log(`${provinceName}的城市加载完成:`, columns.length);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      wx.hideLoading();
+      console.error('加载城市数据失败:', error);
+      message.error('加载城市数据失败');
+      return false;
+    }
+  },
+
+  // 显示省份选择器
+  showAreaPicker() {
+    this.setData({ showProvincePicker: true });
+  },
+
+  // 关闭省份选择器
+  onProvincePickerClose() {
+    this.setData({ showProvincePicker: false });
+  },
+
+  // 省份选择确认
+  async onProvinceConfirm(e) {
+    const { value, index } = e.detail;
+    const province = this.data.provinceColumns[index];
+    
+    this.setData({ 
+      selectedProvince: province,
+      showProvincePicker: false
+    });
+    
+    // 加载该省份的城市
+    const success = await this.loadCities(province.value, province.text);
+    if (success) {
+      // 自动打开城市选择器
+      this.setData({ showCityPicker: true });
+    }
+  },
+
+  // 关闭城市选择器
+  onCityPickerClose() {
+    this.setData({ showCityPicker: false });
+  },
+
+  // 城市选择确认
+  onCityConfirm(e) {
+    const { value, index } = e.detail;
+    const city = this.data.cityColumns[index];
+    
+    this.setData({ 
+      selectedCity: city,
+      showCityPicker: false
+    });
+    
+    // 拼接完整地址
+    const cityStr = `${this.data.selectedProvince.text}/${city.text}`;
+    this.setData({
+      'formData.city': cityStr
     });
     this.checkCanSubmit();
   },
@@ -122,78 +181,81 @@ Page({
   // 输入安装地址
   onInstallAddressInput(e) {
     this.setData({
-      'formData.installAddress': e.detail.value
+      'formData.install_address': e.detail.value
     });
     this.checkCanSubmit();
   },
 
-  // 选择预约日期
-  onDateChange(e) {
+  // 输入安装要求
+  onInstallRequirementInput(e) {
     this.setData({
-      'formData.appointmentDate': e.detail.value
-    });
-    this.checkCanSubmit();
-  },
-
-  // 选择时间段
-  onTimeSlotChange(e) {
-    this.setData({
-      'formData.timeSlotIndex': e.detail.value
-    });
-    this.checkCanSubmit();
-  },
-
-  // 输入备注
-  onRemarkInput(e) {
-    this.setData({
-      'formData.remark': e.detail.value
+      'formData.install_requirement': e.detail.value
     });
     this.checkCanSubmit();
   },
 
   // 检查是否可以提交
   checkCanSubmit() {
-    const { selectedType, formData } = this.data;
+    const { formData } = this.data;
     
-    if (!selectedType) {
+    // 必填项：客户名称
+    if (!formData.customer_name || formData.customer_name.trim().length === 0) {
       this.setData({ canSubmit: false });
       return;
     }
 
-    // 基本必填项检查
-    const requiredFields = ['name', 'idCard', 'phone', 'address'];
-    const hasRequiredFields = requiredFields.every(field => 
-      formData[field] && formData[field].trim().length > 0
-    );
-
-    // 特定业务类型的额外检查
-    let hasExtraFields = true;
-    if (selectedType === 'new_installation' || selectedType === 'upgrade') {
-      hasExtraFields = formData.installAddress && formData.installAddress.trim().length > 0 &&
-                      formData.appointmentDate && formData.timeSlotIndex !== null;
+    // 客户名称长度验证（1-100字符）
+    if (formData.customer_name.trim().length > 100) {
+      this.setData({ canSubmit: false });
+      return;
     }
 
-    // 数据格式验证
-    const isValidPhone = this.validatePhone(formData.phone);
-    const isValidIdCard = this.validateIdCard(formData.idCard);
+    // 如果填写了联系电话，验证格式
+    if (formData.contact_phone && !this.validatePhone(formData.contact_phone)) {
+      this.setData({ canSubmit: false });
+      return;
+    }
 
-    const canSubmit = hasRequiredFields && hasExtraFields && isValidPhone && isValidIdCard;
-    
-    this.setData({ canSubmit });
+    // 如果填写了证件号，验证格式
+    if (formData.id_number) {
+      if (formData.user_type === 1) {
+        // 个人：验证身份证号
+        if (!this.validateIdCard(formData.id_number)) {
+          this.setData({ canSubmit: false });
+          return;
+        }
+      } else {
+        // 企业：验证营业执照号（统一社会信用代码18位）
+        if (!this.validateBusinessLicense(formData.id_number)) {
+          this.setData({ canSubmit: false });
+          return;
+        }
+      }
+    }
+
+    this.setData({ canSubmit: true });
   },
 
   // 验证手机号
   validatePhone(phone) {
-    if (!phone) return false;
+    if (!phone) return true;  // 可选字段，为空时返回true
     const phoneRegex = /^1[3-9]\d{9}$/;
     return phoneRegex.test(phone);
   },
 
   // 验证身份证号
   validateIdCard(idCard) {
-    if (!idCard) return false;
+    if (!idCard) return true;  // 可选字段，为空时返回true
     const idCardRegex = /^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
     return idCardRegex.test(idCard);
+  },
+
+  // 验证营业执照号（统一社会信用代码）
+  validateBusinessLicense(license) {
+    if (!license) return true;  // 可选字段，为空时返回true
+    // 统一社会信用代码：18位，由数字和大写字母组成
+    const licenseRegex = /^[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}$/;
+    return licenseRegex.test(license);
   },
 
   // 联系客服
@@ -222,22 +284,29 @@ Page({
       return;
     }
 
-    const { selectedType, formData } = this.data;
-    const businessType = this.data.businessTypes.find(type => type.id === selectedType);
+    const { formData } = this.data;
     
-    if (!this.validatePhone(formData.phone)) {
+    // 最终验证
+    if (formData.contact_phone && !this.validatePhone(formData.contact_phone)) {
       message.error('请输入正确的手机号码');
       return;
     }
 
-    if (!this.validateIdCard(formData.idCard)) {
-      message.error('请输入正确的身份证号码');
-      return;
+    if (formData.id_number) {
+      if (formData.user_type === 1 && !this.validateIdCard(formData.id_number)) {
+        message.error('请输入正确的身份证号码');
+        return;
+      }
+      if (formData.user_type === 2 && !this.validateBusinessLicense(formData.id_number)) {
+        message.error('请输入正确的统一社会信用代码');
+        return;
+      }
     }
 
+    const customerType = formData.user_type === 1 ? '个人客户' : '企业客户';
     wx.showModal({
-      title: '确认申请',
-      content: `业务类型：${businessType.name}\n申请人：${formData.name}\n联系电话：${formData.phone}\n\n确认提交申请？`,
+      title: '确认提交',
+      content: `客户类型：${customerType}\n客户名称：${formData.customer_name}\n联系电话：${formData.contact_phone || '未填写'}\n\n确认提交申请？`,
       confirmText: '确认提交',
       cancelText: '取消',
       success: (res) => {
@@ -248,58 +317,43 @@ Page({
     });
   },
 
-  // 处理申请 - 带最小时长的优化版本
+  // 处理申请 - 调用真实API
   async processApplication() {
-    // 使用按钮 loading 状态
     this.setData({ submitLoading: true });
 
     try {
-      // 使用 withMinLoading 确保 loading 至少显示 800ms
-      await message.withMinLoading(
-        async () => {
-          // 模拟 API 调用（实际中替换为真实 API）
-          // 即使接口很快（比如 100ms），loading 也会显示至少 800ms
-          await new Promise(resolve => setTimeout(resolve, 300));
-          
-          // 返回结果
-          return { success: true };
-        },
-        {
-          minDuration: 800,  // 最小显示 800ms，避免闪烁
-          successText: '',   // 不在这里显示成功提示
-          errorText: '提交失败，请重试'
-        }
-      );
-      
-      // 提交成功
-      const applicationId = 'BA' + Date.now().toString().slice(-8);
-      const businessType = this.data.businessTypes.find(t => t.id === this.data.selectedType);
+      // 调用创建客户API
+      const result = await request.post('/api/v1/customers/createCustomer', this.data.formData, {
+        loadingText: '正在提交申请...',
+        showLoading: true
+      });
       
       this.setData({ submitLoading: false });
       
-      // 显示成功提示
+      // 提交成功
+      const customer = result.data.customer;
       message.success('申请提交成功');
       
       // 延迟显示详情弹窗
       setTimeout(() => {
         wx.showModal({
           title: '申请已受理',
-          content: `您的申请已成功提交！\n\n申请编号：${applicationId}\n业务类型：${businessType.name}\n\n我们会在24小时内联系您确认申请详情，请保持电话畅通。`,
+          content: `您的申请已成功提交！\n\n客户ID：${customer.id}\n客户名称：${customer.customer_name}\n创建时间：${customer.created_at}\n\n我们会在24小时内联系您确认申请详情，请保持电话畅通。`,
           showCancel: false,
           confirmText: '知道了',
           success: () => {
             // 清空表单数据
             this.setData({
-              selectedType: null,
               formData: {
-                name: '',
-                idCard: '',
-                phone: '',
-                address: '',
-                installAddress: '',
-                appointmentDate: '',
-                timeSlotIndex: null,
-                remark: ''
+                customer_name: '',
+                user_type: 1,
+                id_number: '',
+                contact_person: '',
+                contact_phone: '',
+                city: '',
+                install_address: '',
+                install_requirement: '',
+                status: 1
               },
               canSubmit: false
             });
@@ -310,7 +364,8 @@ Page({
       }, 600);
     } catch (error) {
       this.setData({ submitLoading: false });
-      // 错误提示已在 withMinLoading 中处理
+      // 错误提示已在 request 中处理
+      console.error('创建客户失败:', error);
     }
   }
 });
