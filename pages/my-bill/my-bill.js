@@ -188,7 +188,7 @@ Page({
   contactService() {
     wx.showModal({
       title: '联系客服',
-      content: '客服电话：400-123-4567\n工作时间：9:00-18:00\n\n您也可以在线咨询客服。',
+      content: '客服电话：4009677726\n工作时间：9:00-18:00\n\n您也可以在线咨询客服。',
       confirmText: '在线咨询',
       cancelText: '拨打电话',
       success: (res) => {
@@ -196,7 +196,7 @@ Page({
           message.success('正在为您转接在线客服...');
         } else {
           wx.makePhoneCall({
-            phoneNumber: '400-123-4567'
+            phoneNumber: '4009677726'
           });
         }
       }

@@ -101,13 +101,13 @@ Page({
   contactService() {
     wx.showModal({
       title: '联系客服',
-      content: '退订前建议先联系客服了解相关政策，可能为您提供更好的解决方案。\n\n客服电话：400-123-4567',
+      content: '退订前建议先联系客服了解相关政策，可能为您提供更好的解决方案。\n\n客服电话：4009677726',
       confirmText: '拨打电话',
       cancelText: '在线咨询',
       success: (res) => {
         if (res.confirm) {
           wx.makePhoneCall({
-            phoneNumber: '400-123-4567'
+            phoneNumber: '4009677726'
           });
         } else {
           message.success('正在为您转接在线客服...');

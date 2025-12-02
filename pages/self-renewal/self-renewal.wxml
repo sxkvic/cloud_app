@@ -1,177 +1,76 @@
 <!--pages/self-renewal/self-renewal.wxml-->
-<view class="self-renewal-page">
-  <!-- 页面头部 -->
-  <view class="page-header">
-    <text class="page-title">自助续费</text>
-    <text class="page-subtitle">宽带服务续费管理</text>
-  </view>
 
-  <!-- 服务状态 -->
-  <view class="service-status">
-    <view class="status-card">
-      <view class="status-info">
-        <view class="service-icon">📡</view>
-        <view class="service-details">
-          <text class="service-name">家庭宽带 100M</text>
-          <text class="service-status-text">服务正常</text>
-        </view>
-      </view>
-      <view class="expiry-info">
-        <text class="expiry-label">到期时间</text>
-        <text class="expiry-date">{{ expiryDate }}</text>
-      </view>
+<!-- 顶部蓝色装饰背景 -->
+<view class="blue-header"></view>
+
+<view class="container">
+  
+  <!-- 骨架屏 - 加载中显示 -->
+  <view wx:if="{{loading}}" class="skeleton-wrapper">
+    <view class="skeleton-card info-card-skeleton">
+      <view class="skeleton-line skeleton-title"></view>
+      <view class="skeleton-line skeleton-desc"></view>
+    </view>
+    <view class="skeleton-card">
+      <view class="skeleton-line skeleton-title"></view>
+      <view class="skeleton-line skeleton-desc"></view>
     </view>
   </view>
 
-  <!-- 续费套餐选择 -->
-  <view class="renewal-packages">
-    <view class="section-title">续费套餐</view>
-    <view class="package-list">
-      <view 
-        class="package-item {{ selectedPackage === item.id ? 'selected' : '' }}"
-        wx:for="{{ renewalPackages }}"
-        wx:key="id"
-        bindtap="selectPackage"
-        data-id="{{ item.id }}"
-      >
-        <view class="package-header">
-          <view class="package-name">{{ item.name }}</view>
-          <view class="package-price">¥{{ item.price }}</view>
-        </view>
-        <view class="package-details">
-          <view class="detail-item">
-            <text class="detail-label">带宽</text>
-            <text class="detail-value">{{ item.bandwidth }}</text>
-          </view>
-          <view class="detail-item">
-            <text class="detail-label">时长</text>
-            <text class="detail-value">{{ item.duration }}</text>
-          </view>
-          <view class="detail-item" wx:if="{{ item.bonus }}">
-            <text class="detail-label">优惠</text>
-            <text class="detail-value bonus">{{ item.bonus }}</text>
-          </view>
-        </view>
-        <view class="package-radio {{ selectedPackage === item.id ? 'selected' : '' }}">
-          <view class="radio-inner"></view>
-        </view>
-      </view>
-    </view>
-  </view>
-
-  <!-- 续费时长选择 -->
-  <view class="renewal-duration" wx:if="{{ selectedPackage }}">
-    <view class="section-title">续费时长</view>
-    <view class="duration-options">
-      <view 
-        class="duration-item {{ selectedDuration === item.value ? 'selected' : '' }}"
-        wx:for="{{ durationOptions }}"
-        wx:key="value"
-        bindtap="selectDuration"
-        data-value="{{ item.value }}"
-      >
-        <view class="duration-text">{{ item.label }}</view>
-        <view class="duration-discount" wx:if="{{ item.discount }}">{{ item.discount }}</view>
-      </view>
-    </view>
-  </view>
-
-  <!-- 支付方式 -->
-  <view class="payment-methods" wx:if="{{ selectedPackage && selectedDuration }}">
-    <view class="section-title">支付方式</view>
-    <view class="method-list">
-      <view 
-        class="method-item {{ selectedMethod === item.id ? 'selected' : '' }}"
-        wx:for="{{ paymentMethods }}"
-        wx:key="id"
-        bindtap="selectPaymentMethod"
-        data-id="{{ item.id }}"
-      >
-        <view class="method-icon">
-          <image wx:if="{{ item.icon === 'wechat' }}" class="payment-icon" src="/images/wechat-pay.svg" mode="aspectFit"></image>
-          <image wx:elif="{{ item.icon === 'alipay' }}" class="payment-icon" src="/images/alipay.svg" mode="aspectFit"></image>
-          <text wx:else class="payment-emoji">💰</text>
-        </view>
-        <view class="method-info">
-          <view class="method-name">{{ item.name }}</view>
-          <view class="method-description">{{ item.description }}</view>
-        </view>
-        <view class="method-radio {{ selectedMethod === item.id ? 'selected' : '' }}">
-          <view class="radio-inner"></view>
-        </view>
-      </view>
-    </view>
-  </view>
-
-  <!-- 续费说明 -->
-  <view class="renewal-notice">
-    <view class="section-title">续费说明</view>
-    <view class="notice-list">
-      <view class="notice-item">
-        <text class="notice-icon">⏰</text>
-        <text class="notice-text">续费后服务立即生效，无需等待</text>
-      </view>
-      <view class="notice-item">
-        <text class="notice-icon">💰</text>
-        <text class="notice-text">支持多种支付方式，安全便捷</text>
-      </view>
-      <view class="notice-item">
-        <text class="notice-icon">📱</text>
-        <text class="notice-text">续费成功后将发送短信通知</text>
-      </view>
-      <view class="notice-item">
-        <text class="notice-icon">🔄</text>
-        <text class="notice-text">可随时查看续费记录和到期时间</text>
-      </view>
-    </view>
-  </view>
-
-  <!-- 续费记录 -->
-  <view class="renewal-history">
-    <view class="section-title">续费记录</view>
-    <view class="history-list">
-      <view 
-        class="history-item"
-        wx:for="{{ renewalHistory }}"
-        wx:key="id"
-      >
-        <view class="history-info">
-          <view class="history-date">{{ item.date }}</view>
-          <view class="history-package">{{ item.package }}</view>
-        </view>
-        <view class="history-amount">¥{{ item.amount }}</view>
-      </view>
-    </view>
-  </view>
-
-  <!-- 底部操作 -->
-  <view class="bottom-actions">
-    <view class="payment-summary">
-      <view class="summary-item">
-        <text class="summary-label">套餐费用</text>
-        <text class="summary-value">¥{{ packagePrice }}</text>
-      </view>
-      <view class="summary-item" wx:if="{{ discountAmount > 0 }}">
-        <text class="summary-label">优惠金额</text>
-        <text class="summary-value discount">-¥{{ discountAmount }}</text>
-      </view>
-      <view class="summary-item total">
-        <text class="summary-label">应付金额</text>
-        <text class="summary-value">¥{{ finalAmount }}</text>
-      </view>
-    </view>
+  <!-- 内容区域 - 数据加载完成后显示 -->
+  <view wx:else class="fade-in">
     
-    <view class="action-buttons">
-      <button class="action-button secondary" bindtap="contactService">
-        联系客服
-      </button>
-      <button 
-        class="action-button primary" 
-        disabled="{{ !canRenew }}"
-        bindtap="startRenewal"
-      >
-        立即续费
-      </button>
+    <!-- 当前套餐信息卡片 (玻璃态效果) -->
+    <view class="card info-card">
+      <view class="info-row">
+        <view class="info-item">
+          <view class="info-label">当前套餐</view>
+          <view class="info-value">{{packageInfo.package_name || '未知'}}</view>
+        </view>
+        <view class="info-item right-align">
+          <view class="info-label">到期时间</view>
+          <view class="device-tag">
+            {{packageInfo.expire_time || '未知'}}
+          </view>
+        </view>
+      </view>
     </view>
+
+    <!-- 续费确认 -->
+    <view class="card form-card">
+      <view class="form-title">续费确认</view>
+      <view class="form-subtitle">续费相同套餐，延长使用期限</view>
+    </view>
+
+    <!-- 注意事项 -->
+    <view class="notes-section">
+      <view class="notes-header">
+        <view class="icon-info">!</view>
+        <text>续费说明</text>
+      </view>
+      <view class="notes-list">
+        <view class="note-item">续费将在当前套餐到期时间基础上延长，不会浪费剩余时长。</view>
+        <view class="note-item">续费成功后立即生效，新的到期时间将自动更新。</view>
+        <view class="note-item">如有疑问，请联系客服：4009677726</view>
+      </view>
+    </view>
+
   </view>
+
+</view>
+
+<!-- 底部固定按钮 -->
+<view class="footer-action safe-area-bottom">
+  <button 
+    class="btn-submit" 
+    hover-class="btn-hover" 
+    bindtap="submitRenew"
+    disabled="{{!packageInfo || loading || submitLoading}}"
+    loading="{{submitLoading}}"
+  >
+    <text wx:if="{{submitLoading}}">提交中...</text>
+    <text wx:elif="{{loading}}">加载中...</text>
+    <text wx:elif="{{!packageInfo}}">套餐信息加载失败</text>
+    <text wx:else>确认续费</text>
+  </button>
 </view>

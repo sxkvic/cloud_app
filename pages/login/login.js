@@ -241,7 +241,7 @@ Page({
   contactService() {
     wx.showModal({
       title: '联系客服',
-      content: '客服电话: 400-123-4567\n工作时间: 9:00-18:00',
+      content: '客服电话: 4009677726\n工作时间: 9:00-18:00',
       showCancel: false,
       confirmText: '知道了'
     });

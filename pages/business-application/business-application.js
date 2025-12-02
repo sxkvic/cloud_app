@@ -262,13 +262,13 @@ Page({
   contactService() {
     wx.showModal({
       title: '联系客服',
-      content: '业务申请遇到问题？请联系客服获取帮助。\n\n客服电话：400-123-4567\n工作时间：9:00-18:00',
+      content: '业务申请遇到问题？请联系客服获取帮助。\n\n客服电话：4009677726\n工作时间：9:00-18:00',
       confirmText: '拨打电话',
       cancelText: '在线咨询',
       success: (res) => {
         if (res.confirm) {
           wx.makePhoneCall({
-            phoneNumber: '400-123-4567'
+            phoneNumber: '4009677726'
           });
         } else {
           message.success('正在为您转接在线客服...');
