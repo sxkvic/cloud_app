@@ -1,56 +1,51 @@
 <!--pages/login/login.wxml-->
 <view class="container">
-  <!-- 1. 顶部右上角装饰光晕 -->
-  <view class="top-decoration"></view>
+  
+  <!-- 1. 背景氛围层 (顶部淡蓝极光) -->
+  <view class="aurora-bg"></view>
 
-  <!-- 2. 主体内容区 -->
+  <!-- 2. 主体内容层 -->
   <view class="content-wrapper">
     
-    <!-- A. 品牌 Logo 区域 -->
-    <view class="brand-header">
-      <!-- 纯CSS绘制的微缩版 Logo -->
-      <view class="mini-logo">
-        <view class="cloud-shape"></view>
-        <view class="c-shape"></view>
+    <!-- A. Logo 展示区 -->
+    <view class="brand-section">
+      <view class="logo-holder">
+        <!-- 信号波纹动画 (三层波纹) -->
+        <view class="ripple delay-1"></view>
+        <view class="ripple delay-2"></view>
+        <view class="ripple delay-3"></view>
+        
+        <!-- 真实 Logo 图片 -->
+        <image class="real-logo" src="/images/logo.png" mode="aspectFit"></image>
       </view>
-      <text class="brand-text">Chmura</text>
-    </view>
 
-    <!-- B. 欢迎语 -->
-    <view class="welcome-section">
-      <view class="title">
-        <text>欢迎使用</text>
-        <text>云宽带服务</text>
-      </view>
-      <text class="subtitle">高速 · 稳定 · 智能连接您的生活</text>
-    </view>
-
-    <!-- C. 中间WiFi信号插画 (CSS绘制) -->
-    <view class="illustration-section">
-      <!-- WiFi信号波纹 -->
-      <view class="wifi-signal">
-        <!-- 外层信号波 -->
-        <view class="signal-wave wave-1"></view>
-        <view class="signal-wave wave-2"></view>
-        <view class="signal-wave wave-3"></view>
-        <!-- 中心发射点 -->
-        <view class="signal-center"></view>
+      <!-- 文字信息 -->
+      <view class="text-area">
+        <text class="app-name">云宽带</text>
+        <view class="slogan-container">
+          <text class="slogan-text">CLOUD BROADBAND</text>
+        </view>
       </view>
     </view>
 
-    <!-- D. 底部操作区 -->
+    <!-- B. 底部操作区 -->
     <view class="action-section">
-      <!-- 微信登录按钮 -->
+      <!-- 登录按钮 -->
       <button 
-        class="wechat-btn {{loading ? 'loading' : ''}}" 
+        class="login-btn {{loading ? 'loading-state' : ''}}" 
         disabled="{{loading}}"
         bindtap="onWeChatLogin"
-        hover-class="wechat-btn-hover"
+        hover-class="btn-hover"
       >
-        <text>{{loading ? '登录中...' : '微信一键登录'}}</text>
+        <!-- 按钮上的流光特效 -->
+        <view class="btn-shine"></view>
+        
+        <view class="btn-content">          
+          <text>{{loading ? '正在连接云端...' : '微信一键登录'}}</text>
+        </view>
       </button>
 
-      <!-- 协议 -->
+      <!-- 协议链接 -->
       <view class="agreement-box">
         <text class="agreement-text">登录即代表您同意 </text>
         <text class="agreement-link" bindtap="showAgreement">《用户协议》</text>

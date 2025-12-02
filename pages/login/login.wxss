@@ -13,215 +13,182 @@ page {
   height: 100%;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
-/* --- 顶部装饰光晕 --- */
-.top-decoration {
+/* --- 背景氛围 (Aurora Background) --- */
+.aurora-bg {
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 400rpx;
-  height: 400rpx;
-  /* 右上角半圆形光晕 */
-  background: 
-    radial-gradient(ellipse at bottom left, 
-      rgba(92, 211, 246, 0.3) 0%, 
-      rgba(92, 211, 246, 0.15) 30%, 
-      rgba(77, 106, 255, 0.1) 50%, 
-      rgba(255, 255, 255, 0) 70%);
-  border-radius: 0 0 0 100%;
-  pointer-events: none;
+  top: -100rpx;
+  right: -100rpx;
+  width: 600rpx;
+  height: 600rpx;
+  background: radial-gradient(circle, rgba(43, 127, 240, 0.25) 0%, rgba(255, 255, 255, 0) 70%);
+  border-radius: 50%;
+  filter: blur(40rpx);
   z-index: 0;
+  pointer-events: none;
 }
 
-/* --- 内容布局 --- */
+/* --- 2. 内容布局 --- */
 .content-wrapper {
   position: relative;
   z-index: 10;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0 60rpx;
+  padding-bottom: max(60rpx, env(safe-area-inset-bottom));
+}
+
+/* --- Logo 区域 --- */
+.brand-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: -80rpx; /* 视觉中心微调上移 */
+}
+
+.logo-holder {
+  position: relative;
+  width: 240rpx;
+  height: 240rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 40rpx;
+}
+
+/* 真实图片样式 */
+.real-logo {
+  width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  padding: 0 60rpx; /* 两侧间距 */
-  box-sizing: border-box;
-}
-
-/* --- A. 品牌 Header --- */
-.brand-header {
-  margin-top: 120rpx; /* 避开顶部状态栏 */
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-}
-
-.mini-logo {
   position: relative;
-  width: 60rpx;
-  height: 60rpx;
-}
-/* 复用之前的CSS Logo逻辑，缩小版 */
-.cloud-shape {
-  position: absolute;
-  top: 0; right: 0;
-  width: 40rpx; height: 40rpx;
-  border: 6rpx solid #5CD3F6;
-  border-radius: 50%;
-  border-bottom-color: transparent;
-  border-left-color: transparent;
-  transform: rotate(-45deg);
-  box-sizing: border-box;
-}
-.c-shape {
-  position: absolute;
-  bottom: 0; left: 0;
-  width: 36rpx; height: 36rpx;
-  border: 6rpx solid #2B7FF0;
-  border-radius: 50%;
-  border-right-color: transparent;
-  box-sizing: border-box;
-}
-
-.brand-text {
-  font-size: 40rpx;
-  font-weight: 900;
-  color: #1A1A1A;
-  letter-spacing: 2rpx;
-}
-
-/* --- B. 欢迎语 --- */
-.welcome-section {
-  margin-top: 80rpx;
-}
-
-.title {
-  display: flex;
-  flex-direction: column;
-  font-size: 56rpx;
-  font-weight: bold;
-  color: #1A1A1A;
-  line-height: 1.3;
-  margin-bottom: 20rpx;
-}
-
-.subtitle {
-  font-size: 26rpx;
-  color: #9CA3AF;
-  letter-spacing: 1rpx;
-}
-
-/* --- C. 中间WiFi信号插画 (CSS绘制) --- */
-.illustration-section {
-  flex: 1; /* 占据中间剩余空间 */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-/* WiFi信号容器 */
-.wifi-signal {
-  position: relative;
-  width: 200rpx;
-  height: 200rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  z-index: 5;
+  /* 悬浮呼吸动画 */
+  animation: float-logo 5s ease-in-out infinite;
+  /* 增加轻微投影，提升立体感 */
+  filter: drop-shadow(0 20rpx 30rpx rgba(43, 127, 240, 0.15));
 }
 
 /* 信号波纹 */
-.signal-wave {
+.ripple {
   position: absolute;
-  border: 4rpx solid rgba(92, 211, 246, 0.6);
-  border-bottom: none;
-  border-radius: 200rpx 200rpx 0 0;
-  animation: signal-pulse 3s ease-in-out infinite;
-}
-
-.wave-1 {
-  width: 160rpx;
-  height: 80rpx;
-  animation-delay: 0s;
-}
-
-.wave-2 {
-  width: 120rpx;
-  height: 60rpx;
-  border-color: rgba(77, 106, 255, 0.7);
-  animation-delay: 0.5s;
-}
-
-.wave-3 {
-  width: 80rpx;
-  height: 40rpx;
-  border-color: rgba(92, 211, 246, 0.8);
-  animation-delay: 1s;
-}
-
-/* 中心发射点 */
-.signal-center {
-  width: 16rpx;
-  height: 16rpx;
-  background: linear-gradient(135deg, #5CD3F6 0%, #2B7FF0 100%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 180rpx;
+  height: 180rpx;
   border-radius: 50%;
-  position: relative;
-  z-index: 10;
-  box-shadow: 0 0 20rpx rgba(92, 211, 246, 0.6);
-  animation: center-glow 2s ease-in-out infinite;
+  border: 2rpx solid rgba(43, 127, 240, 0.3);
+  opacity: 0;
+  z-index: 0;
+  animation: ripple-effect 3s linear infinite;
 }
 
-/* 信号波动画 */
-@keyframes signal-pulse {
-  0%, 100% { 
-    opacity: 0.3; 
-    transform: scale(0.8); 
-  }
-  50% { 
-    opacity: 1; 
-    transform: scale(1.1); 
-  }
+.delay-1 { animation-delay: 0s; }
+.delay-2 { animation-delay: 1s; }
+.delay-3 { animation-delay: 2s; }
+
+/* 文字部分 */
+.text-area {
+  text-align: center;
 }
 
-/* 中心点发光动画 */
-@keyframes center-glow {
-  0%, 100% { 
-    box-shadow: 0 0 20rpx rgba(92, 211, 246, 0.6); 
-  }
-  50% { 
-    box-shadow: 0 0 30rpx rgba(92, 211, 246, 0.9); 
-  }
+.app-name {
+  font-size: 64rpx;
+  font-weight: 900;
+  color: #1A1A1A;
+  letter-spacing: -2rpx;
+  display: block;
+  margin-bottom: 16rpx;
 }
 
+.slogan-container {
+  display: inline-block;
+  padding: 8rpx 24rpx;
+  background: rgba(243, 244, 246, 0.8);
+  border-radius: 30rpx;
+}
 
-/* --- D. 底部操作区 --- */
+.slogan-text {
+  font-size: 24rpx;
+  color: #6B7280;
+  letter-spacing: 4rpx;
+  font-weight: 600;
+}
+
+/* --- 底部操作区 --- */
 .action-section {
-  padding-bottom: 100rpx; /* 底部安全距离 */
+  width: 100%;
+  margin-bottom: 40rpx;
+  animation: slide-up 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.wechat-btn {
-  width: 100% !important; /* 强制覆盖小程序默认样式 */
-  height: 100rpx;
-  background-color: #07C160;
-  border-radius: 24rpx;
+.login-btn {
+  position: relative;
+  width: 100% !important;
+  height: 110rpx;
+  /* 品牌蓝渐变 */
+  background: linear-gradient(135deg, #2B7FF0 0%, #1E64D8 100%);
+  border-radius: 28rpx;
+  border: none;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-size: 32rpx;
-  font-weight: bold;
-  box-shadow: 0 10rpx 30rpx rgba(7, 193, 96, 0.2);
-  margin: 0 0 60rpx 0; /* 增加底部间距 */
-  padding: 0;
+  box-shadow: 0 20rpx 40rpx rgba(43, 127, 240, 0.25);
+  overflow: hidden;
+  transition: all 0.3s;
 }
 
-.wechat-btn-hover {
-  background-color: #06ad56;
+.btn-hover {
+  transform: scale(0.98);
+  box-shadow: 0 10rpx 20rpx rgba(43, 127, 240, 0.2);
+}
+
+.login-btn.loading-state {
+  opacity: 0.9;
+}
+
+.btn-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #FFFFFF;
+  letter-spacing: 2rpx;
 }
 
 .wechat-icon {
   width: 44rpx;
   height: 44rpx;
   margin-right: 16rpx;
-  /* 让图标变白的小技巧：使用滤镜，或者直接换白色svg */
-  filter: brightness(100); 
+}
+
+/* 按钮流光动画 */
+.btn-shine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.25), 
+    transparent
+  );
+  transform: skewX(-20deg);
+  animation: shine-pass 3s infinite;
+  z-index: 1;
 }
 
 .agreement-box {
@@ -239,4 +206,40 @@ page {
   color: #2B7FF0;
   font-weight: bold;
 }
-  
+
+/* --- 动画关键帧定义 --- */
+
+/* Logo 悬浮 */
+@keyframes float-logo {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-16rpx); }
+}
+
+/* 信号波纹扩散 */
+@keyframes ripple-effect {
+  0% {
+    width: 180rpx;
+    height: 180rpx;
+    opacity: 0.8;
+    border-width: 4rpx;
+  }
+  100% {
+    width: 400rpx;
+    height: 400rpx;
+    opacity: 0;
+    border-width: 0rpx;
+  }
+}
+
+/* 按钮流光 */
+@keyframes shine-pass {
+  0% { left: -100%; }
+  20% { left: 200%; }
+  100% { left: 200%; }
+}
+
+/* 底部滑入 */
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(40rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
