@@ -69,8 +69,15 @@ Page({
 
   async onLoad() {
     console.log('首页加载');
-    await this.loadBanners();
-    await this.loadAccountInfo();
+    try {
+      await this.loadBanners();
+      await this.loadAccountInfo();
+    } catch (error) {
+      console.error('首页数据加载失败:', error);
+    } finally {
+      // 无论成功或失败，都要关闭骨架屏
+      this.setData({ loading: false });
+    }
   },
 
   async onShow() {

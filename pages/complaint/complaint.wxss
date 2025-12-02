@@ -14,8 +14,8 @@ page {
 
 /* --- 1. 头部样式 --- */
 .header-bg {
-  /* 延续品牌蓝渐变 */
-  background: linear-gradient(135deg, #4D6AFF 0%, #2B4CFF 100%);
+  /* 使用标准蓝色渐变 */
+  background: linear-gradient(135deg, #2B7FF0 0%, #1E64D8 100%);
   padding-bottom: 100rpx; /* 下方留空给卡片 */
   border-bottom-left-radius: 40rpx;
   border-bottom-right-radius: 40rpx;
@@ -204,7 +204,7 @@ page {
 }
 
 .submit-btn {
-  background: linear-gradient(90deg, #4D6AFF 0%, #2B4CFF 100%);
+  background: linear-gradient(90deg, #2B7FF0 0%, #1E64D8 100%);
   color: #fff;
   border-radius: 44rpx;
   font-size: 32rpx;

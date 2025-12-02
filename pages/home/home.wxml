@@ -1,8 +1,51 @@
 <!--pages/home/home.wxml-->
 <view class="home-page">
-  <!-- 1. 顶部账户信息卡片 -->
-  <view class="header-section">
-    <view class="account-card">
+  <!-- 骨架屏 - 加载中显示 -->
+  <view wx:if="{{loading}}" class="skeleton-wrapper">
+    <!-- 顶部账户卡片骨架屏 -->
+    <view class="header-section">
+      <view class="account-card skeleton-account-card">
+        <view class="skeleton-line skeleton-name"></view>
+        <view class="skeleton-line skeleton-balance"></view>
+        <view class="skeleton-btn"></view>
+      </view>
+    </view>
+
+    <!-- 常用服务骨架屏 -->
+    <view class="content-body">
+      <view class="common-services-section">
+        <view class="skeleton-line skeleton-section-title"></view>
+        <view class="services-grid">
+          <view class="skeleton-service-card" wx:for="{{[1,2,3,4]}}" wx:key="*this">
+            <view class="skeleton-circle"></view>
+            <view class="skeleton-line skeleton-service-title"></view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 轮播图骨架屏 -->
+      <view class="swipe-section">
+        <view class="skeleton-swiper"></view>
+      </view>
+
+      <!-- 全部功能骨架屏 -->
+      <view class="all-features-section">
+        <view class="skeleton-line skeleton-section-title"></view>
+        <view class="features-grid">
+          <view class="skeleton-feature-item" wx:for="{{[1,2,3,4,5,6,7,8]}}" wx:key="*this">
+            <view class="skeleton-circle-small"></view>
+            <view class="skeleton-line skeleton-feature-text"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 实际内容 - 数据加载完成后显示 -->
+  <view wx:else class="fade-in">
+    <!-- 1. 顶部账户信息卡片 -->
+    <view class="header-section">
+      <view class="account-card">
       <view class="account-info">
         <view class="user-row">
           <text class="customer-name">{{customerName || '用户名称'}}</text>
@@ -80,6 +123,7 @@
         </view>
       </view>
     </view>
+  </view>
   </view>
 </view>
 

@@ -35,8 +35,41 @@
     <view class="tag-update">实时数据</view>
   </view>
 
+  <!-- 骨架屏 - 搜索加载中显示 -->
+  <view class="skeleton-wrapper" wx:if="{{isLoading}}">
+    <!-- 统计条骨架屏 -->
+    <view class="stats-bar skeleton-stats-bar">
+      <view class="skeleton-line skeleton-stats-text"></view>
+    </view>
+
+    <!-- 设备卡片骨架屏 -->
+    <view class="list-container">
+      <view class="card skeleton-card" wx:for="{{[1,2,3]}}" wx:key="*this">
+        <view class="status-stripe bg-skeleton"></view>
+        <view class="card-body">
+          <!-- 头部骨架屏 -->
+          <view class="card-header">
+            <view class="header-left">
+              <view class="skeleton-line skeleton-device-name"></view>
+            </view>
+            <view class="header-right">
+              <view class="skeleton-line skeleton-price"></view>
+            </view>
+          </view>
+
+          <!-- 核心数据区骨架屏 -->
+          <view class="core-data-box">
+            <view class="skeleton-line skeleton-sn"></view>
+            <view class="skeleton-line skeleton-spec"></view>
+            <view class="skeleton-line skeleton-time"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
   <!-- 3. 设备列表 -->
-  <view class="list-container" wx:if="{{showResult && queryResult}}">
+  <view class="list-container" wx:if="{{showResult && queryResult && !isLoading}}">
     <block wx:for="{{queryResult.data}}" wx:key="id">
       
       <view class="card">

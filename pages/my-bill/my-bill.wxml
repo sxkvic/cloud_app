@@ -1,6 +1,33 @@
 <!--pages/my-bill/my-bill.wxml-->
 <view class="my-bill-page">
-  <scroll-view class="list-scroll-view" scroll-y enhanced show-scrollbar="{{false}}">
+  <!-- 骨架屏 - 加载中显示 -->
+  <view wx:if="{{loading}}" class="skeleton-wrapper">
+    <!-- 头部卡片骨架屏 -->
+    <view class="header-card skeleton-header-card">
+      <view class="skeleton-line skeleton-customer-name"></view>
+      <view class="skeleton-line skeleton-device-code"></view>
+    </view>
+
+    <!-- 标题骨架屏 -->
+    <view class="bill-list-section">
+      <view class="section-title">
+        <view class="skeleton-line skeleton-title"></view>
+      </view>
+      
+      <!-- 账单卡片骨架屏 -->
+      <view class="bill-cards">
+        <view class="bill-card skeleton-bill-card" wx:for="{{[1,2,3]}}" wx:key="*this">
+          <view class="skeleton-line skeleton-bill-title"></view>
+          <view class="skeleton-line skeleton-bill-no"></view>
+          <view class="skeleton-line skeleton-bill-info"></view>
+          <view class="skeleton-line skeleton-bill-amount"></view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 实际内容 - 数据加载完成后显示 -->
+  <scroll-view wx:else class="list-scroll-view fade-in" scroll-y enhanced show-scrollbar="{{false}}">
     <view class="list-content">
       <!-- 头部卡片 -->
       <view class="header-card">
