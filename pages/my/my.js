@@ -4,35 +4,14 @@ const API = require('../../utils/api');
 
 Page({
   data: {
-    userInfo: {
-      name: '王女士',
-      phone: '138****8888',
-      avatar: '/images/avatar-placeholder.png'
-    },
-    accountInfo: {
-      balance: '128.50',
-      points: '2580',
-      coupons: '3'
-    },
-    quickServices: [
-      { id: '1', name: '我的账单', icon: '📋', url: '/pages/my-bill/my-bill' },
-      { id: '2', name: '套餐订购', icon: '📦', url: '/pages/package-order/package-order' },
-      { id: '3', name: '预充值', icon: '💰', url: '/pages/pre-recharge/pre-recharge' },
-      { id: '4', name: '业务申请', icon: '📝', url: '/pages/business-application/business-application' },
-      { id: '5', name: '服务评价', icon: '⭐', url: '/pages/service-evaluation/service-evaluation' },
-      { id: '6', name: '客服中心', icon: '💬', url: '/pages/customer-service/customer-service' }
-    ],
-    settingsList: [
-      { id: '1', name: '个人资料', icon: '👤', action: 'profile' },
-      { id: '2', name: '重新绑定设备', icon: '🔄', action: 'rebind' },
-      { id: '3', name: '关于我们', icon: 'ℹ️', action: 'about' },
-      { id: '4', name: '联系客服', icon: '📞', action: 'contact' }
-    ]
+    loading: true,
+    deviceInfo: {},
+    customerInfo: {}
   },
 
   onLoad() {
     console.log('我的页面加载');
-    this.loadUserData();
+    this.loadDeviceAndCustomerInfo();
   },
 
   async onShow() {
@@ -41,10 +20,102 @@ Page({
     await this.validateDeviceBinding();
   },
 
-  // 加载用户数据
-  loadUserData() {
-    // TODO: 从服务器加载用户信息和账户信息
-    console.log('加载用户数据');
+  // 加载设备和客户信息
+  async loadDeviceAndCustomerInfo() {
+    try {
+      this.setData({ loading: true });
+      console.log('加载设备和客户信息...');
+
+      // 从缓存获取设备信息
+      const deviceInfo = wx.getStorageSync('device_info') || {};
+      const customerInfo = wx.getStorageSync('customer_info') || {};
+      const bindingInfo = wx.getStorageSync('binding_info') || {};
+      
+      console.log('缓存设备信息:', deviceInfo);
+      console.log('缓存客户信息:', customerInfo);
+
+      // 如果缓存中没有信息，尝试重新获取
+      if (!deviceInfo.device_name && wx.getStorageSync('device_no')) {
+        await this.refreshDeviceInfo();
+        return;
+      }
+
+      // 设置设备状态文本
+      const statusText = this.getDeviceStatusText(bindingInfo);
+      
+      this.setData({
+        deviceInfo: {
+          ...deviceInfo,
+          status_text: statusText
+        },
+        customerInfo,
+        loading: false
+      });
+
+    } catch (error) {
+      console.error('加载设备信息失败:', error);
+      this.setData({ loading: false });
+      message.error('加载信息失败');
+    }
+  },
+
+  // 刷新设备信息
+  async refreshDeviceInfo() {
+    try {
+      const deviceCode = wx.getStorageSync('device_no');
+      if (!deviceCode) {
+        this.setData({ loading: false });
+        return;
+      }
+
+      console.log('重新获取设备信息...');
+      const result = await API.getCustomerByDeviceCode(deviceCode);
+      
+      if (result.success && result.data) {
+        const { customer, binding_info, device_info } = result.data;
+        
+        // 更新缓存
+        wx.setStorageSync('device_info', device_info);
+        wx.setStorageSync('customer_info', customer);
+        wx.setStorageSync('binding_info', binding_info);
+        
+        // 更新页面数据
+        const statusText = this.getDeviceStatusText(binding_info);
+        
+        this.setData({
+          deviceInfo: {
+            ...device_info,
+            status_text: statusText
+          },
+          customerInfo: customer,
+          loading: false
+        });
+        
+        console.log('设备信息已刷新');
+      } else {
+        throw new Error('获取设备信息失败');
+      }
+    } catch (error) {
+      console.error('刷新设备信息失败:', error);
+      this.setData({ loading: false });
+      message.error('获取设备信息失败');
+    }
+  },
+
+  // 获取设备状态文本
+  getDeviceStatusText(bindingInfo) {
+    if (!bindingInfo || !bindingInfo.expire_time) {
+      return '未知状态';
+    }
+    
+    const expireTime = new Date(bindingInfo.expire_time);
+    const now = new Date();
+    
+    if (expireTime > now) {
+      return '正常服务';
+    } else {
+      return '已过期';
+    }
   },
 
   // 验证设备绑定状态
@@ -142,28 +213,8 @@ Page({
   navigateToService(e) {
     const url = e.currentTarget.dataset.url;
     if (url) {
+      console.log('导航到:', url);
       navigation.navigateTo(url);
-    }
-  },
-
-
-  // 处理设置操作
-  handleSetting(e) {
-    const action = e.currentTarget.dataset.action;
-    
-    switch (action) {
-      case 'profile':
-        message.success('跳转到个人资料页面');
-        break;
-      case 'rebind':
-        this.rebindDevice();
-        break;
-      case 'about':
-        this.showAboutInfo();
-        break;
-      case 'contact':
-        this.contactService();
-        break;
     }
   },
 

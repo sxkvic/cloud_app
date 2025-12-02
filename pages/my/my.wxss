@@ -1,178 +1,270 @@
 /* pages/my/my.wxss */
 
-/* 页面整体样式 */
-.my-page {
-  background-color: #f7f8fa;
-  min-height: 100vh;
-  padding-bottom: 160rpx;
+page {
+  background-color: #F5F6F8;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Segoe UI, Arial, Roboto, 'PingFang SC', 'miui', 'Hiragino Sans GB', 'Microsoft Yahei', sans-serif;
+  padding-bottom: 180rpx;
 }
 
-/* 用户信息头部 */
-.user-header {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  padding: 48rpx 32rpx;
-  display: flex;
-  align-items: center;
-  margin-bottom: 24rpx;
+/* ========== 1. 顶部蓝色装饰背景 ========== */
+.blue-header {
+  height: 320rpx;
+  background: linear-gradient(135deg, #2B7FF0 0%, #1E64D8 100%);
+  border-bottom-left-radius: 40rpx;
+  border-bottom-right-radius: 40rpx;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  z-index: 0;
 }
 
-.user-avatar {
-  width: 100rpx;
-  height: 100rpx;
-  border-radius: 50%;
-  border: 3rpx solid rgba(255, 255, 255, 0.3);
-  margin-right: 24rpx;
+.container {
+  padding: 0 32rpx;
+  position: relative;
+  z-index: 1;
+  margin-top: 40rpx;
 }
 
-.user-details {
-  flex: 1;
+/* ========== 2. 卡片通用样式 ========== */
+.card {
+  background: #FFFFFF;
+  border-radius: 24rpx;
+  padding: 40rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.03);
 }
 
-.user-name {
-  font-size: 32rpx;
-  font-weight: 600;
-  color: white;
-  margin-bottom: 8rpx;
-}
-
-.user-phone {
-  font-size: 24rpx;
-  color: rgba(255, 255, 255, 0.85);
-}
-
-/* 账户信息 */
-.account-info {
-  padding: 0 24rpx;
-  margin-bottom: 24rpx;
-}
-
+/* 信息卡片 (玻璃态效果) */
 .info-card {
-  background: white;
-  border-radius: 16rpx;
-  padding: 32rpx 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1rpx solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  color: #fff;
+}
+
+.info-row {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .info-item {
-  text-align: center;
   flex: 1;
 }
 
-.info-item:not(:last-child) {
-  border-right: 1rpx solid #e5e7eb;
-}
-
 .info-label {
-  display: block;
-  font-size: 24rpx;
-  color: #9ca3af;
+  font-size: 26rpx;
+  opacity: 0.9;
   margin-bottom: 8rpx;
 }
 
 .info-value {
-  display: block;
-  font-size: 28rpx;
+  font-size: 40rpx;
   font-weight: 600;
-  color: #1f2937;
 }
 
-/* 常用服务 */
-.service-section {
-  padding: 0 24rpx;
-  margin-bottom: 24rpx;
+.right-align {
+  text-align: right;
 }
 
-.section-title {
-  font-size: 28rpx;
+.device-tag {
+  background: rgba(255, 255, 255, 0.25);
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  display: inline-flex;
+  align-items: center;
+}
+
+.tag-bold {
+  font-weight: bold;
+  margin-right: 6rpx;
+}
+
+/* ========== 3. 表单区域 ========== */
+.form-title {
+  font-size: 34rpx;
   font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 16rpx;
-  padding-left: 8rpx;
-}
-
-.service-grid {
-  background: white;
-  border-radius: 16rpx;
-  padding: 24rpx 16rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24rpx 16rpx;
-}
-
-.service-item {
-  text-align: center;
-  padding: 16rpx 8rpx;
-  border-radius: 12rpx;
-  transition: all 0.2s ease;
-}
-
-.service-item:active {
-  transform: scale(0.95);
-  background: #f9fafb;
-}
-
-.service-icon {
-  font-size: 44rpx;
+  color: #333;
   margin-bottom: 8rpx;
 }
 
-.service-name {
+.form-subtitle {
   font-size: 24rpx;
-  color: #374151;
-  font-weight: 500;
+  color: #999;
+  margin-bottom: 40rpx;
 }
 
-
-/* 设置与帮助 */
-.settings-section {
-  padding: 0 24rpx;
-  margin-bottom: 24rpx;
+/* ========== 4. 信息列表 ========== */
+.info-list {
+  margin-top: 24rpx;
 }
 
-.settings-list {
-  background: white;
-  border-radius: 16rpx;
-  overflow: hidden;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
-}
-
-.setting-item {
+.info-row-simple {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  padding: 28rpx 24rpx;
-  border-bottom: 1rpx solid #f3f4f6;
-  transition: background 0.2s ease;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #F7F8FA;
 }
 
-.setting-item:last-child {
+.info-row-simple:last-child {
   border-bottom: none;
 }
 
-.setting-item:active {
-  background: #f9fafb;
-}
-
-.setting-icon {
-  font-size: 36rpx;
-  margin-right: 16rpx;
-  width: 40rpx;
-  text-align: center;
-}
-
-.setting-name {
-  flex: 1;
+.label {
   font-size: 28rpx;
+  color: #666;
   font-weight: 500;
-  color: #1f2937;
 }
 
-.setting-arrow {
+.value {
   font-size: 28rpx;
-  color: #d1d5db;
+  color: #333;
+  font-weight: 600;
 }
 
+/* ========== 5. 菜单列表 ========== */
+.menu-list {
+  margin-top: 24rpx;
+}
 
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #F7F8FA;
+  transition: all 0.2s;
+}
 
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-item:active {
+  background: #F7F8FA;
+  border-radius: 12rpx;
+  margin: 0 -20rpx;
+  padding: 24rpx 20rpx;
+}
+
+.menu-icon {
+  margin-right: 24rpx;
+  width: 48rpx;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-icon .iconfont {
+  font-size: 36rpx;
+  color: #2B7FF0;
+}
+
+/* 针对玻璃态卡片中的图标，使用白色 */
+.info-card .menu-icon .iconfont {
+  color: #fff;
+}
+
+.menu-info {
+  flex: 1;
+}
+
+.menu-name {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 4rpx;
+}
+
+.menu-desc {
+  font-size: 24rpx;
+  color: #999;
+  line-height: 1.3;
+}
+
+.menu-arrow {
+  font-size: 32rpx;
+  color: #C0C4CC;
+  font-weight: 300;
+}
+
+/* ========== 6. 骨架屏 ========== */
+.skeleton-wrapper {
+  padding: 0;
+}
+
+.skeleton-card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 40rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.03);
+}
+
+.info-card-skeleton {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1rpx solid rgba(255, 255, 255, 0.3);
+}
+
+.skeleton-line {
+  height: 32rpx;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+  border-radius: 8rpx;
+  margin-bottom: 20rpx;
+}
+
+.skeleton-title {
+  width: 40%;
+  height: 40rpx;
+}
+
+.skeleton-desc {
+  width: 70%;
+  height: 32rpx;
+}
+
+.skeleton-input {
+  width: 100%;
+  height: 96rpx;
+  margin-bottom: 24rpx;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* 淡入动画 */
+.fade-in {
+  animation: fadeIn 0.4s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========== 7. 响应式设计 ========== */
+@media (max-width: 375px) {
+  .container {
+    padding: 0 24rpx;
+  }
+  
+  .card {
+    padding: 32rpx 24rpx;
+  }
+}
