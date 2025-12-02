@@ -1,6 +1,7 @@
 {
-  "navigationStyle": "custom",
   "navigationBarTitleText": "投诉建议",
+  "navigationBarBackgroundColor": "#2B7FF0",
+  "navigationBarTextStyle": "white",
   "usingComponents": {
     "van-popup": "@vant/weapp/popup/index",
     "van-picker": "@vant/weapp/picker/index"

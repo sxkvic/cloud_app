@@ -148,6 +148,21 @@ page {
   padding: 24rpx 20rpx;
 }
 
+/* 分享按钮特殊样式 - 去除button默认样式 */
+.share-button {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  line-height: normal;
+  text-align: left;
+  width: 100%;
+}
+
+.share-button::after {
+  border: none;
+}
+
 .menu-icon {
   margin-right: 24rpx;
   width: 48rpx;

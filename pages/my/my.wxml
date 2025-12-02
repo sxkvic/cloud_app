@@ -79,6 +79,17 @@
         </view>
         <view class="menu-arrow">›</view>
       </view>
+
+      <button class="menu-item share-button" open-type="share">
+        <view class="menu-icon">
+          <text class="iconfont icon-fenxiang"></text>
+        </view>
+        <view class="menu-info">
+          <view class="menu-name">分享应用</view>
+          <view class="menu-desc">分享给好友</view>
+        </view>
+        <view class="menu-arrow">›</view>
+      </button>
     </view>
   </view>
 
