@@ -1,91 +1,124 @@
 // pages/invoice/invoice.js
 const { navigation, message } = require('../../utils/common');
 const API = require('../../utils/api');
+const { getShareConfig, getTimelineShareConfig } = require('../../utils/share');
 const app = getApp();
 
 Page({
   data: {
-    titleType: '2', // "2"=个人, "1"=企业
-    invoiceType: 1, // 1=增值税普通发票, 2=增值税专用发票
-    invoiceTitle: '', // 发票抬头
-    socialCreditCode: '', // 统一社会信用代码
-    receiveEmail: '', // 接收邮箱
-    bankName: '', // 开户银行
-    bankAccount: '', // 银行账号
-    customerName: '', // 客户名称
-    deviceNo: '', // 设备号
-    canSubmit: false,
-    totalAmount: '2,580.00',
-    invoicedAmount: '1,200.00',
-    availableAmount: '1,380.00',
-    invoiceList: [], // 发票列表
+    // 设备和客户信息
+    deviceNo: '',
+    customerInfo: null,
     loading: true,
-    invoiceContents: [
-      '宽带服务费',
-      '安装服务费',
-      '设备租赁费',
-      '维护服务费',
-      '其他服务费'
-    ]
+    
+    // 表单数据
+    titleType: '2', // "2"=个人, "1"=企业
+    invoiceType: 1, // 1=增值税普通发票（固定，不可选择专票）
+    invoiceTitle: '',
+    socialCreditCode: '',
+    receiveEmail: '',
+    bankName: '',
+    bankAccount: '',
+    canSubmit: false,
+    
+    // 发票历史记录
+    invoiceList: [],
+    hasMore: true,
+    currentPage: 1,
+    pageSize: 10
   },
 
   async onLoad() {
     console.log('开票页面加载');
-    await this.loadInvoiceList();
-    await this.loadInvoiceInfo();
+    await this.init();
   },
 
   async onShow() {
     console.log('开票页面显示');
-    await this.loadInvoiceList();
+  },
+
+  // 下拉刷新
+  async onPullDownRefresh() {
+    await this.init();
+    wx.stopPullDownRefresh();
+  },
+
+  // 初始化页面数据
+  async init() {
+    // 获取设备号
+    const device_no = wx.getStorageSync('device_no') || wx.getStorageSync('deviceCode');
+    
+    if (!device_no) {
+      message.error('未找到设备信息，请先绑定设备');
+      this.setData({ loading: false });
+      return;
+    }
+    
+    this.setData({ deviceNo: device_no, loading: true });
+    
+    // 并行加载数据
+    await Promise.all([
+      this.loadCustomerInfo(),
+      this.loadInvoiceInfo(),
+      this.loadInvoiceList()
+    ]);
+    
+    this.setData({ loading: false });
+  },
+
+  // 加载客户信息
+  async loadCustomerInfo() {
+    try {
+      const result = await API.getCustomerByDeviceCode(this.data.deviceNo);
+      this.setData({
+        customerInfo: result.data
+      });
+    } catch (error) {
+      console.error('加载客户信息失败:', error);
+    }
   },
 
   // 加载发票列表
-  async loadInvoiceList() {
+  async loadInvoiceList(loadMore = false) {
     try {
-      this.setData({ loading: true });
-      console.log('开始加载发票列表...');
+      const { currentPage, pageSize, invoiceList } = this.data;
+      const page = loadMore ? currentPage + 1 : 1;
+      
+      console.log('加载发票列表，页码:', page);
 
       const result = await API.getInvoiceList({
-        page: 1,
-        pageSize: 20
+        page,
+        limit: pageSize,
+        device_no: this.data.deviceNo
       });
 
       console.log('发票列表加载成功:', result.data);
+      
+      const newList = result.data.list || [];
+      const total = result.data.pagination?.total || 0;
+      
       this.setData({
-        invoiceList: result.data.invoices || [],
-        loading: false
+        invoiceList: loadMore ? [...invoiceList, ...newList] : newList,
+        currentPage: page,
+        hasMore: page * pageSize < total
       });
 
     } catch (error) {
       console.error('加载发票列表失败:', error);
-      this.setData({ loading: false });
+      message.error('加载发票列表失败');
     }
   },
 
-  // 加载开票信息（如果设备已绑定）
+  // 加载开票信息
   async loadInvoiceInfo() {
-    // 获取设备号和客户名称
-    if (app.globalData.deviceCode) {
-      this.setData({
-        deviceNo: app.globalData.deviceCode
-      });
-    }
-    
-    if (app.globalData.customerName) {
-      this.setData({
-        customerName: app.globalData.customerName
-      });
-    }
-
-    if (!app.globalData.deviceCode) {
-      console.log('设备未绑定，跳过加载开票信息');
+    if (!this.data.deviceNo) {
+      console.log('设备号为空，跳过加载开票信息');
       return;
     }
 
     try {
       console.log('加载设备开票信息...');
-      const result = await API.getInvoiceInfoByDevice(app.globalData.deviceCode);
+      const result = await API.getInvoiceInfoByDevice(this.data.deviceNo);
 
       if (result.data) {
         console.log('开票信息:', result.data);
@@ -97,9 +130,11 @@ Page({
           invoiceTitle: info.invoice_title || '',
           socialCreditCode: info.social_credit_code || '',
           receiveEmail: info.receive_email || '',
-          bankName: info.bankName || '',
-          bankAccount: info.bankAccount || ''
+          bankName: info.bank_name || '',
+          bankAccount: info.bank_account || ''
         });
+        
+        this.checkCanSubmit();
       }
 
     } catch (error) {
@@ -120,9 +155,14 @@ Page({
     wx.vibrateShort();
   },
 
-  // 选择发票类型
+  // 选择发票类型（专票已禁用）
   selectInvoiceType(e) {
     const type = parseInt(e.currentTarget.dataset.type);
+    // 只允许选择普票
+    if (type === 2) {
+      message.info('暂不支持开具增值税专用发票');
+      return;
+    }
     this.setData({
       invoiceType: type
     });
@@ -279,10 +319,9 @@ Page({
 
   // 处理开票申请
   async processInvoice() {
-    const { titleType, invoiceType, invoiceTitle, socialCreditCode, receiveEmail, bankName, bankAccount, customerName, deviceNo } = this.data;
+    const { titleType, invoiceType, invoiceTitle, socialCreditCode, receiveEmail, bankName, bankAccount, deviceNo, customerInfo } = this.data;
 
     try {
-      wx.showLoading({ title: '正在提交...' });
       console.log('提交开票申请');
 
       // 构建API参数
@@ -290,8 +329,9 @@ Page({
         title_type: titleType,
         invoice_title: invoiceTitle,
         invoice_type: invoiceType,
-        customer_name: customerName || invoiceTitle,
-        device_no: deviceNo || '',
+        customer_name: customerInfo?.customer?.customer_name || invoiceTitle,
+        customer_id: customerInfo?.customer?.id,
+        device_no: deviceNo,
         receive_email: receiveEmail
       };
 
@@ -299,21 +339,28 @@ Page({
       if (titleType === '1') {
         invoiceInfo.social_credit_code = socialCreditCode;
         if (bankName) {
-          invoiceInfo.bankName = bankName;
+          invoiceInfo.bank_name = bankName;
         }
         if (bankAccount) {
-          invoiceInfo.bankAccount = bankAccount;
+          invoiceInfo.bank_account = bankAccount;
         }
       }
 
       console.log('开票参数:', invoiceInfo);
 
       // 调用API
-      const result = await API.createOrUpdateInvoiceInfo(invoiceInfo);
+      await message.withMinLoading(
+        async () => {
+          return await API.createOrUpdateInvoiceInfo(invoiceInfo);
+        },
+        {
+          minDuration: 800,
+          successText: '开票信息保存成功',
+          errorText: '保存失败，请重试'
+        }
+      );
 
-      wx.hideLoading();
-      console.log('开票申请成功:', result);
-      message.success('开票申请提交成功');
+      console.log('开票申请成功');
 
       setTimeout(() => {
         const typeText = titleType === '2' ? '个人' : '企业';
@@ -321,37 +368,69 @@ Page({
 
         wx.showModal({
           title: '申请已受理',
-          content: `您的开票申请已成功提交！\n\n抬头类型：${typeText}\n发票抬头：${invoiceTitle}\n发票类型：${invoiceTypeText}\n\n电子发票将在3-5个工作日内开具并发送至邮箱。`,
+          content: `您的开票信息已成功保存！\n\n抬头类型：${typeText}\n发票抬头：${invoiceTitle}\n发票类型：${invoiceTypeText}\n\n订单完成后，电子发票将在3-5个工作日内开具并发送至邮箱。`,
           showCancel: false,
           confirmText: '知道了',
           success: () => {
-            // 清空表单数据
-            this.setData({
-              titleType: '2',
-              invoiceType: 1,
-              invoiceTitle: '',
-              socialCreditCode: '',
-              receiveEmail: '',
-              bankName: '',
-              bankAccount: '',
-              canSubmit: false
-            });
-
             // 刷新发票列表
             this.loadInvoiceList();
-
-            // 返回首页
-            navigation.navigateTo('/pages/home/home');
           }
         });
-      }, 1000);
+      }, 600);
 
     } catch (error) {
-      wx.hideLoading();
       console.error('开票申请失败:', error);
-
-      const errorMsg = error.message || '开票申请失败，请重试';
-      message.error(errorMsg);
     }
+  },
+
+  // 查看发票详情
+  viewInvoice(e) {
+    const invoice = e.currentTarget.dataset.invoice;
+    
+    if (invoice.fileurl) {
+      // 如果有发票文件，下载并预览
+      wx.showLoading({ title: '加载中...' });
+      wx.downloadFile({
+        url: invoice.fileurl,
+        success: (res) => {
+          wx.hideLoading();
+          if (res.statusCode === 200) {
+            wx.openDocument({
+              filePath: res.tempFilePath,
+              fileType: 'pdf',
+              success: () => {
+                console.log('打开文档成功');
+              },
+              fail: (err) => {
+                console.error('打开文档失败:', err);
+                message.error('无法打开发票文件');
+              }
+            });
+          }
+        },
+        fail: (err) => {
+          wx.hideLoading();
+          console.error('下载失败:', err);
+          message.error('下载发票失败');
+        }
+      });
+    } else {
+      message.info('发票正在开具中，请稍后查看');
+    }
+  },
+
+  // 分享给好友
+  onShareAppMessage() {
+    return getShareConfig({
+      title: '开票 - 云宽带',
+      path: '/pages/invoice/invoice'
+    });
+  },
+
+  // 分享到朋友圈
+  onShareTimeline() {
+    return getTimelineShareConfig({
+      title: '开票 - 云宽带'
+    });
   }
 });

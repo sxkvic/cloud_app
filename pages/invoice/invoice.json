@@ -1,7 +1,7 @@
 {
-  "navigationBarTitleText": "开票申请",
-  "navigationBarBackgroundColor": "#ffffff",
-  "navigationBarTextStyle": "black",
-  "backgroundColor": "#f7f8fa",
-  "enablePullDownRefresh": false
+  "navigationBarTitleText": "开票",
+  "navigationBarBackgroundColor": "#2B7FF0",
+  "navigationBarTextStyle": "white",
+  "backgroundColor": "#F5F6F8",
+  "enablePullDownRefresh": true
 }
