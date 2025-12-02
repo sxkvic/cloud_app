@@ -12,7 +12,7 @@ const app = getApp();
  * @returns {Object} 分享配置对象
  */
 function getShareConfig(options = {}) {
-  const defaultImageUrl = `${app.globalData.apiBaseUrl}/api/v1/files/download/96`;
+  const defaultImageUrl = '/images/share.png';
   
   return {
     title: options.title || '云宽带 - 智能网络管理',
@@ -30,7 +30,7 @@ function getShareConfig(options = {}) {
  * @returns {Object} 分享配置对象
  */
 function getTimelineShareConfig(options = {}) {
-  const defaultImageUrl = `${app.globalData.apiBaseUrl}/api/v1/files/download/96`;
+  const defaultImageUrl = '/images/share.png';
   
   return {
     title: options.title || '云宽带 - 智能网络管理',
