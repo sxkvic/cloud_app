@@ -9,7 +9,7 @@ page {
 /* ========== 1. 顶部蓝色装饰背景 ========== */
 .blue-header {
   height: 320rpx;
-  background: linear-gradient(135deg, #2B7FF0 0%, #1E64D8 100%);
+  background: #2B7FF0;
   border-bottom-left-radius: 40rpx;
   border-bottom-right-radius: 40rpx;
   width: 100%;
@@ -517,7 +517,7 @@ page {
   width: 100% !important;
   height: 96rpx;
   line-height: 96rpx;
-  background: linear-gradient(135deg, #2B7FF0 0%, #1E64D8 100%);
+  background: #2B7FF0;
   color: #fff;
   border-radius: 48rpx;
   font-size: 32rpx;

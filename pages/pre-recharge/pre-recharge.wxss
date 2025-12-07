@@ -15,7 +15,7 @@ page {
 
 /* --- 头部样式 --- */
 .header-bg {
-  background: linear-gradient(135deg, #2B7FF0 0%, #1E64D8 100%);
+  background: #2B7FF0;
   padding-bottom: 120rpx;
   border-bottom-left-radius: 40rpx;
   border-bottom-right-radius: 40rpx;

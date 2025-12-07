@@ -8,7 +8,7 @@ page {
 
 /* ========== 1. 顶部蓝色装饰背景 ========== */
 .blue-header {
-  height: 240rpx;
+  height: 320rpx;
   background: #2B7FF0;
   border-bottom-left-radius: 40rpx;
   border-bottom-right-radius: 40rpx;

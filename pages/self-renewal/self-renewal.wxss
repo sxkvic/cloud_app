@@ -1,4 +1,5 @@
 /* pages/self-renewal/self-renewal.wxss */
+@import "./self-renewal-payment-styles.wxss";
 
 page {
   background-color: #F5F6F8;
