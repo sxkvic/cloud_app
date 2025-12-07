@@ -76,4 +76,40 @@
             {{ submitLoading ? '订购中...' : (selectedPackage && customerInfo ? '立即订购' : '请先选择套餐') }}
         </button>
     </view>
+
+    <!-- 支付方式选择弹窗 -->
+    <view class="payment-modal" wx:if="{{ showPaymentModal }}" catchtap="closePaymentModal">
+        <view class="payment-content" catchtap="stopPropagation">
+            <view class="payment-header">
+                <text class="payment-title">选择支付方式</text>
+                <text class="payment-close" catchtap="closePaymentModal">✕</text>
+            </view>
+            <view class="payment-options">
+                <view class="payment-option" catchtap="selectPaymentMethod" data-method="wechat">
+                    <view class="option-icon wechat-icon">💳</view>
+                    <view class="option-info">
+                        <text class="option-name">微信支付</text>
+                        <text class="option-desc">使用微信余额或绑定银行卡支付</text>
+                    </view>
+                    <view class="option-arrow">›</view>
+                </view>
+                <view class="payment-option" catchtap="selectPaymentMethod" data-method="qrcode">
+                    <view class="option-icon qrcode-icon">📱</view>
+                    <view class="option-info">
+                        <text class="option-name">微信二维码支付</text>
+                        <text class="option-desc">生成二维码，使用微信扫码支付</text>
+                    </view>
+                    <view class="option-arrow">›</view>
+                </view>
+                <view class="payment-option" catchtap="selectPaymentMethod" data-method="offline">
+                    <view class="option-icon offline-icon">🏪</view>
+                    <view class="option-info">
+                        <text class="option-name">线下支付</text>
+                        <text class="option-desc">到营业厅或指定地点支付</text>
+                    </view>
+                    <view class="option-arrow">›</view>
+                </view>
+            </view>
+        </view>
+    </view>
 </view>

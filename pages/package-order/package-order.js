@@ -13,7 +13,11 @@ Page({
     submitLoading: false,        // 提交订单 loading 状态（按钮用）
     // 客户信息相关
     deviceCode: '',              // 设备编号，从缓存读取
-    customerInfo: null           // 客户信息
+    customerInfo: null,          // 客户信息
+    // 支付相关
+    showPaymentModal: false,     // 显示支付方式选择弹窗
+    pendingPackageInfo: null,    // 待支付的套餐信息
+    pendingCustomerInfo: null    // 待支付的客户信息
   },
 
   async onLoad() {
@@ -192,100 +196,19 @@ Page({
     const selectedPackage = this.data.packages.find(pkg => pkg.id === this.data.selectedPackage);
     const customer = this.data.customerInfo;
     
-    wx.showModal({
-      title: '确认订购',
-      content: `客户：${customer.customer_name || customer.name || '未知'}\n套餐：${selectedPackage.name}\n月费：¥${selectedPackage.price}\n\n确认为该客户订购此套餐？`,
-      confirmText: '确认订购',
-      cancelText: '再想想',
-      success: (res) => {
-        if (res.confirm) {
-          this.processOrder();
-        }
-      }
+    // 直接显示支付方式选择
+    this.setData({
+      showPaymentModal: true,
+      pendingPackageInfo: selectedPackage,
+      pendingCustomerInfo: customer
     });
   },
 
-  // 处理订购
-  async processOrder() {
-    const selectedPackage = this.data.packages.find(pkg => pkg.id === this.data.selectedPackage);
-    const customer = this.data.customerInfo;
 
-    if (!selectedPackage) {
-      message.error('请选择套餐');
-      return;
-    }
-    
-    if (!customer) {
-      message.error('客户信息不完整');
-      return;
-    }
-
-    // 使用按钮 loading 状态
-    this.setData({ submitLoading: true });
-
+  // 微信小程序支付
+  async handleWechatPayment(packageInfo, customerInfo) {
     try {
-      console.log('创建订单，套餐:', selectedPackage, '客户:', customer);
-
-      // 使用 withMinLoading 确保 loading 至少显示 800ms
-      const result = await message.withMinLoading(
-        async () => {
-          // 创建订单 - 使用新接口参数格式
-          return await API.createOrder({
-            customer_id: customer.id || customer.customer_id,
-            device_no: this.data.deviceCode,
-            package_id: selectedPackage.id,
-            orderType: 1,  // 1=新装
-            payment_type: '1',  // 1=微信支付
-            remark: '小程序订购'
-          });
-        },
-        {
-          minDuration: 800,  // 最小显示 800ms，避免闪烁
-          successText: '',
-          errorText: '订购失败，请重试'
-        }
-      );
-
-      this.setData({ submitLoading: false });
-      console.log('订单创建成功:', result.data);
-
-      // 订单创建成功后，进入支付流程
-      const orderData = result.data;
-      if (orderData && (orderData.order_no || orderData.orderNo || orderData.orderId)) {
-        console.log('订单创建成功，进入支付流程');
-        await this.handlePayment(orderData, selectedPackage, customer);
-      } else {
-        message.error('订单创建失败，请重试');
-      }
-
-    } catch (error) {
-      this.setData({ submitLoading: false });
-      console.error('订购失败:', error);
-      // 错误提示已在 withMinLoading 中处理
-    }
-  },
-
-  // 支付处理函数
-  async handlePayment(orderData, packageInfo, customerInfo) {
-    console.log('订单信息:', orderData);
-    console.log('套餐信息:', packageInfo);
-    console.log('客户信息:', customerInfo);
-    
-    try {
-      // 调用微信支付
-      await this.handleWechatPayment(orderData, packageInfo, customerInfo);
-    } catch (error) {
-      console.error('支付处理失败:', error);
-      message.error('支付处理失败，请重试');
-      this.setData({ submitLoading: false });
-    }
-  },
-
-  // 微信支付
-  async handleWechatPayment(orderData, packageInfo, customerInfo) {
-    try {
-      console.log('========== 开始微信支付 ==========');
-      console.log('订单数据:', orderData);
+      console.log('========== 开始微信小程序支付 ==========');
       
       wx.showLoading({ title: '正在调起支付...' });
       
@@ -323,10 +246,9 @@ Page({
         return;
       }
       
-      // 调用小程序支付接口
+      // 调用小程序支付接口（后端会自动创建订单）
       const paymentParams = {
         payment_type: 1, // 微信支付
-        order_id: '',
         customer_id: customerInfo.id || customerInfo.customer_id,
         device_no: this.data.deviceCode,
         package_id: packageInfo.id,
@@ -419,6 +341,95 @@ Page({
       console.error('========== 微信支付异常 ==========', error);
       message.error('支付失败: ' + (error.message || '未知错误'));
       this.setData({ submitLoading: false });
+    }
+  },
+
+  // 关闭支付方式选择弹窗
+  closePaymentModal() {
+    this.setData({
+      showPaymentModal: false,
+      pendingPackageInfo: null,
+      pendingCustomerInfo: null
+    });
+  },
+
+  // 阻止事件冒泡
+  stopPropagation() {
+    // 空函数，仅用于阻止冒泡
+  },
+
+  // 选择支付方式
+  async selectPaymentMethod(e) {
+    const method = e.currentTarget.dataset.method;
+    console.log('选择支付方式:', method);
+
+    // 关闭弹窗
+    this.setData({ showPaymentModal: false });
+
+    const { pendingPackageInfo, pendingCustomerInfo } = this.data;
+
+    if (!pendingPackageInfo || !pendingCustomerInfo) {
+      message.error('订单信息丢失，请重新订购');
+      return;
+    }
+
+    try {
+      switch (method) {
+        case 'wechat':
+          // 微信小程序支付（后端会自动创建订单）
+          await this.handleWechatPayment(pendingPackageInfo, pendingCustomerInfo);
+          break;
+        case 'qrcode':
+          // 微信二维码支付（后端会自动创建订单）
+          await this.handleQrcodePayment(pendingPackageInfo, pendingCustomerInfo);
+          break;
+        case 'offline':
+          // 线下支付 - 暂未开放
+          message.info('线下支付功能暂未开放，请选择其他支付方式');
+          break;
+        default:
+          message.error('未知的支付方式');
+      }
+    } catch (error) {
+      console.error('支付处理失败:', error);
+      message.error('支付处理失败，请重试');
+    } finally {
+      // 清空待支付数据
+      this.setData({
+        pendingPackageInfo: null,
+        pendingCustomerInfo: null
+      });
+    }
+  },
+
+  // 微信二维码支付
+  async handleQrcodePayment(packageInfo, customerInfo) {
+    console.log('========== 微信二维码支付 ==========');
+    wx.showLoading({ title: '生成二维码中...' });
+    
+    try {
+      // TODO: 调用后端接口生成支付二维码（后端会自动创建订单）
+      // const result = await API.createQrcodePayment({
+      //   payment_type: 1,
+      //   customer_id: customerInfo.id || customerInfo.customer_id,
+      //   device_no: this.data.deviceCode,
+      //   package_id: packageInfo.id,
+      //   orderType: 1
+      // });
+      
+      wx.hideLoading();
+      
+      // 暂时显示提示
+      wx.showModal({
+        title: '二维码支付',
+        content: '二维码支付功能开发中，请选择其他支付方式',
+        showCancel: false
+      });
+      
+    } catch (error) {
+      wx.hideLoading();
+      console.error('生成二维码失败:', error);
+      message.error('生成二维码失败: ' + (error.message || '未知错误'));
     }
   }
 });

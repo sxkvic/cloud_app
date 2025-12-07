@@ -450,3 +450,131 @@
     font-size: 28rpx;
   }
 }
+
+/* ==================== 支付方式选择弹窗 ==================== */
+.payment-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-end;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.payment-content {
+  width: 100%;
+  background-color: #fff;
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 40rpx 32rpx;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.payment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32rpx;
+}
+
+.payment-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #1f2937;
+}
+
+.payment-close {
+  font-size: 48rpx;
+  color: #9ca3af;
+  padding: 0 16rpx;
+  line-height: 1;
+}
+
+.payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.payment-option {
+  display: flex;
+  align-items: center;
+  padding: 32rpx 24rpx;
+  background-color: #f9fafb;
+  border-radius: 24rpx;
+  transition: all 0.3s ease;
+}
+
+.payment-option:active {
+  background-color: #f3f4f6;
+  transform: scale(0.98);
+}
+
+.option-icon {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48rpx;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.wechat-icon {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.qrcode-icon {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.offline-icon {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.option-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.option-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.option-desc {
+  font-size: 24rpx;
+  color: #6b7280;
+}
+
+.option-arrow {
+  font-size: 48rpx;
+  color: #d1d5db;
+  margin-left: 16rpx;
+}
