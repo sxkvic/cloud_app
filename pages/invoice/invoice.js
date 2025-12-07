@@ -372,8 +372,8 @@ Page({
           showCancel: false,
           confirmText: '知道了',
           success: () => {
-            // 刷新发票列表
-            this.loadInvoiceList();
+            // 跳转到首页
+            navigation.switchTab('/pages/home/home');
           }
         });
       }, 600);

@@ -1,6 +1,7 @@
 // pages/package-order/package-order.js
 const { navigation, message } = require('../../utils/common');
 const API = require('../../utils/api');
+const QRCode = require('../../utils/qrcode');
 const app = getApp();
 
 Page({
@@ -17,7 +18,13 @@ Page({
     // 支付相关
     showPaymentModal: false,     // 显示支付方式选择弹窗
     pendingPackageInfo: null,    // 待支付的套餐信息
-    pendingCustomerInfo: null    // 待支付的客户信息
+    pendingCustomerInfo: null,   // 待支付的客户信息
+    // 二维码支付相关
+    showQrcodeModal: false,      // 显示二维码弹窗
+    qrcodeUrl: '',               // 二维码链接
+    qrcodeOrderNo: '',           // 二维码订单号
+    qrcodeLoading: false,        // 二维码生成中
+    qrcodeError: ''              // 二维码错误信息
   },
 
   async onLoad() {
@@ -405,31 +412,138 @@ Page({
   // 微信二维码支付
   async handleQrcodePayment(packageInfo, customerInfo) {
     console.log('========== 微信二维码支付 ==========');
-    wx.showLoading({ title: '生成二维码中...' });
     
     try {
-      // TODO: 调用后端接口生成支付二维码（后端会自动创建订单）
-      // const result = await API.createQrcodePayment({
-      //   payment_type: 1,
-      //   customer_id: customerInfo.id || customerInfo.customer_id,
-      //   device_no: this.data.deviceCode,
-      //   package_id: packageInfo.id,
-      //   orderType: 1
-      // });
-      
-      wx.hideLoading();
-      
-      // 暂时显示提示
-      wx.showModal({
-        title: '二维码支付',
-        content: '二维码支付功能开发中，请选择其他支付方式',
-        showCancel: false
+      // 显示二维码弹窗（加载状态）
+      this.setData({
+        showQrcodeModal: true,
+        qrcodeLoading: true,
+        qrcodeError: '',
+        qrcodeUrl: '',
+        qrcodeOrderNo: ''
       });
       
+      // 调用创建订单接口
+      const orderData = {
+        payment_type: 1,  // 微信支付
+        customer_id: customerInfo.id || customerInfo.customer_id,
+        device_no: this.data.deviceCode,
+        package_id: packageInfo.id,
+        orderType: 1,  // 套餐订购
+        remark:""
+      };
+      
+      console.log('创建订单参数:', orderData);
+      const result = await API.createOrder(orderData);
+      console.log('订单创建成功:', result);
+      
+      if (result.success && result.data && result.data.qr_code_url) {
+        // 获取到二维码链接
+        const qrCodeUrl = result.data.qr_code_url;
+        const orderNo = result.data.order_no;
+        
+        console.log('二维码链接:', qrCodeUrl);
+        console.log('订单号:', orderNo);
+        
+        // 更新数据，显示二维码
+        this.setData({
+          qrcodeUrl: qrCodeUrl,
+          qrcodeOrderNo: orderNo,
+          qrcodeLoading: false
+        });
+        
+        // 生成二维码
+        await this.generateQRCode(qrCodeUrl);
+        
+        // 不需要轮询支付状态，用户支付后会通过其他方式通知
+        
+      } else {
+        throw new Error(result.message || '未获取到支付链接');
+      }
+      
     } catch (error) {
-      wx.hideLoading();
       console.error('生成二维码失败:', error);
+      this.setData({
+        qrcodeLoading: false,
+        qrcodeError: error.message || '生成二维码失败，请重试'
+      });
       message.error('生成二维码失败: ' + (error.message || '未知错误'));
     }
+  },
+
+  // 生成二维码
+  async generateQRCode(url) {
+    try {
+      console.log('开始生成二维码:', url);
+      
+      // 使用 Canvas 2D API 生成二维码
+      // 注意：这里使用简化版本，实际项目建议使用 weapp-qrcode 等专业库
+      await QRCode.generateQRCode('qrcode-canvas', url, {
+        width: 200,
+        height: 200
+      }, this);
+      
+      console.log('二维码生成成功');
+    } catch (error) {
+      console.error('二维码生成失败:', error);
+      // 即使二维码生成失败，用户仍可以复制链接
+    }
+  },
+
+  // 关闭二维码弹窗
+  closeQrcodeModal() {
+    this.setData({
+      showQrcodeModal: false,
+      qrcodeUrl: '',
+      qrcodeOrderNo: '',
+      qrcodeLoading: false,
+      qrcodeError: ''
+    });
+  },
+
+  // 复制二维码链接
+  copyQrcodeLink() {
+    if (!this.data.qrcodeUrl) {
+      message.error('暂无链接可复制');
+      return;
+    }
+    
+    wx.setClipboardData({
+      data: this.data.qrcodeUrl,
+      success: () => {
+        message.success('链接已复制到剪贴板');
+      },
+      fail: () => {
+        message.error('复制失败，请重试');
+      }
+    });
+  },
+
+  // 重试生成二维码
+  async retryGenerateQrcode() {
+    if (!this.data.qrcodeUrl) {
+      message.error('无法重试，请关闭后重新选择支付方式');
+      return;
+    }
+    
+    this.setData({
+      qrcodeLoading: true,
+      qrcodeError: ''
+    });
+    
+    try {
+      await this.generateQRCode(this.data.qrcodeUrl);
+      this.setData({ qrcodeLoading: false });
+    } catch (error) {
+      this.setData({
+        qrcodeLoading: false,
+        qrcodeError: '重试失败，请复制链接使用'
+      });
+    }
+  },
+
+  // 阻止事件冒泡（二维码弹窗）
+  stopQrcodePropagation() {
+    // 空函数，仅用于阻止冒泡
   }
 });
