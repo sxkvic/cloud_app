@@ -1,70 +1,80 @@
-// pages/business-registration/business-registration.js
+// pages/electronic-agreement/electronic-agreement.js
 const { navigation, message } = require('../../utils/common');
+const API = require('../../utils/api');
+const DataManager = require('../../utils/dataManager');
 
 Page({
   data: {
-    // 订单数据 - 示例数据，实际使用时从接口获取
+    loading: true,
+    deviceCode: '',
+    // 订单数据
     orderData: {
       // 头部信息
-      orderNo: '1220250529000220903492',
+      orderNo: '',
       currentPage: 1,
       totalPages: 3,
-      acceptDate: '2025 年 05 月 29 日',
+      acceptDate: '',
       
       // 客户信息
-      customerName: '杭州意丰歌服饰有限公司',
-      contactPhone: '13915514486',
-      idType: '统一信用代码',
-      idNumber: '913************71A',
-      idAddress: '浙江省杭州市余杭区余杭经济开发区超峰东路2号南楼5楼515室',
-      businessOrderNo: '0620250529106777781',
+      customerName: '',
+      contactPhone: '',
+      idType: '',
+      idNumber: '',
+      idAddress: '',
+      businessOrderNo: '',
       
       // 套餐信息
-      packageName: '礼包云网300M包年套餐(立即生效)',
-      packageSpeed: '300M',
-      originalPrice: '120',
-      discountPrice: '998',
-      downloadSpeed: '300M',
-      uploadSpeed: '20M',
+      packageName: '',
+      packageSpeed: '',
+      originalPrice: '',
+      discountPrice: '',
+      downloadSpeed: '',
+      uploadSpeed: '',
       contractMonths: 12,
       
       // 产品信息
-      broadbandNo: '2312260076',
-      gatewayNo: '05122312260076',
-      installAddress: '苏州市高新区金鹰国际购物中心二楼伊芙丽专厅',
+      broadbandNo: '',
+      gatewayNo: '',
+      installAddress: '',
       
       // 费用信息
-      prepayAmount: '998',
+      prepayAmount: '',
       debugFee: '0',
-      actualPayment: '998',
+      actualPayment: '',
       
       // 物品清单
-      itemList: [
-        { name: '千兆网关路由', quantity: 1 }
-      ],
+      itemList: [],
       
       // 预约信息
-      appointmentTime: '2025-05-29 8:00:00 -- 18:00:00',
-      contactPerson: '王琴'
+      appointmentTime: '',
+      contactPerson: ''
     }
   },
 
   onLoad(options) {
-    console.log('业务登记单页面加载', options);
+    console.log('📄 电子协议页面加载', options);
+    
+    // 获取设备码
+    const deviceCode = wx.getStorageSync('device_no');
+    this.setData({ deviceCode });
     
     // 如果有传入订单号，则加载对应订单数据
     if (options.orderNo) {
       this.loadOrderData(options.orderNo);
-    }
-    
+    } 
     // 如果有传入完整数据（JSON字符串），则直接使用
-    if (options.data) {
+    else if (options.data) {
       try {
         const orderData = JSON.parse(decodeURIComponent(options.data));
-        this.setData({ orderData });
+        this.setData({ orderData, loading: false });
       } catch (error) {
         console.error('解析订单数据失败:', error);
+        this.loadCustomerInfo();
       }
+    }
+    // 否则从缓存加载客户信息
+    else {
+      this.loadCustomerInfo();
     }
   },
 
@@ -72,25 +82,125 @@ Page({
     console.log('业务登记单页面显示');
   },
 
+  // 加载客户信息（从缓存）
+  async loadCustomerInfo() {
+    try {
+      this.setData({ loading: true });
+      console.log('📦 加载客户信息...');
+      
+      // 从缓存获取完整客户信息
+      let customerInfo = wx.getStorageSync('complete_customer_info');
+      
+      if (!customerInfo && this.data.deviceCode) {
+        console.log('⚠️ 缓存不存在，重新获取...');
+        const result = await DataManager.getCompleteCustomerInfo(this.data.deviceCode, true);
+        customerInfo = result.data;
+      }
+      
+      if (!customerInfo) {
+        message.error('未获取到客户信息');
+        this.setData({ loading: false });
+        return;
+      }
+      
+      console.log('✅ 客户信息:', customerInfo);
+      
+      // 填充订单数据
+      const orderData = this.fillOrderDataFromCustomer(customerInfo);
+      this.setData({ 
+        orderData,
+        loading: false 
+      });
+      
+    } catch (error) {
+      console.error('❌ 加载客户信息失败:', error);
+      message.error('加载失败');
+      this.setData({ loading: false });
+    }
+  },
+
+  // 从客户信息填充订单数据
+  fillOrderDataFromCustomer(customerInfo) {
+    const customer = customerInfo.customer || {};
+    const device = customerInfo.device || customerInfo.device_info || {};
+    const binding = customerInfo.binding_info || {};
+    const packageInfo = customerInfo.package || {};
+    const account = customerInfo.account || {};
+    
+    // 生成订单号（如果没有）
+    const orderNo = this.generateOrderNo();
+    
+    // 获取当前日期
+    const now = new Date();
+    const acceptDate = `${now.getFullYear()} 年 ${String(now.getMonth() + 1).padStart(2, '0')} 月 ${String(now.getDate()).padStart(2, '0')} 日`;
+    
+    // 判断证件类型
+    let idType = '身份证';
+    let idNumber = customer.id_number || '';
+    if (customer.user_type === 2 || customer.user_type === '2') {
+      idType = '统一信用代码';
+    }
+    
+    return {
+      // 头部信息
+      orderNo: orderNo,
+      currentPage: 1,
+      totalPages: 3,
+      acceptDate: acceptDate,
+      
+      // 客户信息
+      customerName: customer.customer_name || '',
+      contactPhone: customer.contact_phone || binding.recharge_account || '',
+      idType: idType,
+      idNumber: this.maskIdNumber(idNumber),
+      idAddress: customer.install_address || '',
+      businessOrderNo: orderNo,
+      
+      // 套餐信息
+      packageName: packageInfo.package_name || binding.current_package_name || '',
+      packageSpeed: packageInfo.flow || '',
+      originalPrice: packageInfo.order_amount || packageInfo.price || '',
+      discountPrice: packageInfo.price || packageInfo.order_amount || '',
+      downloadSpeed: packageInfo.flow || '',
+      uploadSpeed: '20M', // 默认上传速度
+      contractMonths: 12,
+      
+      // 产品信息
+      broadbandNo: device.device_no || '',
+      gatewayNo: device.device_no || '',
+      installAddress: customer.install_address || '',
+      
+      // 费用信息
+      prepayAmount: packageInfo.price || packageInfo.order_amount || '',
+      debugFee: '0',
+      actualPayment: packageInfo.price || packageInfo.order_amount || '',
+      
+      // 物品清单
+      itemList: [
+        { name: '千兆网关路由', quantity: 1 }
+      ],
+      
+      // 预约信息
+      appointmentTime: '',
+      contactPerson: customer.contact_person || customer.customer_name || ''
+    };
+  },
+
+  // 生成订单号
+  generateOrderNo() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const random = Math.floor(Math.random() * 1000000000).toString().padStart(9, '0');
+    return `12${year}${month}${day}000${random}`;
+  },
+
   // 加载订单数据
   loadOrderData(orderNo) {
     wx.showLoading({
       title: '加载中...'
     });
-
-    // TODO: 调用实际接口获取订单数据
-    // API.getOrderDetail(orderNo).then(res => {
-    //   if (res.success) {
-    //     this.setData({
-    //       orderData: this.formatOrderData(res.data)
-    //     });
-    //   }
-    // }).catch(error => {
-    //   message.error('加载订单数据失败');
-    // }).finally(() => {
-    //   wx.hideLoading();
-    // });
-
     // 模拟加载
     setTimeout(() => {
       wx.hideLoading();

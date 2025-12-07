@@ -1,4 +1,4 @@
-/* pages/business-registration/business-registration.wxss */
+/* pages/electronic-agreement/electronic-agreement.wxss */
 
 /* 通用样式 - 模拟纸质文档 */
 page {
@@ -17,6 +17,22 @@ page {
   box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.3);
   box-sizing: border-box;
   min-height: 2000rpx;
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 800rpx;
+  padding: 100rpx 0;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #666;
+  margin-top: 40rpx;
 }
 
 /* 顶部服务热线 */
