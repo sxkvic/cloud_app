@@ -73,13 +73,18 @@ const API = {
   /**
    * 绑定设备
    * @param {String} device_no 设备编号
+   * @param {String} recharge_account 充值账号（可选）
    * @returns {Promise} { success, data, message }
    */
-  bindDevice(device_no) {
+  bindDevice(device_no, recharge_account) {
+    const data = { device_no };
+    if (recharge_account) {
+      data.recharge_account = recharge_account;
+    }
     return request({
       url: '/api/v1/wx/bindDevice',
       method: 'POST',
-      data: { device_no },
+      data: data,
       needAuth: true
     });
   },

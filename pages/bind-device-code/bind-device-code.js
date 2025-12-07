@@ -6,6 +6,7 @@ const app = getApp();
 Page({
   data: {
     deviceCode: '',
+    rechargeAccount: '',
     isLoading: false
   },
 
@@ -60,6 +61,14 @@ Page({
     });
   },
 
+  // 充值账号输入变化
+  onRechargeAccountChange(e) {
+    const value = e.detail.value.trim();
+    this.setData({
+      rechargeAccount: value
+    });
+  },
+
   // 扫码功能
   handleScan() {
     wx.scanCode({
@@ -86,10 +95,11 @@ Page({
 
   // 手动提交绑定
   async onManualSubmit() {
-    let { deviceCode } = this.data;
+    let { deviceCode, rechargeAccount } = this.data;
 
     // 去除所有空格并转换为大写
     deviceCode = deviceCode.replace(/\s+/g, '').toUpperCase();
+    rechargeAccount = rechargeAccount.trim();
 
     // 验证设备码是否为空
     if (!deviceCode || deviceCode.length === 0) {
@@ -103,8 +113,14 @@ Page({
       return;
     }
 
+    // 验证充值账号（可选）
+    if (rechargeAccount && !/^1[3-9]\d{9}$/.test(rechargeAccount)) {
+      message.error('请输入正确的手机号码');
+      return;
+    }
+
     this.setData({ isLoading: true });
-    console.log('开始绑定设备，设备码:', deviceCode);
+    console.log('开始绑定设备，设备码:', deviceCode, '充值账号:', rechargeAccount);
 
     try {
       // 清除旧的设备缓存数据
@@ -112,7 +128,7 @@ Page({
       
       // 直接调用绑定接口，后端会处理所有验证逻辑
       console.log('调用绑定接口...');
-      await API.bindDevice(deviceCode);
+      await API.bindDevice(deviceCode, rechargeAccount);
 
       // 绑定成功后，查询完整的设备信息
       console.log('查询设备详细信息...');
@@ -150,7 +166,10 @@ Page({
       message.success('设备绑定成功！');
 
       // 清空输入框
-      this.setData({ deviceCode: '' });
+      this.setData({ 
+        deviceCode: '',
+        rechargeAccount: ''
+      });
 
       // 跳转到首页
       setTimeout(() => {
