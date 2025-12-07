@@ -1,6 +1,7 @@
 // pages/change-transfer/change-transfer.js
 const { navigation, message } = require('../../utils/common');
 const API = require('../../utils/api');
+const DataManager = require('../../utils/dataManager');
 const { getShareConfig, getTimelineShareConfig } = require('../../utils/share');
 const app = getApp();
 
@@ -48,7 +49,15 @@ Page({
       
       await message.withMinLoading(
         async () => {
-          const result = await API.getCustomerByDeviceCode(this.data.deviceCode);
+          // 优先从缓存获取
+          let customerInfo = wx.getStorageSync('complete_customer_info');
+          
+          if (!customerInfo) {
+            const result = await DataManager.getCompleteCustomerInfo(this.data.deviceCode, true);
+            customerInfo = result.data;
+          }
+          
+          const result = { data: customerInfo };
           console.log('客户信息查询成功:', result.data);
           
           this.setData({

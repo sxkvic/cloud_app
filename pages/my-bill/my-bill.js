@@ -1,6 +1,7 @@
 // pages/my-bill/my-bill.js
 const { navigation, message } = require('../../utils/common');
 const API = require('../../utils/api');
+const DataManager = require('../../utils/dataManager');
 
 Page({
   data: {
@@ -41,9 +42,20 @@ Page({
   // 加载客户信息
   async loadCustomerInfo() {
     try {
-      console.log('查询客户信息，设备码:', this.data.deviceCode);
+      console.log('📦 加载客户信息，设备码:', this.data.deviceCode);
       
-      const result = await API.getCustomerByDeviceCode(this.data.deviceCode);
+      // 优先从缓存获取
+      let customerInfo = wx.getStorageSync('complete_customer_info');
+      
+      if (!customerInfo) {
+        console.log('⚠️ 缓存不存在，重新获取...');
+        const result = await DataManager.getCompleteCustomerInfo(this.data.deviceCode, true);
+        customerInfo = result.data;
+      } else {
+        console.log('✅ 使用缓存的客户信息');
+      }
+      
+      const result = { data: customerInfo };
       console.log('客户信息查询成功:', result.data);
       
       this.setData({

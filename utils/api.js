@@ -130,6 +130,113 @@ const API = {
   },
 
   /**
+   * 获取客户和套餐完整信息（新接口，数据更全）
+   * @param {String} deviceNo 设备编号
+   * @param {String} rechargeAccount 充值账号（手机号）
+   * @returns {Promise} { success, data, message }
+   */
+  getCustomerAndPackageByDeviceNo(deviceNo, rechargeAccount) {
+    return request({
+      url: `/api/v1/wx/getCustomerAndPackageByDeviceNo`,
+      method: 'GET',
+      data: {
+        device_no: deviceNo,
+        recharge_account: rechargeAccount
+      },
+      needAuth: true,
+      showLoading: false
+    });
+  },
+
+  /**
+   * 获取完整的客户信息（组合调用）
+   * 先调用旧接口获取基本信息，再调用新接口获取完整信息
+   * @param {String} deviceCode 设备码
+   * @returns {Promise} { success, data, message }
+   */
+  async getCompleteCustomerInfo(deviceCode) {
+    try {
+      // 1. 先调用旧接口获取基本信息
+      console.log('📞 调用旧接口获取基本信息...');
+      const basicResult = await this.getCustomerByDeviceCode(deviceCode);
+      
+      if (!basicResult.success || !basicResult.data) {
+        return basicResult;
+      }
+
+      // 2. 从旧接口获取 recharge_account
+      const rechargeAccount = basicResult.data.binding_info?.recharge_account;
+      
+      if (!rechargeAccount) {
+        console.warn('⚠️ 未找到 recharge_account，返回基本信息');
+        return basicResult;
+      }
+
+      // 3. 调用新接口获取完整信息
+      console.log('📞 调用新接口获取完整信息...', { deviceCode, rechargeAccount });
+      const completeResult = await this.getCustomerAndPackageByDeviceNo(deviceCode, rechargeAccount);
+      
+      if (completeResult.success && completeResult.data) {
+        console.log('✅ 新接口返回完整数据');
+        
+        const newData = completeResult.data;
+        
+        // 合并数据，处理字段名差异
+        // 新接口: device, package, account
+        // 旧接口: device_info, package_info (可能没有), balance_info (可能没有)
+        const mergedData = {
+          // 基本信息（旧接口）
+          customer: basicResult.data.customer,
+          binding_info: basicResult.data.binding_info,
+          device_info: basicResult.data.device_info,
+          
+          // 新接口数据（统一字段名）
+          device: newData.device,
+          package: newData.package,
+          account: newData.account,
+          
+          // 兼容旧字段名（确保向后兼容）
+          package_info: newData.package,
+          balance_info: newData.account ? {
+            balance: newData.account.balance,
+            available_balance: newData.account.balance
+          } : null,
+          
+          // 如果新接口没有返回 device_info，使用 device 字段
+          ...(newData.device && !basicResult.data.device_info ? {
+            device_info: newData.device
+          } : {}),
+          
+          // 保留旧接口数据作为备份
+          _basic: basicResult.data,
+          _new: newData
+        };
+        
+        console.log('📦 合并后的数据结构:', {
+          has_customer: !!mergedData.customer,
+          has_binding_info: !!mergedData.binding_info,
+          has_device_info: !!mergedData.device_info,
+          has_device: !!mergedData.device,
+          has_package: !!mergedData.package,
+          has_account: !!mergedData.account
+        });
+        
+        return {
+          success: true,
+          data: mergedData,
+          message: completeResult.message || basicResult.message
+        };
+      } else {
+        console.warn('⚠️ 新接口调用失败，使用基本信息');
+        return basicResult;
+      }
+    } catch (error) {
+      console.error('❌ 获取完整客户信息失败:', error);
+      throw error;
+    }
+  },
+
+  /**
    * 获取设备绑定列表（包含余额信息）
    * @param {Object} params 查询参数
    * @param {String} params.deviceNo 设备编号

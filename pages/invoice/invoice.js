@@ -1,6 +1,7 @@
 // pages/invoice/invoice.js
 const { navigation, message } = require('../../utils/common');
 const API = require('../../utils/api');
+const DataManager = require('../../utils/dataManager');
 const { getShareConfig, getTimelineShareConfig } = require('../../utils/share');
 const app = getApp();
 
@@ -69,9 +70,16 @@ Page({
   // 加载客户信息
   async loadCustomerInfo() {
     try {
-      const result = await API.getCustomerByDeviceCode(this.data.deviceNo);
+      // 优先从缓存获取
+      let customerInfo = wx.getStorageSync('complete_customer_info');
+      
+      if (!customerInfo) {
+        const result = await DataManager.getCompleteCustomerInfo(this.data.deviceNo, true);
+        customerInfo = result.data;
+      }
+      
       this.setData({
-        customerInfo: result.data
+        customerInfo: customerInfo
       });
     } catch (error) {
       console.error('加载客户信息失败:', error);

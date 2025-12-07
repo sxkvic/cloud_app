@@ -1,6 +1,7 @@
 // pages/package-order/package-order.js
 const { navigation, message } = require('../../utils/common');
 const API = require('../../utils/api');
+const DataManager = require('../../utils/dataManager');
 const QRCode = require('../../utils/qrcode');
 const app = getApp();
 
@@ -145,13 +146,21 @@ Page({
   // 加载客户信息
   async loadCustomerInfo() {
     try {
-      console.log('查询客户信息，设备码:', this.data.deviceCode);
+      console.log('📦 加载客户信息，设备码:', this.data.deviceCode);
       
-      const result = await API.getCustomerByDeviceCode(this.data.deviceCode);
-      console.log('客户信息查询成功:', result.data);
+      // 优先从缓存获取（登录时已获取完整信息）
+      let customerInfo = wx.getStorageSync('complete_customer_info');
+      
+      if (!customerInfo) {
+        console.log('⚠️ 缓存不存在，重新获取完整信息...');
+        const result = await DataManager.getCompleteCustomerInfo(this.data.deviceCode, true);
+        customerInfo = result.data;
+      } else {
+        console.log('✅ 使用缓存的客户信息');
+      }
       
       this.setData({
-        customerInfo: result.data.customer || result.data
+        customerInfo: customerInfo
       });
       
     } catch (error) {
@@ -256,7 +265,7 @@ Page({
       // 调用小程序支付接口（后端会自动创建订单）
       const paymentParams = {
         payment_type: 1, // 微信支付
-        customer_id: customerInfo.id || customerInfo.customer_id,
+        customer_id: customerInfo.customer?.id || customerInfo.id || customerInfo.customer_id,
         device_no: this.data.deviceCode,
         package_id: packageInfo.id,
         orderType: 1, // 套餐订购
@@ -419,7 +428,7 @@ Page({
       // 调用线下支付订单接口
       const orderData = {
         payment_type: 3,  // 线下支付
-        customer_id: customerInfo.id || customerInfo.customer_id,
+        customer_id: customerInfo.customer?.id || customerInfo.id || customerInfo.customer_id,
         device_no: this.data.deviceCode,
         package_id: packageInfo.id,
         orderType: 1,  // 套餐订购
@@ -474,7 +483,7 @@ Page({
       // 调用创建订单接口
       const orderData = {
         payment_type: 1,  // 微信支付
-        customer_id: customerInfo.id || customerInfo.customer_id,
+        customer_id: customerInfo.customer?.id || customerInfo.id || customerInfo.customer_id,
         device_no: this.data.deviceCode,
         package_id: packageInfo.id,
         orderType: 1,  // 套餐订购

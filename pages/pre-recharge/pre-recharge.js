@@ -2,6 +2,7 @@
 const { navigation, message } = require("../../utils/common");
 const API = require("../../utils/api");
 const QRCode = require('../../utils/qrcode');
+const DataManager = require("../../utils/dataManager");
 const app = getApp();
 
 Page({
@@ -72,36 +73,46 @@ Page({
 
   onShow() {
     console.log("预充值页面显示");
+    // 不需要每次都重新加载，使用登录时缓存的数据即可
   },
 
-  // 加载客户信息
+  // 加载客户信息（优先使用缓存，登录时已获取完整数据）
   async loadCustomerInfo() {
     try {
       this.setData({ isLoadingCustomer: true });
-      console.log("查询客户信息，设备码:", this.data.deviceCode);
+      console.log("� 加载客户信息，设备码:", this.data.deviceCode);
 
       if (!this.data.deviceCode) {
         message.error("设备码未设置，请重新登录");
         return;
       }
 
-      const result = await API.getCustomerByDeviceCode(this.data.deviceCode);
-      console.log("客户信息查询成功:", result.data);
+      // 优先从缓存获取（登录时已通过 DataManager 获取完整信息）
+      let customerInfo = wx.getStorageSync('complete_customer_info');
+      
+      if (!customerInfo) {
+        // 如果缓存不存在，则重新获取
+        console.log("⚠️ 缓存不存在，重新获取完整信息...");
+        const result = await DataManager.getCompleteCustomerInfo(this.data.deviceCode, true);
+        customerInfo = result.data;
+      } else {
+        console.log("✅ 使用缓存的客户信息");
+      }
 
-      // 存储完整的查询结果，包含customer、binding_info、device_info
+      // 存储到页面数据
       this.setData({
-        customerInfo: result.data,
+        customerInfo: customerInfo,
         isLoadingCustomer: false,
       });
 
-      // 显示客户基本信息（可选）
-      if (result.data && result.data.customer) {
+      // 显示客户基本信息
+      if (customerInfo && customerInfo.customer) {
         console.log(
-          `客户：${result.data.customer.customer_name}, 设备：${result.data.device_info.device_name}`
+          `客户：${customerInfo.customer.customer_name}, 设备：${customerInfo.device_info?.device_name || '未知'}`
         );
       }
     } catch (error) {
-      console.error("查询客户信息失败:", error);
+      console.error("❌ 加载客户信息失败:", error);
       this.setData({ isLoadingCustomer: false });
       message.error("无法获取客户信息，请稍后重试");
     }
@@ -284,7 +295,7 @@ Page({
       const paymentParams = {
         payment_type: 1, // 微信支付
         order_id: '',
-        customer_id: customerInfo.id,
+        customer_id: customerInfo.customer?.id || customerInfo.id,
         device_no: this.data.deviceCode,
         orderType: 2, // 预充值
         openid: openid,
@@ -378,8 +389,8 @@ Page({
         orderType: 2, // 2=预充值
         device_no: this.data.deviceCode,
         package_id: '',
-        customer_id: customerInfo.id,
-        device_id: deviceInfo.id,
+        customer_id: customerInfo.customer?.id || customerInfo.id,
+        device_id: deviceInfo?.id || customerInfo.device_info?.id || customerInfo.device?.id,
         payment_type: 1, // 微信支付
         recharge_amount: rechargeAmount,
         remark: remark || ''
@@ -443,8 +454,8 @@ Page({
       
       // 创建预充值订单（线下支付）
       const orderData = {
-        customer_id: customerInfo.id,
-        device_id: deviceInfo.id,
+        customer_id: customerInfo.customer?.id || customerInfo.id,
+        device_id: deviceInfo?.id || customerInfo.device_info?.id || customerInfo.device?.id,
         device_no: this.data.deviceCode,
         orderType: 2, // 2=预充值
         package_id: '',

@@ -1,6 +1,7 @@
 // pages/self-renewal/self-renewal.js
 const { navigation, message } = require('../../utils/common');
 const API = require('../../utils/api');
+const DataManager = require('../../utils/dataManager');
 const QRCode = require('../../utils/qrcode');
 const app = getApp();
 
@@ -37,15 +38,26 @@ Page({
     }
 
     this.setData({ deviceCode });
-    await this.loadPackageInfo();
+    await this.loadDeviceInfo();
   },
 
-  // 加载套餐信息
-  async loadPackageInfo() {
+  // 加载设备信息
+  async loadDeviceInfo() {
     try {
       this.setData({ loading: true });
       
-      const result = await API.getCustomerByDeviceCode(this.data.deviceCode);
+      // 优先从缓存获取
+      let deviceInfo = wx.getStorageSync('complete_customer_info');
+      
+      if (!deviceInfo) {
+        console.log('⚠️ 缓存不存在，重新获取...');
+        const result = await DataManager.getCompleteCustomerInfo(this.data.deviceCode, true);
+        deviceInfo = result.data;
+      } else {
+        console.log('✅ 使用缓存的设备信息');
+      }
+      
+      const result = { success: true, data: deviceInfo };
       console.log('设备信息:', result);
       
       if (result.success && result.data && result.data.binding_info) {
@@ -168,7 +180,7 @@ Page({
       // 调用小程序支付接口
       const paymentParams = {
         payment_type: 1,
-        customer_id: customerInfo.id,
+        customer_id: customerInfo.customer?.id || customerInfo.id,
         device_no: this.data.deviceCode,
         package_id: packageInfo.package_id,
         orderType: 1, // 套餐订购（续费也是订购类型）
@@ -246,7 +258,7 @@ Page({
       
       const orderData = {
         payment_type: 1,
-        customer_id: customerInfo.id,
+        customer_id: customerInfo.customer?.id || customerInfo.id,
         device_no: this.data.deviceCode,
         package_id: packageInfo.package_id,
         orderType: 1,
@@ -300,7 +312,7 @@ Page({
       
       const orderData = {
         payment_type: 3,
-        customer_id: customerInfo.id,
+        customer_id: customerInfo.customer?.id || customerInfo.id,
         device_no: this.data.deviceCode,
         package_id: packageInfo.package_id,
         orderType: 1,
