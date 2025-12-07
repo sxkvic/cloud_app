@@ -792,6 +792,25 @@ const API = {
       data: transferData,
       needAuth: true
     });
+  },
+
+  // ==================== 订阅消息模块 ====================
+
+  /**
+   * 更新用户订阅模板ID
+   * @param {Number} userId 用户ID
+   * @param {String} templateId 订阅模板ID
+   * @returns {Promise} { success, data: { user_id, subscribe_template_id }, message }
+   */
+  updateSubscribeTemplate(userId, templateId) {
+    return request({
+      url: `/api/v1/subscription-messages/wx-users/${userId}/subscribe-template`,
+      method: 'PUT',
+      data: {
+        subscribe_template_id: templateId
+      },
+      needAuth: true
+    });
   }
 };
 

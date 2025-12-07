@@ -212,12 +212,8 @@ Page({
     const selectedPackage = this.data.packages.find(pkg => pkg.id === this.data.selectedPackage);
     const customer = this.data.customerInfo;
     
-    // 直接显示支付方式选择
-    this.setData({
-      showPaymentModal: true,
-      pendingPackageInfo: selectedPackage,
-      pendingCustomerInfo: customer
-    });
+    // 🎯 先请求订阅，再显示支付方式
+    this.requestSubscribeBeforeOrder(selectedPackage, customer);
   },
 
 
@@ -320,16 +316,7 @@ Page({
             
             // 支付成功后显示订购完成提示
             setTimeout(() => {
-              wx.showModal({
-                title: '订购完成',
-                content: `${packageInfo.name} 订购成功！\n客户：${customerInfo.customer_name || customerInfo.name}\n订单号：${paymentParams.order_id}\n月费：¥${packageInfo.price}\n我们将尽快为您安排服务。`,
-                showCancel: false,
-                confirmText: '知道了',
-                success: () => {
-                  // 返回首页
-                  navigation.switchTab('/pages/home/home');
-                }
-              });
+              this.showOrderCompleteModal(packageInfo, customerInfo, paymentParams);
             }, 600);
           },
           fail: (payErr) => {
@@ -602,5 +589,156 @@ Page({
   // 阻止事件冒泡（二维码弹窗）
   stopQrcodePropagation() {
     // 空函数，仅用于阻止冒泡
+  },
+
+  // ==================== 订阅消息功能 ====================
+
+  // 点击立即订购时请求订阅
+  requestSubscribeBeforeOrder(selectedPackage, customer) {
+    // 订阅模板ID
+    const templateId = 'ugRcEid6E2eLMnhmtPQa6qRO_goBNSaOf77PzznvRME';
+    
+    console.log('📬 准备请求订阅...', { templateId });
+    
+    wx.requestSubscribeMessage({
+      tmplIds: [templateId],
+      success: (res) => {
+        console.log('订阅结果:', res);
+        
+        if (res[templateId] === 'accept') {
+          console.log('✅ 用户同意订阅');
+          
+          // 保存订阅到后端
+          this.saveSubscription(templateId);
+          
+          // 显示订阅成功提示
+          wx.showToast({
+            title: '订阅成功',
+            icon: 'success',
+            duration: 1500
+          });
+        } else if (res[templateId] === 'reject') {
+          console.log('⚠️ 用户拒绝订阅');
+        } else if (res[templateId] === 'ban') {
+          console.log('❌ 用户已被封禁');
+        }
+        
+        // 无论订阅结果如何，都显示支付方式选择
+        setTimeout(() => {
+          this.setData({
+            showPaymentModal: true,
+            pendingPackageInfo: selectedPackage,
+            pendingCustomerInfo: customer
+          });
+        }, res[templateId] === 'accept' ? 800 : 300);
+      },
+      fail: (err) => {
+        console.error('❌ 订阅失败:', err);
+        // 订阅失败也要显示支付方式选择
+        this.setData({
+          showPaymentModal: true,
+          pendingPackageInfo: selectedPackage,
+          pendingCustomerInfo: customer
+        });
+      }
+    });
+  },
+
+  // 保存订阅到后端
+  async saveSubscription(templateId) {
+    try {
+      console.log('💾 开始保存订阅到后端...', { templateId });
+      
+      // 尝试从多个地方获取用户ID
+      let userId = wx.getStorageSync('user_id');
+      
+      // 如果没有user_id，尝试从userInfo获取
+      if (!userId) {
+        const userInfo = wx.getStorageSync('userInfo');
+        if (userInfo && userInfo.user && userInfo.user.id) {
+          userId = userInfo.user.id;
+          console.log('💡 从userInfo.user获取到用户ID:', userId);
+        } else if (userInfo && userInfo.id) {
+          userId = userInfo.id;
+          console.log('💡 从userInfo获取到用户ID:', userId);
+        }
+      }
+      
+      // 如果还没有，尝试从customerInfo获取
+      if (!userId && this.data.customerInfo?.customer?.id) {
+        userId = this.data.customerInfo.customer.id;
+        console.log('💡 从customerInfo获取到用户ID:', userId);
+      }
+      
+      // 如果还没有，尝试从openid查询
+      if (!userId) {
+        const openid = wx.getStorageSync('openid');
+        if (openid) {
+          console.log('💡 尝试使用openid作为用户标识:', openid);
+          userId = openid; // 某些系统可能使用openid作为用户ID
+        }
+      }
+      
+      console.log('📋 用户ID检查:', {
+        user_id: wx.getStorageSync('user_id'),
+        userInfo_user_id: wx.getStorageSync('userInfo')?.user?.id,
+        userInfo_id: wx.getStorageSync('userInfo')?.id,
+        openid: wx.getStorageSync('openid'),
+        customerInfo_id: this.data.customerInfo?.customer?.id,
+        final_userId: userId
+      });
+      
+      if (!userId) {
+        console.error('❌ 未找到用户ID，无法保存订阅');
+        console.log('📦 当前缓存数据:', {
+          user_id: wx.getStorageSync('user_id'),
+          openid: wx.getStorageSync('openid'),
+          customer_info: wx.getStorageSync('customer_info')
+        });
+        return;
+      }
+      
+      console.log('🚀 准备调用API，userId:', userId, 'templateId:', templateId);
+      
+      const result = await API.updateSubscribeTemplate(userId, templateId);
+      
+      console.log('📡 API返回结果:', result);
+      
+      if (result.success) {
+        console.log('✅ 订阅模板ID已保存到后端');
+        wx.setStorageSync('subscribe_template_id', templateId);
+        
+        // 显示订阅成功提示
+        wx.showToast({
+          title: '订阅成功',
+          icon: 'success',
+          duration: 1500
+        });
+      } else {
+        console.error('⚠️ API调用成功但返回失败:', result.message);
+      }
+    } catch (error) {
+      console.error('❌ 保存订阅失败:', error);
+      console.error('错误详情:', {
+        message: error.message,
+        stack: error.stack
+      });
+    }
+  },
+
+  // 显示订购完成提示
+  showOrderCompleteModal(packageInfo, customerInfo, paymentParams) {
+    setTimeout(() => {
+      wx.showModal({
+        title: '订购完成',
+        content: `${packageInfo.name} 订购成功！\n客户：${customerInfo.customer?.customer_name || customerInfo.customer_name || customerInfo.name}\n订单号：${paymentParams.order_id || ''}\n月费：¥${packageInfo.price}\n我们将尽快为您安排服务。`,
+        showCancel: false,
+        confirmText: '知道了',
+        success: () => {
+          // 返回首页
+          navigation.switchTab('/pages/home/home');
+        }
+      });
+    }, 800);
   }
 });
