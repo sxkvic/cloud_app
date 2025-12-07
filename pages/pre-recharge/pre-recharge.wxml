@@ -109,4 +109,84 @@
     </view>
   </view>
 
+  <!-- 支付方式选择弹窗 -->
+  <view class="payment-modal" wx:if="{{showPaymentModal}}" catchtap="closePaymentModal">
+    <view class="payment-content" catchtap="stopQrcodePropagation">
+      <view class="payment-title">选择支付方式</view>
+      <view class="payment-methods">
+        <view class="payment-item" bindtap="selectPaymentMethod" data-method="wechat">
+          <view class="payment-icon">💳</view>
+          <view class="payment-info">
+            <text class="payment-name">微信支付</text>
+            <text class="payment-desc">推荐使用</text>
+          </view>
+          <view class="payment-arrow">›</view>
+        </view>
+        <view class="payment-item" bindtap="selectPaymentMethod" data-method="qrcode">
+          <view class="payment-icon">📱</view>
+          <view class="payment-info">
+            <text class="payment-name">扫码支付</text>
+            <text class="payment-desc">微信扫码</text>
+          </view>
+          <view class="payment-arrow">›</view>
+        </view>
+        <view class="payment-item" bindtap="selectPaymentMethod" data-method="offline">
+          <view class="payment-icon">💰</view>
+          <view class="payment-info">
+            <text class="payment-name">线下支付</text>
+            <text class="payment-desc">联系工作人员</text>
+          </view>
+          <view class="payment-arrow">›</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 二维码支付弹窗 -->
+  <view class="qrcode-modal" wx:if="{{showQrcodeModal}}" catchtap="closeQrcodeModal">
+    <view class="qrcode-content" catchtap="stopQrcodePropagation">
+      <view class="qrcode-header">
+        <text class="qrcode-title">微信扫码支付</text>
+        <text class="close-btn" catchtap="closeQrcodeModal">✕</text>
+      </view>
+      
+      <view class="qrcode-body">
+        <!-- 加载状态 -->
+        <view wx:if="{{qrcodeLoading}}" class="qrcode-loading">
+          <view class="loading-spinner"></view>
+          <text class="loading-text">生成二维码中...</text>
+        </view>
+        
+        <!-- 错误状态 -->
+        <view wx:elif="{{qrcodeError}}" class="qrcode-error">
+          <text class="error-icon">⚠️</text>
+          <text class="error-text">{{qrcodeError}}</text>
+          <button class="retry-button" catchtap="retryGenerateQrcode">重试</button>
+        </view>
+        
+        <!-- 二维码显示 -->
+        <view wx:else class="qrcode-display">
+          <view class="qrcode-wrapper">
+            <canvas 
+              type="2d" 
+              id="qrcode-canvas" 
+              class="qrcode-canvas"
+            ></canvas>
+          </view>
+          
+          <view class="qrcode-tips">
+            <text class="tips-title">请使用微信扫码支付</text>
+            <text class="tips-desc">订单号：{{qrcodeOrderNo}}</text>
+          </view>
+          
+          <view class="qrcode-actions">
+            <button class="action-button copy-button" catchtap="copyQrcodeLink">
+              复制链接
+            </button>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
 </view>

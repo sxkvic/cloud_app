@@ -550,13 +550,27 @@ const API = {
   },
 
   /**
-   * 创建预充值订单
+   * 创建预充值订单（微信/二维码支付）
    * @param {Object} params 订单参数
    * @returns {Promise} { success, data: { qr_code_url, order_no }, message }
    */
   createPreRechargeOrder(params) {
     return request({
       url: '/api/v1/payments/admin/payments/web/create',
+      method: 'POST',
+      data: params,
+      needAuth: true
+    });
+  },
+
+  /**
+   * 创建预充值订单（线下支付）
+   * @param {Object} params 订单参数
+   * @returns {Promise} { success, data: { order_no }, message }
+   */
+  createOfflineRechargeOrder(params) {
+    return request({
+      url: '/api/v1/orders/createPreRechargeOrder',
       method: 'POST',
       data: params,
       needAuth: true
