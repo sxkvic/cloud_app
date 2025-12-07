@@ -115,7 +115,9 @@
       <view class="payment-title">选择支付方式</view>
       <view class="payment-methods">
         <view class="payment-item" bindtap="selectPaymentMethod" data-method="wechat">
-          <view class="payment-icon">💳</view>
+          <view class="payment-icon">
+            <text class="iconfont icon-weixinzhifu"></text>
+          </view>
           <view class="payment-info">
             <text class="payment-name">微信支付</text>
             <text class="payment-desc">推荐使用</text>
@@ -123,7 +125,9 @@
           <view class="payment-arrow">›</view>
         </view>
         <view class="payment-item" bindtap="selectPaymentMethod" data-method="qrcode">
-          <view class="payment-icon">📱</view>
+          <view class="payment-icon">
+            <text class="iconfont icon-erweimazhifu"></text>
+          </view>
           <view class="payment-info">
             <text class="payment-name">扫码支付</text>
             <text class="payment-desc">微信扫码</text>
@@ -131,7 +135,9 @@
           <view class="payment-arrow">›</view>
         </view>
         <view class="payment-item" bindtap="selectPaymentMethod" data-method="offline">
-          <view class="payment-icon">💰</view>
+          <view class="payment-icon">
+            <text class="iconfont icon-xianxiazhifu"></text>
+          </view>
           <view class="payment-info">
             <text class="payment-name">线下支付</text>
             <text class="payment-desc">联系工作人员</text>

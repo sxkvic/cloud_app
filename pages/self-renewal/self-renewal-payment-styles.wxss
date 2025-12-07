@@ -67,7 +67,23 @@
   font-size: 48rpx;
   margin-right: 24rpx;
   flex-shrink: 0;
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.payment-icon .iconfont {
+  font-size: 48rpx;
+  color: #fff;
+}
+
+.payment-item:nth-child(1) .payment-icon {
+  background: #10b981;
+}
+
+.payment-item:nth-child(2) .payment-icon {
+  background: #3b82f6;
+}
+
+.payment-item:nth-child(3) .payment-icon {
+  background: #f59e0b;
 }
 
 .payment-info {
