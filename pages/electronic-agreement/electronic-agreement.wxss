@@ -1,410 +1,332 @@
-/* pages/electronic-agreement/electronic-agreement.wxss */
+/* pages/business-registration/business-registration.wxss */
 
-/* 页面整体样式 */
-.electronic-agreement-page {
-  background-color: #f8fafc;
-  min-height: 100vh;
-  padding: 32rpx;
-  padding-bottom: 120rpx;
+/* 通用样式 - 模拟纸质文档 */
+page {
+  font-family: "SimSun", "Songti SC", "Microsoft YaHei", serif;
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: #000;
+  background-color: #525659;
 }
 
-/* 页面头部 */
-.page-header {
-  text-align: center;
-  margin-bottom: 40rpx;
+.container {
+  max-width: 700rpx;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 60rpx 70rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.3);
+  box-sizing: border-box;
+  min-height: 2000rpx;
 }
 
-.page-title {
-  display: block;
-  font-size: 48rpx;
-  font-weight: bold;
-  color: #1f2937;
-  margin-bottom: 16rpx;
+/* 顶部服务热线 */
+.service-line {
+  font-size: 18rpx;
+  margin-bottom: 8rpx;
+  color: #666;
 }
 
-.page-subtitle {
-  display: block;
-  font-size: 28rpx;
-  color: #6b7280;
-}
-
-/* 协议类型 */
-.agreement-types {
-  background: white;
-  border-radius: 20rpx;
-  padding: 32rpx;
-  margin-bottom: 32rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
-}
-
-.section-title {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #1f2937;
-  margin-bottom: 24rpx;
-}
-
-.type-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16rpx;
-}
-
-.type-item {
-  display: flex;
-  align-items: center;
-  padding: 24rpx;
-  border: 2rpx solid #e5e7eb;
-  border-radius: 16rpx;
-  transition: all 0.3s ease;
-}
-
-.type-item.selected {
-  border-color: #2563eb;
-  background: #f8fafc;
-}
-
-.type-item:active {
-  transform: translateX(8rpx);
-}
-
-.type-icon {
-  font-size: 48rpx;
-  margin-right: 20rpx;
-}
-
-.type-info {
-  flex: 1;
-}
-
-.type-name {
-  font-size: 30rpx;
-  font-weight: 600;
-  color: #1f2937;
+/* 顶部横线 */
+.header-line {
+  border-top: 3rpx solid #000;
   margin-bottom: 8rpx;
 }
 
-.type-description {
-  font-size: 26rpx;
-  color: #6b7280;
-  margin-bottom: 8rpx;
-}
-
-.type-status {
-  font-size: 24rpx;
-  padding: 4rpx 12rpx;
-  border-radius: 12rpx;
-  font-weight: 500;
-}
-
-.type-status.signed {
-  background: #d1fae5;
-  color: #10b981;
-}
-
-.type-status.pending {
-  background: #fef3c7;
-  color: #f59e0b;
-}
-
-.type-status.expired {
-  background: #fee2e2;
-  color: #ef4444;
-}
-
-.type-arrow {
-  font-size: 24rpx;
-  color: #9ca3af;
-}
-
-/* 协议内容 */
-.agreement-content {
-  background: white;
-  border-radius: 20rpx;
-  padding: 32rpx;
-  margin-bottom: 32rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
-}
-
-.content-header {
-  text-align: center;
-  margin-bottom: 32rpx;
-  padding-bottom: 24rpx;
-  border-bottom: 1rpx solid #e5e7eb;
-}
-
-.agreement-title {
-  display: block;
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #1f2937;
-  margin-bottom: 12rpx;
-}
-
-.agreement-version,
-.agreement-date {
-  display: block;
-  font-size: 24rpx;
-  color: #6b7280;
-  margin-bottom: 4rpx;
-}
-
-/* 协议条款 */
-.agreement-clauses {
-  margin-bottom: 32rpx;
-}
-
-.clause-item {
-  margin-bottom: 24rpx;
-}
-
-.clause-item:last-child {
-  margin-bottom: 0;
-}
-
-.clause-title {
-  font-size: 28rpx;
-  font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 12rpx;
-}
-
-.clause-content {
-  font-size: 26rpx;
-  color: #374151;
-  line-height: 1.6;
-  padding-left: 20rpx;
-  border-left: 3rpx solid #e5e7eb;
-}
-
-/* 重要提示 */
-.important-notice {
-  background: #fef3c7;
-  border: 1rpx solid #f59e0b;
-  border-radius: 12rpx;
-  padding: 20rpx;
-  margin-bottom: 32rpx;
-}
-
-.notice-title {
-  font-size: 26rpx;
-  font-weight: 600;
-  color: #92400e;
-  margin-bottom: 12rpx;
-}
-
-.notice-content {
+/* 头部元信息 */
+.header-meta {
   display: flex;
-  flex-direction: column;
-  gap: 8rpx;
-}
-
-.notice-item {
-  font-size: 24rpx;
-  color: #92400e;
+  justify-content: space-between;
+  font-size: 22rpx;
+  margin-bottom: 8rpx;
+  font-family: "SimHei", sans-serif;
+  flex-wrap: wrap;
   line-height: 1.5;
 }
 
-/* 签署操作 */
-.signature-section {
-  border-top: 1rpx solid #e5e7eb;
-  padding-top: 24rpx;
+.header-meta text {
+  margin-bottom: 3rpx;
 }
 
-.signature-info {
-  background: #f8fafc;
-  border-radius: 12rpx;
-  padding: 20rpx;
-  margin-bottom: 24rpx;
+/* 页面标题 */
+.page-title {
+  text-align: center;
+  font-size: 40rpx;
+  font-family: "SimHei", sans-serif;
+  margin: 25rpx 0 40rpx 0;
+  letter-spacing: 20rpx;
+  font-weight: bold;
 }
 
-.signature-item {
+/* 信息字段布局 */
+.info-block {
+  margin-bottom: 15rpx;
+}
+
+.row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12rpx;
+  margin-bottom: 8rpx;
+  gap: 15rpx;
 }
 
-.signature-item:last-child {
-  margin-bottom: 0;
-}
-
-.signature-label {
-  font-size: 26rpx;
-  color: #6b7280;
-  font-weight: 500;
-}
-
-.signature-value {
-  font-size: 26rpx;
-  color: #1f2937;
-  font-weight: 600;
-}
-
-/* 同意条款 */
-.agreement-checkbox {
-  margin-bottom: 24rpx;
-}
-
-.checkbox-item {
+.field {
   display: flex;
   align-items: flex-start;
-  gap: 12rpx;
 }
 
-.checkbox {
-  width: 36rpx;
-  height: 36rpx;
-  border: 2rpx solid #d1d5db;
-  border-radius: 8rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  margin-top: 4rpx;
+.label {
+  font-weight: bold;
+  font-family: "SimHei", sans-serif;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-size: 22rpx;
 }
 
-.checkbox.checked {
-  border-color: #2563eb;
-  background: #2563eb;
+.value {
+  font-family: "SimSun", serif;
+  border-bottom: 1rpx solid #000;
+  padding: 0 8rpx 2rpx 8rpx;
+  flex: 1;
+  min-width: 100rpx;
+  word-break: break-all;
+  font-size: 22rpx;
 }
 
-.checkbox-icon {
+/* 章节标题 */
+.section-title {
+  font-weight: bold;
   font-size: 24rpx;
-  color: white;
+  margin-top: 30rpx;
+  margin-bottom: 12rpx;
+  font-family: "SimHei", sans-serif;
+  line-height: 1.6;
+}
+
+/* 缩进块 */
+.indent-block {
+  margin-left: 30rpx;
+  line-height: 1.7;
+  text-align: justify;
+}
+
+/* 加粗文字 */
+.bold {
   font-weight: bold;
 }
 
-.checkbox-text {
-  font-size: 26rpx;
-  color: #374151;
-  line-height: 1.5;
-  flex: 1;
+/* 高亮文字 */
+.highlight {
+  font-weight: bold;
+  text-decoration: underline;
 }
 
-/* 签署按钮 */
-.signature-actions {
+/* 有序列表 */
+.ordered-list {
+  margin-top: 8rpx;
+}
+
+.list-item {
   display: flex;
-  gap: 16rpx;
+  margin-bottom: 8rpx;
+  line-height: 1.7;
+  align-items: flex-start;
 }
 
-.action-button {
+.list-number {
+  font-weight: bold;
+  margin-right: 8rpx;
+  flex-shrink: 0;
+  min-width: 40rpx;
+}
+
+.list-content {
   flex: 1;
-  height: 80rpx;
-  font-size: 28rpx;
-  font-weight: 600;
-  border: none;
-  border-radius: 20rpx;
-  transition: all 0.3s ease;
+  text-align: justify;
 }
 
-.action-button.secondary {
-  background: #f3f4f6;
-  color: #374151;
-}
-
-.action-button.primary {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  color: white;
-  box-shadow: 0 8rpx 24rpx rgba(37, 99, 235, 0.3);
-}
-
-.action-button:disabled {
-  background: #d1d5db;
-  color: #9ca3af;
-  box-shadow: none;
-}
-
-.action-button:disabled::after {
-  border: none;
-}
-
-.action-button:active:not(:disabled) {
-  transform: scale(0.98);
-}
-
-/* 签署历史 */
-.signature-history {
-  background: white;
-  border-radius: 20rpx;
-  padding: 32rpx;
-  margin-bottom: 32rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
-}
-
-.history-list {
+/* 子列表 */
+.sub-list {
   display: flex;
   flex-direction: column;
-  gap: 16rpx;
+  margin-top: 6rpx;
+  margin-left: 25rpx;
 }
 
-.history-item {
+.sub-item {
+  margin-bottom: 5rpx;
+  line-height: 1.6;
+  text-align: justify;
+}
+
+.sub-note {
+  font-size: 20rpx;
+  margin-top: 8rpx;
+  color: #333;
+  line-height: 1.6;
+  text-align: justify;
+}
+
+/* 分割线 */
+.divider-line {
+  border-top: 2rpx dashed #ccc;
+  margin: 30rpx 0;
+}
+
+/* 产品详情 */
+.product-detail {
+  margin-top: 15rpx;
+  line-height: 1.7;
+  text-align: justify;
+}
+
+/* 表格样式 */
+.table-container {
+  width: 100%;
+  margin: 20rpx 0;
+  border: 2rpx solid #000;
+}
+
+.table-row {
+  display: flex;
+  border-bottom: 2rpx solid #000;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-header {
+  background-color: transparent;
+}
+
+.table-header .table-cell {
+  font-weight: bold;
+  text-align: center;
+}
+
+.table-cell {
+  flex: 1;
+  padding: 10rpx;
+  border-right: 2rpx solid #000;
+  text-align: left;
+}
+
+.table-cell:last-child {
+  border-right: none;
+}
+
+/* 备注列表 */
+.remark-list {
+  line-height: 1.8;
+}
+
+/* 温馨提示 */
+.tips-section {
+  margin-top: 30rpx;
+  font-size: 20rpx;
+  border-top: 2rpx solid #000;
+  padding-top: 15rpx;
+  line-height: 1.7;
+  text-align: justify;
+}
+
+/* 红色提示 */
+.red-alert {
+  color: #d00;
+  font-weight: bold;
+  margin-top: 30rpx;
+  border: 2rpx dashed #d00;
+  padding: 15rpx;
+  line-height: 1.7;
+  text-align: justify;
+}
+
+/* 签署区 */
+.signature-area {
+  margin-top: 60rpx;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 20rpx;
-  background: #f9fafb;
-  border-radius: 12rpx;
+  align-items: flex-end;
+  gap: 30rpx;
 }
 
-.history-info {
+.sign-box {
   flex: 1;
 }
 
-.history-name {
-  font-size: 28rpx;
-  font-weight: 500;
-  color: #1f2937;
-  margin-bottom: 4rpx;
-}
-
-.history-date {
-  font-size: 24rpx;
-  color: #6b7280;
-}
-
-.history-status {
-  padding: 6rpx 12rpx;
-  border-radius: 12rpx;
+.sign-line {
+  margin-bottom: 40rpx;
+  border-bottom: 1rpx solid #000;
+  padding-bottom: 8rpx;
+  min-height: 35rpx;
   font-size: 22rpx;
-  font-weight: 500;
 }
 
-.history-status.signed {
-  background: #d1fae5;
-  color: #10b981;
-}
-
-.history-status.pending {
-  background: #fef3c7;
-  color: #f59e0b;
-}
-
-/* 底部操作 */
-.bottom-actions {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: white;
-  padding: 32rpx;
-  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.1);
-  border-top: 1rpx solid #e5e7eb;
-  display: flex;
-  gap: 24rpx;
-}
-
-/* 响应式设计 */
-@media (max-width: 375px) {
-  .electronic-agreement-page {
-    padding: 24rpx;
+/* 手机端适配 */
+@media screen and (max-width: 768rpx) {
+  page {
+    padding: 0;
+    background-color: #fff;
+    font-size: 24rpx;
   }
   
-  .agreement-types,
-  .agreement-content,
-  .signature-history {
-    padding: 24rpx;
+  .container {
+    width: 100%;
+    padding: 25rpx;
+    box-shadow: none;
+  }
+
+  .page-title {
+    font-size: 34rpx;
+    margin: 18rpx 0 35rpx 0;
+    letter-spacing: 15rpx;
+  }
+
+  .header-meta {
+    flex-direction: column;
+    gap: 3rpx;
+    font-size: 20rpx;
+  }
+  
+  .row {
+    flex-direction: column;
+    margin-bottom: 0;
+    gap: 0;
+  }
+  
+  .field {
+    margin-bottom: 8rpx;
+    width: 100%;
+  }
+  
+  .value {
+    width: 100%;
+    word-break: break-all;
+  }
+
+  .indent-block {
+    margin-left: 15rpx;
+  }
+
+  .signature-area {
+    flex-direction: column;
+    gap: 30rpx;
+  }
+  
+  .sign-box {
+    width: 100%;
+  }
+
+  .sub-list {
+    margin-left: 15rpx;
+  }
+
+  .section-title {
+    font-size: 23rpx;
+    margin-top: 25rpx;
+  }
+
+  .service-line {
+    font-size: 16rpx;
   }
 }
-
-

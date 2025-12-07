@@ -1,136 +1,227 @@
 <!--pages/electronic-agreement/electronic-agreement.wxml-->
-<view class="electronic-agreement-page">
-  <!-- 页面头部 -->
-  <view class="page-header">
-    <text class="page-title">电子协议</text>
-    <text class="page-subtitle">查看和签署相关协议</text>
+<view class="container">
+  
+  <!-- 顶部服务热线 -->
+  <view class="service-line">服务热线 400-96777-26 &nbsp;&nbsp; 关注云网宽带微信小程序</view>
+  
+  <!-- 顶部横线 -->
+  <view class="header-line"></view>
+  
+  <!-- 头部元信息 -->
+  <view class="header-meta">
+    <text>订单编号：{{orderData.orderNo}}</text>
+    <text>第 {{orderData.currentPage}} 页 (共 {{orderData.totalPages}} 页)</text>
+    <text>受理日期：{{orderData.acceptDate}}</text>
   </view>
 
-  <!-- 协议类型选择 -->
-  <view class="agreement-types">
-    <view class="section-title">协议类型</view>
-    <view class="type-list">
-      <view 
-        class="type-item {{ selectedType === item.id ? 'selected' : '' }}"
-        wx:for="{{ agreementTypes }}"
-        wx:key="id"
-        bindtap="selectAgreementType"
-        data-id="{{ item.id }}"
-      >
-        <view class="type-icon">{{ item.icon }}</view>
-        <view class="type-info">
-          <view class="type-name">{{ item.name }}</view>
-          <view class="type-description">{{ item.description }}</view>
-          <view class="type-status {{ item.status }}">{{ item.statusText }}</view>
-        </view>
-        <view class="type-arrow">></view>
+  <!-- 页面标题 -->
+  <view class="page-title">业 务 登 记 单</view>
+
+  <!-- 客户信息区 -->
+  <view class="info-block">
+    <view class="row">
+      <view class="field" style="width: 60%;">
+        <text class="label">客户名称：</text>
+        <text class="value">{{orderData.customerName}}</text>
+      </view>
+      <view class="field" style="width: 35%;">
+        <text class="label">联系电话：</text>
+        <text class="value">{{orderData.contactPhone}}</text>
+      </view>
+    </view>
+    <view class="row">
+      <view class="field" style="width: 40%;">
+        <text class="label">证件类型：</text>
+        <text class="value">{{orderData.idType}}</text>
+      </view>
+      <view class="field" style="width: 55%;">
+        <text class="label">证件号码：</text>
+        <text class="value">{{orderData.idNumber}}</text>
+      </view>
+    </view>
+    <view class="row">
+      <view class="field" style="width: 100%;">
+        <text class="label">证件地址：</text>
+        <text class="value">{{orderData.idAddress}}</text>
+      </view>
+    </view>
+    <view class="row">
+      <view class="field" style="width: 100%;">
+        <text class="label">业务订购单：</text>
+        <text class="value">{{orderData.businessOrderNo}}</text>
       </view>
     </view>
   </view>
 
-  <!-- 协议内容 -->
-  <view class="agreement-content" wx:if="{{ selectedType }}">
-    <view class="content-header">
-      <text class="agreement-title">{{ currentAgreement.title }}</text>
-      <text class="agreement-version">版本：{{ currentAgreement.version }}</text>
-      <text class="agreement-date">更新时间：{{ currentAgreement.updateDate }}</text>
-    </view>
-
-    <!-- 协议条款 -->
-    <view class="agreement-clauses">
-      <view 
-        class="clause-item"
-        wx:for="{{ currentAgreement.clauses }}"
-        wx:key="index"
-      >
-        <view class="clause-title">{{ item.title }}</view>
-        <view class="clause-content">{{ item.content }}</view>
+  <!-- 登记信息 -->
+  <view class="section-title">登记信息: 一、【业务订购】 {{orderData.packageName}}</view>
+  
+  <view class="indent-block">
+    <text class="bold">业务说明：</text>
+    <view class="ordered-list">
+      <view class="list-item">
+        <text class="list-number">一、</text>
+        <text class="list-content"><text class="bold">月基本费：</text>{{orderData.packageSpeed}}云宽带原价<text class="highlight">{{orderData.originalPrice}}元/月</text>，礼包有效期内优惠至<text class="highlight">{{orderData.discountPrice}}元/年</text>。</text>
       </view>
-    </view>
-
-    <!-- 重要提示 -->
-    <view class="important-notice">
-      <view class="notice-title">⚠️ 重要提示</view>
-      <view class="notice-content">
-        <text class="notice-item">• 请仔细阅读协议条款，如有疑问请联系客服</text>
-        <text class="notice-item">• 签署后即表示您同意并遵守协议内容</text>
-        <text class="notice-item">• 协议具有法律效力，请慎重考虑</text>
+      <view class="list-item">
+        <text class="list-number">二、</text>
+        <text class="list-content"><text class="bold">基础内容包含：</text>（一）1 条支持下行{{orderData.packageSpeed}}基础宽带；1部云路由功能。</text>
       </view>
-    </view>
-
-    <!-- 签署操作 -->
-    <view class="signature-section">
-      <view class="signature-info">
-        <view class="signature-item">
-          <text class="signature-label">签署人</text>
-          <text class="signature-value">王女士</text>
-        </view>
-        <view class="signature-item">
-          <text class="signature-label">身份证号</text>
-          <text class="signature-value">138****8888</text>
-        </view>
-        <view class="signature-item">
-          <text class="signature-label">签署时间</text>
-          <text class="signature-value">{{ currentTime }}</text>
-        </view>
-      </view>
-
-      <!-- 同意条款 -->
-      <view class="agreement-checkbox">
-        <view class="checkbox-item" bindtap="toggleAgreement">
-          <view class="checkbox {{ isAgreed ? 'checked' : '' }}">
-            <text class="checkbox-icon">{{ isAgreed ? '✓' : '' }}</text>
+      <view class="list-item">
+        <text class="list-number">三、</text>
+        <view class="list-content">
+          <text class="bold">可选内容包括：</text>
+          <view class="sub-list">
+            <text class="sub-item">（一）加装电话卡： 套餐自选， / 元/张/月。</text>
+            <text class="sub-item">（二）可选最高20元云盘服务。</text>
+            <text class="sub-item">（三）固定电话：18元/月/部。</text>
           </view>
-          <text class="checkbox-text">我已阅读并同意《{{ currentAgreement.title }}》的所有条款</text>
-        </view>
-      </view>
-
-      <!-- 签署按钮 -->
-      <view class="signature-actions">
-        <button 
-          class="action-button secondary" 
-          bindtap="downloadAgreement"
-        >
-          下载协议
-        </button>
-        <button 
-          class="action-button primary" 
-          disabled="{{ !canSign }}"
-          bindtap="signAgreement"
-        >
-          确认签署
-        </button>
-      </view>
-    </view>
-  </view>
-
-  <!-- 签署历史 -->
-  <view class="signature-history">
-    <view class="section-title">签署历史</view>
-    <view class="history-list">
-      <view 
-        class="history-item"
-        wx:for="{{ signatureHistory }}"
-        wx:key="id"
-      >
-        <view class="history-info">
-          <view class="history-name">{{ item.name }}</view>
-          <view class="history-date">{{ item.signDate }}</view>
-        </view>
-        <view class="history-status {{ item.status }}">
-          {{ item.statusText }}
+          <text class="sub-note">以上可选内容会随着云网公司政策变动、业务调整、合作方能力等情况进行调整，以礼包受理时可选范围为准。</text>
         </view>
       </view>
     </view>
   </view>
 
-  <!-- 底部操作 -->
-  <view class="bottom-actions">
-    <button class="action-button secondary" bindtap="contactService">
-      联系客服
-    </button>
-    <button class="action-button primary" bindtap="viewAllAgreements">
-      查看全部
-    </button>
+  <!-- 礼包业务规则 -->
+  <view class="section-title">四、礼包业务规则：</view>
+  <view class="indent-block">
+    <text>（一）订购规则：用户订购礼包立即生效，详见对应商品业务说明。\n</text>
+    <text>（二）变更、退订规则：礼包退订次月生效，退订当月已产生的礼包费用不退。退订后剩余商品按商品业务说明内收费规则及约定期限执行，详见对应商品业务说明。</text>
   </view>
+
+  <!-- 协议期及违约规则 -->
+  <view class="section-title">五、协议期及违约规则：</view>
+  <view class="indent-block">
+    <text>（一）礼包协议期{{orderData.contractMonths}}个完整自然月，如双方在协议期届满前30日均未提出异议的，到期自动续展，每次续展期限同上述协议期。\n</text>
+    <text>（二）若用户在承诺的协议期内发生停机、离网、提前终止、变更礼包等任何方式导致礼包解体、退订的情况，应向云网公司支付违约金。违约金按照 <text class="bold">"*元/月×用户已履行月份数"</text> 计算。\n</text>
+    <text>（三）若用户退订带有协议条款的可选商品，则按照各商品的合约要求内容收取违约金。</text>
+  </view>
+
+  <!-- 其他说明 -->
+  <view class="section-title">六、其他说明：</view>
+  <view class="indent-block">
+    <text>（一）您所办理的礼包为固移融合礼包，礼包内各商品地位平等，如发生商品变更会影响礼包存在或其他商品业务的使用。\n</text>
+    <text>（二）包年礼包办理当月立即生效。\n</text>
+    <text>（三）协议期满后，礼包年基本费继续有效，如双方无异议有效期自动续展。\n</text>
+    <text>（四）如用户欠费，将暂停礼包内的移动业务、宽带等业务服务，直至用户缴清费用。\n</text>
+    <text>（五）若当前礼包已下架，则变更后无法回退办理原礼包，可选择办理其他在售礼包。\n</text>
+    <text>（六）老用户迁改至新礼包后，如原业务内容则失效，新包年次日生效。\n</text>
+    <text>（七）礼包内商品若有单独签订的协议，若发生商品的退订、拆机、离网、提前终止，会涉及商品合约的违约金、终端折旧费、终端赔偿费等其他费用，收取规则详见对应商品信息。\n</text>
+    <text>（八）云网有权提前30天通过用户电话或公告的方式通知用户终止本业务，最终解释权归云联网公司。</text>
+  </view>
+
+  <!-- 分割线 -->
+  <view class="divider-line"></view>
+
+  <!-- 产品信息 -->
+  <view class="section-title">产品信息：</view>
+  <view class="indent-block">
+    <text>宽带：<text class="bold">{{orderData.broadbandNo}}</text>(新开户)【新办】基础宽带</text>
+  </view>
+
+  <view class="indent-block product-detail">
+    <text class="bold">【订购】{{orderData.packageSpeed}}宽带(立即生效)\n</text>
+    <text>业务说明：有线宽带{{orderData.packageSpeed}}不限时使用费{{orderData.originalPrice}}元/月。下行最高可达速率为<text class="bold">{{orderData.downloadSpeed}}</text>、上行最高可达速率<text class="bold">{{orderData.uploadSpeed}}</text>。如客户欠费，将对有线宽带业务暂停服务。云网提供宽带上网终端，产权归云网公司所有，拆机时需归还；如上网终端损坏或丢失，需赔偿终端违约金，具体金额对照按照官网终端价格。</text>
+  </view>
+
+  <view class="indent-block product-detail">
+    <text class="bold">【订购】宽带光猫调测费(立即生效)\n</text>
+    <text>业务说明：用户新装宽带，100元调测费，优惠至 <text class="bold">0元</text>。设备产权归云网所有，宽带拆机时应将上网设备归还云网，如遗失或损坏需照价赔偿。</text>
+  </view>
+
+  <view class="indent-block product-detail">
+    <text class="bold">【订购】全光主路由租用包(立即生效)\n</text>
+    <text>1、全光主路由租用包/{{orderData.contractMonths}}个月，标准资费60元/月，优惠至0元/月，包含1台全光主路由终端。\n</text>
+    <text>2、若用户在承诺的协议期内发生停机、离网、退订套餐、提前终止合约，应支付违约金。违约金按每月20元/月*已优惠月份数计算。\n</text>
+    <text>3、协议期满，用户如不退订可继续租用该终端。\n</text>
+    <text>4、设备产权归属云网公司。用户离网时需归还设备。如终端设备被人为损坏或未能归还，需赔偿800元终端款。</text>
+  </view>
+
+  <view class="indent-block product-detail">
+    <text class="bold">【订购】上门服务安装调测（合约）(立即生效)\n</text>
+    <text>业务说明：\n</text>
+    <text>1、用户办理云网宽带等业务，并承诺持续在网{{orderData.contractMonths}}个月（完整月），可享受到点服务（1信息点）费用优惠。\n</text>
+    <text>2、调测到点服务（1信息点），价值300元，为用户提供1个光路由器所在位置的网络布线服务。\n</text>
+    <text>3、若用户办理的宽带或业务在承诺的合约期内发生停机、拆机、离网、退订套餐、提前终止合约，应向电信公司支付违约金。违约金为"已优惠金额（300元）"。</text>
+  </view>
+
+  <!-- 分割线 -->
+  <view class="divider-line"></view>
+
+  <!-- 产品属性 -->
+  <view class="section-title">产品属性：</view>
+  <view class="indent-block">
+    <text>宽带：{{orderData.broadbandNo}}： 上行最高可达速率：{{orderData.uploadSpeed}}；下行最高可达速率：{{orderData.downloadSpeed}}\n</text>
+    <text>智慧路由网关：{{orderData.gatewayNo}}： 产权归属：云网；是否上门安装：是</text>
+  </view>
+
+  <!-- 其他信息 -->
+  <view class="section-title">其他信息：</view>
+  <view class="indent-block">
+    <text>宽带：{{orderData.broadbandNo}}：【装机地址】{{orderData.installAddress}}</text>
+  </view>
+
+  <!-- 费用明细 -->
+  <view class="section-title">1、本次订单费用</view>
+  <view class="indent-block">
+    <text>营收_手工预存款：{{orderData.prepayAmount}}元 &nbsp;&nbsp; 营收_调测费：{{orderData.debugFee}}元 &nbsp;&nbsp; <text class="bold">实付款：{{orderData.actualPayment}}元</text></text>
+  </view>
+
+  <view class="section-title">2、月使用费付费方式</view>
+  <view class="indent-block">
+    <text>【付费模式】预付费 &nbsp;&nbsp; 【关联号码】宽带：{{orderData.broadbandNo}}；</text>
+  </view>
+
+  <view class="section-title">3、礼包标配应收</view>
+  <view class="indent-block">
+    <text>礼包{{orderData.packageName}}内宽带商品基本资费合计{{orderData.originalPrice}}元/月，本次礼包一次性订购后礼包标配应收{{orderData.discountPrice}}元/年\n</text>
+    <text class="sub-note">说明：礼包标配应收金额不包含用户订购的其他可选业务使用费用。</text>
+  </view>
+
+  <!-- 物品清单 -->
+  <view class="section-title">物品清单：</view>
+  <view class="table-container">
+    <view class="table-row table-header">
+      <view class="table-cell">物品名称</view>
+      <view class="table-cell">数量</view>
+    </view>
+    <view class="table-row" wx:for="{{orderData.itemList}}" wx:key="index">
+      <view class="table-cell">{{item.name}}</view>
+      <view class="table-cell">{{item.quantity}}</view>
+    </view>
+  </view>
+
+  <!-- 备注 -->
+  <view class="section-title">备 注：</view>
+  <view class="indent-block remark-list">
+    <text>1. 宽带：{{orderData.broadbandNo}} 预约装机时间：{{orderData.appointmentTime}} 联系人：{{orderData.contactPerson}} 联系电话：{{orderData.contactPhone}}\n</text>
+    <text>2. 智慧路由网关：{{orderData.gatewayNo}} 预约装机时间：{{orderData.appointmentTime}} 联系人：{{orderData.contactPerson}} 联系电话：{{orderData.contactPhone}}</text>
+  </view>
+
+  <!-- 温馨提示 -->
+  <view class="tips-section">
+    <text class="bold">温馨提示：\n</text>
+    <text>1、自主查询或缴费：您可以"云网宽带"微信小程序渠道自助查询业务资费或缴费。\n</text>
+    <text>2、为保障对您的及时服务，您会收到电话、电子邮件、公开媒体等方式发送的云网服信息、缴费等提醒。\n</text>
+    <text>3、套餐变更相关关注事项：若用户原套餐为已停售套餐，一旦新套餐办理成功，则不可迁回原套餐。</text>
+  </view>
+
+  <!-- 红色提示 -->
+  <view class="red-alert">
+    <text>本人同意所办理的业务采用电子协议模式。\n</text>
+    <text>本人确认上述资料属实，并已详尽阅读及同意本《业务登记单》</text>
+  </view>
+
+  <!-- 签署区 -->
+  <view class="signature-area">
+    <view class="sign-box">
+      <view class="sign-line">经办人证件类型：</view>
+      <view class="sign-line">经办人证件号码：</view>
+      <view class="sign-line">申请人/经办人(签字)：</view>
+    </view>
+    <view class="sign-box">
+      <view class="sign-line">业务受理工号(签章)：</view>
+    </view>
+  </view>
+
 </view>

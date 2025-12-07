@@ -57,13 +57,47 @@ page {
   align-items: flex-end;
   padding: 20rpx 40rpx 0;
   color: #fff;
+  gap: 20rpx;
 }
 
-.label { font-size: 24rpx; opacity: 0.8; margin-bottom: 8rpx; display: block; }
-.phone { font-size: 40rpx; font-weight: bold; letter-spacing: 2rpx; }
-.device { font-size: 32rpx; font-weight: 600; }
+.info-left {
+  flex: 1;
+  min-width: 0;
+  max-width: 60%;
+}
 
-.info-right { text-align: right; }
+.info-right {
+  flex-shrink: 0;
+  text-align: right;
+  max-width: 35%;
+}
+
+.label { 
+  font-size: 24rpx; 
+  opacity: 0.8; 
+  margin-bottom: 8rpx; 
+  display: block; 
+  white-space: nowrap;
+}
+
+.phone { 
+  font-size: 40rpx; 
+  font-weight: bold; 
+  letter-spacing: 2rpx;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.device { 
+  font-size: 32rpx; 
+  font-weight: 600;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 /* 加载状态 */
 .loading-wrapper {
