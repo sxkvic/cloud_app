@@ -200,6 +200,26 @@ const API = {
     });
   },
 
+  /**
+   * 创建线下支付订单
+   * @param {Object} orderData 订单数据
+   * @param {Number} orderData.customer_id 客户ID
+   * @param {String} orderData.device_no 设备号
+   * @param {Number} orderData.package_id 套餐ID
+   * @param {Number} orderData.orderType 订单类型（1=新装）
+   * @param {String} orderData.payment_type 支付方式（3=线下支付）
+   * @param {String} orderData.remark 备注（可选）
+   * @returns {Promise} { success, data: { orderId, orderNo }, message }
+   */
+  createOfflineOrder(orderData) {
+    return request({
+      url: '/api/v1/orders/createOrder',
+      method: 'POST',
+      data: orderData,
+      needAuth: true
+    });
+  },
+
   // ==================== 账单管理模块 ====================
 
   /**

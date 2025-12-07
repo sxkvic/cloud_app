@@ -391,8 +391,8 @@ Page({
           await this.handleQrcodePayment(pendingPackageInfo, pendingCustomerInfo);
           break;
         case 'offline':
-          // 线下支付 - 暂未开放
-          message.info('线下支付功能暂未开放，请选择其他支付方式');
+          // 线下支付
+          await this.handleOfflinePayment(pendingPackageInfo, pendingCustomerInfo);
           break;
         default:
           message.error('未知的支付方式');
@@ -406,6 +406,54 @@ Page({
         pendingPackageInfo: null,
         pendingCustomerInfo: null
       });
+    }
+  },
+
+  // 线下支付
+  async handleOfflinePayment(packageInfo, customerInfo) {
+    console.log('========== 线下支付 ==========');
+    
+    try {
+      wx.showLoading({ title: '创建订单中...' });
+      
+      // 调用线下支付订单接口
+      const orderData = {
+        payment_type: 3,  // 线下支付
+        customer_id: customerInfo.id || customerInfo.customer_id,
+        device_no: this.data.deviceCode,
+        package_id: packageInfo.id,
+        orderType: 1,  // 套餐订购
+        remark: ""
+      };
+      
+      console.log('创建线下支付订单参数:', orderData);
+      const result = await API.createOfflineOrder(orderData);
+      console.log('线下支付订单创建成功:', result);
+      
+      wx.hideLoading();
+      
+      if (result.success && result.data) {
+        const orderNo = result.data.order_no || result.data.orderNo || result.data.orderId;
+        
+        // 显示成功提示
+        wx.showModal({
+          title: '订单创建成功',
+          content: `套餐：${packageInfo.name}\n月费：¥${packageInfo.price}\n订单号：${orderNo}\n\n请联系工作人员完成线下付款。`,
+          showCancel: false,
+          confirmText: '知道了',
+          success: () => {
+            // 跳转到首页
+            navigation.switchTab('/pages/home/home');
+          }
+        });
+      } else {
+        throw new Error(result.message || '创建订单失败');
+      }
+      
+    } catch (error) {
+      wx.hideLoading();
+      console.error('线下支付订单创建失败:', error);
+      message.error('创建订单失败: ' + (error.message || '未知错误'));
     }
   },
 
