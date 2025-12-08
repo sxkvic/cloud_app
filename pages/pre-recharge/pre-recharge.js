@@ -237,6 +237,10 @@ Page({
           // 微信二维码支付
           await this.handleQrcodePayment(customerInfo, deviceInfo, rechargeAmount, remark);
           break;
+        case 'alipay':
+          // 支付宝支付
+          await this.handleAlipayPayment(customerInfo, deviceInfo, rechargeAmount, remark);
+          break;
         case 'offline':
           // 线下支付
           await this.handleOfflinePayment(customerInfo, deviceInfo, rechargeAmount, remark);
@@ -442,6 +446,66 @@ Page({
       console.log('二维码生成成功');
     } catch (error) {
       console.error('二维码生成失败:', error);
+    }
+  },
+
+  // 支付宝支付
+  async handleAlipayPayment(customerInfo, deviceInfo, rechargeAmount, remark) {
+    console.log('========== 支付宝支付（预充值） ==========');
+    
+    try {
+      // 显示二维码弹窗（加载状态）
+      this.setData({
+        showQrcodeModal: true,
+        qrcodeLoading: true,
+        qrcodeError: '',
+        qrcodeUrl: '',
+        qrcodeOrderNo: ''
+      });
+      
+      // 创建预充值订单（支付宝支付）
+      const orderData = {
+        orderType: 2, // 2=预充值
+        device_no: this.data.deviceCode,
+        package_id: '',
+        customer_id: customerInfo.customer?.id || customerInfo.id,
+        device_id: deviceInfo?.id || customerInfo.device_info?.id || customerInfo.device?.id,
+        payment_type: 2, // 支付宝支付
+        recharge_amount: rechargeAmount,
+        remark: remark || ''
+      };
+
+      console.log('创建支付宝预充值订单参数:', orderData);
+      const orderResponse = await API.createPreRechargeOrder(orderData);
+      console.log('支付宝订单创建成功:', orderResponse);
+      
+      if (orderResponse.success && orderResponse.data && orderResponse.data.qr_code_url) {
+        const qrCodeUrl = orderResponse.data.qr_code_url;
+        const orderNo = orderResponse.data.order_no;
+        
+        console.log('支付宝二维码链接:', qrCodeUrl);
+        console.log('订单号:', orderNo);
+        
+        this.setData({
+          qrcodeUrl: qrCodeUrl,
+          qrcodeOrderNo: orderNo,
+          qrcodeLoading: false,
+          qrcodeTitle: '支付宝扫码支付' // 设置标题为支付宝
+        });
+        
+        // 生成二维码
+        await this.generateQRCode(qrCodeUrl);
+      } else {
+        throw new Error(orderResponse.message || '未获取到支付链接');
+      }
+      
+    } catch (error) {
+      console.error('生成支付宝二维码失败:', error);
+      this.setData({
+        qrcodeLoading: false,
+        qrcodeError: error.message || '生成二维码失败，请重试'
+      });
+      message.error('生成支付宝二维码失败: ' + (error.message || '未知错误'));
     }
   },
 

@@ -75,15 +75,19 @@
 }
 
 .payment-item:nth-child(1) .payment-icon {
-  background: #10b981;
+  background: #10b981; /* 微信支付 - 绿色 */
 }
 
 .payment-item:nth-child(2) .payment-icon {
-  background: #3b82f6;
+  background: #3b82f6; /* 二维码支付 - 蓝色 */
 }
 
 .payment-item:nth-child(3) .payment-icon {
-  background: #f59e0b;
+  background: #1677ff; /* 支付宝支付 - 支付宝蓝 */
+}
+
+.payment-item:nth-child(4) .payment-icon {
+  background: #f59e0b; /* 线下支付 - 橙色 */
 }
 
 .payment-info {

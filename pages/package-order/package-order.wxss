@@ -556,6 +556,10 @@
   background: #3b82f6;
 }
 
+.alipay-icon {
+  background: #1677ff;
+}
+
 .offline-icon {
   background: #f59e0b;
 }

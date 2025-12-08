@@ -134,6 +134,16 @@
           </view>
           <view class="payment-arrow">›</view>
         </view>
+        <view class="payment-item" bindtap="selectPaymentMethod" data-method="alipay">
+          <view class="payment-icon">
+            <text class="iconfont icon-zhifubaozhifu"></text>
+          </view>
+          <view class="payment-info">
+            <text class="payment-name">支付宝支付</text>
+            <text class="payment-desc">支付宝扫码</text>
+          </view>
+          <view class="payment-arrow">›</view>
+        </view>
         <view class="payment-item" bindtap="selectPaymentMethod" data-method="offline">
           <view class="payment-icon">
             <text class="iconfont icon-xianxiazhifu"></text>
@@ -152,7 +162,7 @@
   <view class="qrcode-modal" wx:if="{{showQrcodeModal}}" catchtap="closeQrcodeModal">
     <view class="qrcode-content" catchtap="stopQrcodePropagation">
       <view class="qrcode-header">
-        <text class="qrcode-title">微信扫码支付</text>
+        <text class="qrcode-title">{{qrcodeTitle || '微信扫码支付'}}</text>
         <text class="close-btn" catchtap="closeQrcodeModal">✕</text>
       </view>
       
@@ -181,7 +191,7 @@
           </view>
           
           <view class="qrcode-tips">
-            <text class="tips-title">请使用微信扫码支付</text>
+            <text class="tips-title">{{qrcodeTitle ? (qrcodeTitle.indexOf('支付宝') > -1 ? '请使用支付宝扫码支付' : '请使用微信扫码支付') : '请使用微信扫码支付'}}</text>
             <text class="tips-desc">订单号：{{qrcodeOrderNo}}</text>
           </view>
           

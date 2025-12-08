@@ -136,6 +136,10 @@ Page({
           // 微信二维码支付
           await this.handleQrcodePayment(packageInfo, customerInfo);
           break;
+        case 'alipay':
+          // 支付宝支付
+          await this.handleAlipayPayment(packageInfo, customerInfo);
+          break;
         case 'offline':
           // 线下支付
           await this.handleOfflinePayment(packageInfo, customerInfo);
@@ -300,6 +304,55 @@ Page({
       }, this);
     } catch (error) {
       console.error('二维码生成失败:', error);
+    }
+  },
+
+  // 支付宝支付
+  async handleAlipayPayment(packageInfo, customerInfo) {
+    console.log('========== 支付宝支付（续费） ==========');
+    
+    try {
+      this.setData({
+        showQrcodeModal: true,
+        qrcodeLoading: true,
+        qrcodeError: '',
+        qrcodeUrl: '',
+        qrcodeOrderNo: ''
+      });
+      
+      const orderData = {
+        payment_type: 2, // 支付宝支付
+        customer_id: customerInfo.customer?.id || customerInfo.id,
+        device_no: this.data.deviceCode,
+        package_id: packageInfo.package_id,
+        orderType: 1,
+        remark: "小程序续费"
+      };
+      
+      const result = await API.createOrder(orderData);
+      
+      if (result.success && result.data && result.data.qr_code_url) {
+        const qrCodeUrl = result.data.qr_code_url;
+        const orderNo = result.data.order_no;
+        
+        this.setData({
+          qrcodeUrl: qrCodeUrl,
+          qrcodeOrderNo: orderNo,
+          qrcodeLoading: false,
+          qrcodeTitle: '支付宝扫码支付'
+        });
+        
+        await this.generateQRCode(qrCodeUrl);
+      } else {
+        throw new Error(result.message || '未获取到支付链接');
+      }
+    } catch (error) {
+      console.error('生成支付宝二维码失败:', error);
+      this.setData({
+        qrcodeLoading: false,
+        qrcodeError: error.message || '生成二维码失败，请重试'
+      });
+      message.error('生成支付宝二维码失败');
     }
   },
 

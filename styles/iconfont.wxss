@@ -1,14 +1,14 @@
 /* 阿里巴巴图标库样式文件 */
 /* 项目ID: 5075390 */
-/* 在线链接: //at.alicdn.com/t/c/font_5075390_fbqfpx7ionr.css */
-/* 更新时间: 2025-12-07 19:57 */
+/* 在线链接: //at.alicdn.com/t/c/font_5075390_upuai03s0tn.css */
+/* 更新时间: 2025-12-08 19:32 */
 
 /* 基础图标字体 */
 @font-face {
   font-family: "iconfont"; /* Project id 5075390 */
-  src: url('//at.alicdn.com/t/c/font_5075390_fbqfpx7ionr.woff2?t=1765108595228') format('woff2'),
-       url('//at.alicdn.com/t/c/font_5075390_fbqfpx7ionr.woff?t=1765108595228') format('woff'),
-       url('//at.alicdn.com/t/c/font_5075390_fbqfpx7ionr.ttf?t=1765108595228') format('truetype');
+  src: url('//at.alicdn.com/t/c/font_5075390_upuai03s0tn.woff2?t=1733658720000') format('woff2'),
+       url('//at.alicdn.com/t/c/font_5075390_upuai03s0tn.woff?t=1733658720000') format('woff'),
+       url('//at.alicdn.com/t/c/font_5075390_upuai03s0tn.ttf?t=1733658720000') format('truetype');
 }
 
 /* 图标基础类 */
@@ -162,6 +162,16 @@
   content: "\e643";
 }
 
+/* 支付宝支付 ⭐️ 新增 */
+.icon-zhifubaozhifu:before {
+  content: "\e607";
+}
+
+/* 支付宝图标别名 */
+.icon-zhifubao:before {
+  content: "\e607";
+}
+
 /* 线下支付 */
 .icon-xianxiazhifu:before {
   content: "\e6ca";
@@ -174,8 +184,8 @@
 .icon-tuiding:before { content: "\e60d"; } /* 业务退订 */
 
 /* 
-  ✅ 已更新到最新版本 (font_5075390_fbqfpx7ionr)
-  - 更新时间: 2025-12-07 19:57
+  ✅ 已更新到最新版本 (font_5075390_upuai03s0tn)
+  - 更新时间: 2025-12-08 19:32
   - 包含所有项目图标的正确编码
   
   功能图标:
@@ -188,8 +198,9 @@
   - 购物车图标: icon-gouwuche (\e602)
   - 账单图标: icon-zhangdan (\e610)
   
-  ⭐️ 支付方式图标 (新增):
+  ⭐️ 支付方式图标:
   - 微信支付: icon-weixinzhifu (\e650)
   - 二维码支付: icon-erweimazhifu (\e643)
+  - 支付宝支付: icon-zhifubaozhifu / icon-zhifubao (\e607) ⭐️ 新增
   - 线下支付: icon-xianxiazhifu (\e6ca)
 */
