@@ -811,6 +811,44 @@ const API = {
       },
       needAuth: true
     });
+  },
+
+  // ==================== 订单管理模块 ====================
+
+  /**
+   * 获取套餐订购订单列表
+   * @param {Object} params 查询参数
+   * @param {Number} params.page 页码
+   * @param {Number} params.pageSize 每页数量
+   * @param {String} params.device_no 设备编号
+   * @param {String} params.customer_name 客户名称（可选）
+   * @returns {Promise} { success, data: { orders, total }, message }
+   */
+  getOrderList(params) {
+    return request({
+      url: '/api/v1/orders/getOrderList',
+      method: 'GET',
+      data: params,
+      needAuth: true
+    });
+  },
+
+  /**
+   * 获取预充值订单列表
+   * @param {Object} params 查询参数
+   * @param {Number} params.page 页码
+   * @param {Number} params.pageSize 每页数量
+   * @param {String} params.device_no 设备编号
+   * @param {String} params.customer_name 客户名称（可选）
+   * @returns {Promise} { success, data: { list, total, page, pageSize, totalPages }, message }
+   */
+  getPreRechargeOrderList(params) {
+    return request({
+      url: '/api/v1/orders/getPreRechargeOrderList',
+      method: 'GET',
+      data: params,
+      needAuth: true
+    });
   }
 };
 

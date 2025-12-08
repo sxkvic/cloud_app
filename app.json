@@ -19,7 +19,8 @@
     "pages/payment-collection/payment-collection",
     "pages/change-transfer/change-transfer",
     "pages/product-query/product-query",
-    "pages/complaint/complaint"
+    "pages/complaint/complaint",
+    "pages/order-management/order-management"
   ],
   "window": {
     "backgroundTextStyle": "light",
