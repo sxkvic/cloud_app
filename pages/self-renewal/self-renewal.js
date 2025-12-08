@@ -20,7 +20,9 @@ Page({
     qrcodeUrl: '',
     qrcodeOrderNo: '',
     qrcodeLoading: false,
-    qrcodeError: ''
+    qrcodeError: '',
+    qrcodeTitle: '',
+    qrcodeTips: '请使用微信扫码支付'
   },
 
   async onLoad(options) {
@@ -278,7 +280,9 @@ Page({
         this.setData({
           qrcodeUrl: qrCodeUrl,
           qrcodeOrderNo: orderNo,
-          qrcodeLoading: false
+          qrcodeLoading: false,
+          qrcodeTitle: '微信扫码支付',
+          qrcodeTips: '请使用微信扫码支付'
         });
         
         await this.generateQRCode(qrCodeUrl);
@@ -339,7 +343,8 @@ Page({
           qrcodeUrl: qrCodeUrl,
           qrcodeOrderNo: orderNo,
           qrcodeLoading: false,
-          qrcodeTitle: '支付宝扫码支付'
+          qrcodeTitle: '支付宝扫码支付',
+          qrcodeTips: '请使用支付宝扫码支付'
         });
         
         await this.generateQRCode(qrCodeUrl);

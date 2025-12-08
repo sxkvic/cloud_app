@@ -25,7 +25,9 @@ Page({
     qrcodeUrl: '',               // 二维码链接
     qrcodeOrderNo: '',           // 二维码订单号
     qrcodeLoading: false,        // 二维码生成中
-    qrcodeError: ''              // 二维码错误信息
+    qrcodeError: '',             // 二维码错误信息
+    qrcodeTitle: '',             // 二维码标题（微信/支付宝）
+    qrcodeTips: '请使用微信扫码支付'  // 二维码提示文字
   },
 
   async onLoad() {
@@ -450,7 +452,8 @@ Page({
           qrcodeUrl: qrCodeUrl,
           qrcodeOrderNo: orderNo,
           qrcodeLoading: false,
-          qrcodeTitle: '支付宝扫码支付'
+          qrcodeTitle: '支付宝扫码支付',
+          qrcodeTips: '请使用支付宝扫码支付'
         });
         
         // 生成二维码
@@ -558,7 +561,9 @@ Page({
         this.setData({
           qrcodeUrl: qrCodeUrl,
           qrcodeOrderNo: orderNo,
-          qrcodeLoading: false
+          qrcodeLoading: false,
+          qrcodeTitle: '微信扫码支付',
+          qrcodeTips: '请使用微信扫码支付'
         });
         
         // 生成二维码

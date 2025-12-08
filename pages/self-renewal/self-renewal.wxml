@@ -157,7 +157,7 @@
         </view>
         
         <view class="qrcode-tips">
-          <text class="tips-title">{{qrcodeTitle ? (qrcodeTitle.indexOf('支付宝') > -1 ? '请使用支付宝扫码支付' : '请使用微信扫码支付') : '请使用微信扫码支付'}}</text>
+          <text class="tips-title">{{qrcodeTips}}</text>
           <text class="tips-desc">订单号：{{qrcodeOrderNo}}</text>
         </view>
         
