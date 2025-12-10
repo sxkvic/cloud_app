@@ -1,347 +1,112 @@
-<!--pages/user-agreement/user-agreement.wxml-->
 <view class="container">
-  <view class="document">
-    
-    <!-- 标题 -->
-    <view class="doc-title">云宽带用户服务协议</view>
-    <view class="doc-subtitle">更新日期：2025年12月10日</view>
-    <view class="doc-subtitle">生效日期：2025年12月10日</view>
-    <view class="doc-subtitle">版本号：V1.0</view>
-    
-    <!-- 重要提示 -->
-    <view class="section">
-      <view class="section-title important">【重要提示】</view>
-      <view class="section-content">
-        欢迎您使用云宽带服务！在使用云宽带服务前，请您务必审慎阅读、充分理解本《云宽带用户服务协议》（以下简称"本协议"）各条款内容，特别是<text class="bold">免除或限制责任的条款、法律适用和争议解决条款</text>。免除或限制责任条款将以<text class="bold">加粗</text>形式提示您注意。
-      </view>
-      <view class="section-content">
-        本协议是您（以下简称"用户"或"您"）与云宽带服务提供方（以下简称"我们"或"云宽带"）之间就云宽带服务的使用所订立的协议。当您勾选"我已阅读并同意《云宽带用户服务协议》"或实际使用云宽带服务时，即视为您已充分阅读、理解并接受本协议的全部内容，本协议即在您与云宽带之间产生法律约束力。
-      </view>
-      <view class="section-content">
-        如您为无民事行为能力人或限制民事行为能力人，请在法定监护人的陪同下阅读本协议，并在取得法定监护人的同意后使用云宽带服务。
-      </view>
-    </view>
-    
-    <!-- 第一条 -->
-    <view class="section">
-      <view class="section-title">一、定义与说明</view>
-      <view class="section-content">
-        1.1 <text class="bold">云宽带服务</text>：指云宽带向用户提供的互联网接入服务，包括但不限于固定宽带接入、移动宽带接入、设备租赁、技术支持、增值服务等。
-      </view>
-      <view class="section-content">
-        1.2 <text class="bold">用户</text>：指通过合法途径获取云宽带服务使用权的自然人、法人或其他组织。
-      </view>
-      <view class="section-content">
-        1.3 <text class="bold">服务期限</text>：指用户订购云宽带服务的有效使用期限，具体以用户选择的套餐为准。
-      </view>
-      <view class="section-content">
-        1.4 <text class="bold">服务费用</text>：指用户使用云宽带服务应支付的费用，包括但不限于套餐费、设备租赁费、安装费、增值服务费等。
-      </view>
-    </view>
-    
-    <!-- 第二条 -->
-    <view class="section">
-      <view class="section-title">二、服务内容与标准</view>
-      <view class="section-content">
-        2.1 云宽带为用户提供符合国家标准的互联网接入服务，服务质量应符合《互联网接入服务规范》等相关标准。
-      </view>
-      <view class="section-content">
-        2.2 云宽带承诺提供7×24小时技术支持服务，用户可通过客服热线、在线客服等方式获取技术支持。
-      </view>
-      <view class="section-content">
-        2.3 <text class="bold">云宽带有权根据业务发展需要、技术升级或监管要求，对服务内容进行调整、升级或优化，并提前通过网站公告、短信、系统通知等方式告知用户。</text>
-      </view>
-      <view class="section-content">
-        2.4 因网络维护、系统升级等原因需要暂停服务的，云宽带将提前24小时通知用户；因不可抗力或紧急情况需要暂停服务的，云宽带将在事后及时通知用户并说明原因。
-      </view>
-    </view>
-    
-    <!-- 第三条 -->
-    <view class="section">
-      <view class="section-title">三、用户注册与实名认证</view>
-      <view class="section-content">
-        3.1 <text class="bold">实名制要求</text>：根据《中华人民共和国网络安全法》《电信和互联网用户个人信息保护规定》等法律法规要求，用户在使用云宽带服务前，必须提供真实、准确、完整的身份信息进行实名认证。
-      </view>
-      <view class="section-content">
-        3.2 用户应提供以下信息进行实名认证：
-      </view>
-      <view class="section-content indent">
-        （1）个人用户：真实姓名、有效身份证件号码、联系电话等；
-      </view>
-      <view class="section-content indent">
-        （2）企业用户：企业名称、统一社会信用代码、法定代表人信息、联系方式等。
-      </view>
-      <view class="section-content">
-        3.3 用户保证所提供的身份信息真实、准确、完整。如信息发生变更，应及时更新。因用户提供虚假信息或未及时更新信息导致的一切后果，由用户自行承担。
-      </view>
-      <view class="section-content">
-        3.4 用户账号仅限本人使用，不得转让、出借或以其他方式提供给第三方使用。用户应妥善保管账号信息，对账号下的所有行为承担责任。
-      </view>
-    </view>
-    
-    <!-- 第四条 -->
-    <view class="section">
-      <view class="section-title">四、用户权利与义务</view>
-      
-      <view class="subsection-title">4.1 用户权利</view>
-      <view class="section-content indent">
-        （1）按照所订购的服务套餐享受相应的网络服务；
-      </view>
-      <view class="section-content indent">
-        （2）对服务质量提出意见和建议，云宽带将及时处理并反馈；
-      </view>
-      <view class="section-content indent">
-        （3）查询本人的服务使用情况、费用账单等信息；
-      </view>
-      <view class="section-content indent">
-        （4）要求云宽带按照本协议约定提供服务；
-      </view>
-      <view class="section-content indent">
-        （5）法律法规规定的其他权利。
-      </view>
-      
-      <view class="subsection-title">4.2 用户义务</view>
-      <view class="section-content indent">
-        （1）遵守国家法律法规、社会公德和互联网相关规定；
-      </view>
-      <view class="section-content indent">
-        （2）不得利用云宽带服务从事危害国家安全、泄露国家秘密、侵犯国家、社会、集体利益和公民合法权益的活动；
-      </view>
-      <view class="section-content indent">
-        （3）不得制作、复制、发布、传播含有下列内容的信息：
-      </view>
-      <view class="section-content indent-2">
-        ① 反对宪法所确定的基本原则的；
-      </view>
-      <view class="section-content indent-2">
-        ② 危害国家安全，泄露国家秘密，颠覆国家政权，破坏国家统一的；
-      </view>
-      <view class="section-content indent-2">
-        ③ 损害国家荣誉和利益的；
-      </view>
-      <view class="section-content indent-2">
-        ④ 煽动民族仇恨、民族歧视，破坏民族团结的；
-      </view>
-      <view class="section-content indent-2">
-        ⑤ 破坏国家宗教政策，宣扬邪教和封建迷信的；
-      </view>
-      <view class="section-content indent-2">
-        ⑥ 散布谣言，扰乱社会秩序，破坏社会稳定的；
-      </view>
-      <view class="section-content indent-2">
-        ⑦ 散布淫秽、色情、赌博、暴力、凶杀、恐怖或者教唆犯罪的；
-      </view>
-      <view class="section-content indent-2">
-        ⑧ 侵害他人合法权益或者其他有害于社会道德风尚的；
-      </view>
-      <view class="section-content indent">
-        （4）不得传播计算机病毒、恶意程序或进行网络攻击、网络侵入等危害网络安全的行为；
-      </view>
-      <view class="section-content indent">
-        （5）按时缴纳服务费用；
-      </view>
-      <view class="section-content indent">
-        （6）合理使用网络资源，不得恶意占用带宽或影响其他用户正常使用；
-      </view>
-      <view class="section-content indent">
-        （7）配合云宽带进行网络维护、安全检查等工作。
-      </view>
-    </view>
-    
-    <!-- 第五条 -->
-    <view class="section">
-      <view class="section-title">五、服务费用与支付</view>
-      <view class="section-content">
-        5.1 云宽带服务采用预付费或后付费模式，具体以用户订购的套餐为准。用户应按照约定的方式和期限支付服务费用。
-      </view>
-      <view class="section-content">
-        5.2 用户可通过微信支付、支付宝、银行卡等云宽带支持的方式缴纳服务费用。
-      </view>
-      <view class="section-content">
-        5.3 云宽带有权根据市场情况、成本变化或监管要求调整服务资费标准，调整前将提前30天通过网站公告、短信、系统通知等方式告知用户。用户如不同意调整后的资费标准，有权在调整生效前终止服务。
-      </view>
-      <view class="section-content">
-        5.4 <text class="bold">用户欠费期间，云宽带有权暂停服务；欠费超过30天的，云宽带有权终止服务并解除本协议。因欠费导致的服务中断，云宽带不承担任何责任。</text>
-      </view>
-      <view class="section-content">
-        5.5 用户申请退费的，应符合云宽带的退费政策。因用户自身原因（如主动停机、违约等）导致的退费，云宽带有权扣除相应的违约金、已使用费用等。
-      </view>
-    </view>
-    
-    <!-- 第六条 -->
-    <view class="section">
-      <view class="section-title">六、服务暂停与终止</view>
-      <view class="section-content">
-        6.1 出现以下情形之一的，云宽带有权暂停或终止向用户提供服务：
-      </view>
-      <view class="section-content indent">
-        （1）用户违反本协议约定的；
-      </view>
-      <view class="section-content indent">
-        （2）用户利用云宽带服务从事违法违规活动的；
-      </view>
-      <view class="section-content indent">
-        （3）用户欠费的；
-      </view>
-      <view class="section-content indent">
-        （4）用户提供虚假身份信息的；
-      </view>
-      <view class="section-content indent">
-        （5）根据司法机关、行政机关的要求；
-      </view>
-      <view class="section-content indent">
-        （6）其他法律法规规定的情形。
-      </view>
-      <view class="section-content">
-        6.2 用户申请终止服务的，应提前通知云宽带并办理相关手续。用户应结清所有费用后，方可办理销户。
-      </view>
-      <view class="section-content">
-        6.3 服务终止后，云宽带有权删除用户的账号信息及相关数据。用户应自行备份重要数据。
-      </view>
-    </view>
-    
-    <!-- 第七条 -->
-    <view class="section">
-      <view class="section-title">七、隐私保护与信息安全</view>
-      <view class="section-content">
-        7.1 云宽带高度重视用户隐私保护，将按照《云宽带隐私政策》的约定收集、使用、存储和保护用户个人信息。
-      </view>
-      <view class="section-content">
-        7.2 云宽带采取符合行业标准的安全措施保护用户信息安全，防止用户信息遭到未经授权的访问、公开披露、使用、修改、损坏或丢失。
-      </view>
-      <view class="section-content">
-        7.3 <text class="bold">除法律法规规定或司法机关、行政机关要求外，云宽带不会向第三方披露用户个人信息。</text>
-      </view>
-    </view>
-    
-    <!-- 第八条 -->
-    <view class="section">
-      <view class="section-title">八、知识产权</view>
-      <view class="section-content">
-        8.1 云宽带服务中包含的所有内容（包括但不限于文字、图片、音频、视频、软件、程序、版面设计等）的知识产权均归云宽带或相关权利人所有。
-      </view>
-      <view class="section-content">
-        8.2 未经云宽带或相关权利人事先书面许可，用户不得擅自使用、复制、修改、传播上述内容，否则应承担相应的法律责任。
-      </view>
-    </view>
-    
-    <!-- 第九条 -->
-    <view class="section">
-      <view class="section-title">九、免责声明</view>
-      <view class="section-content">
-        9.1 <text class="bold">因以下原因导致的服务中断或故障，云宽带不承担责任：</text>
-      </view>
-      <view class="section-content indent">
-        （1）不可抗力，包括但不限于自然灾害、政府行为、法律法规变化等；
-      </view>
-      <view class="section-content indent">
-        （2）基础电信运营商的原因；
-      </view>
-      <view class="section-content indent">
-        （3）用户自身设备故障、操作不当等原因；
-      </view>
-      <view class="section-content indent">
-        （4）黑客攻击、计算机病毒等网络安全事件；
-      </view>
-      <view class="section-content indent">
-        （5）其他非云宽带原因。
-      </view>
-      <view class="section-content">
-        9.2 <text class="bold">用户理解并同意，互联网服务可能受到多种因素影响，云宽带不保证服务不中断、不延迟，不保证服务的安全性、准确性、及时性。</text>
-      </view>
-      <view class="section-content">
-        9.3 <text class="bold">用户使用云宽带服务访问第三方网站或使用第三方服务时，应遵守第三方的服务条款。因第三方网站或服务导致的任何损失，云宽带不承担责任。</text>
-      </view>
-    </view>
-    
-    <!-- 第十条 -->
-    <view class="section">
-      <view class="section-title">十、违约责任</view>
-      <view class="section-content">
-        10.1 用户违反本协议约定的，云宽带有权采取以下措施：
-      </view>
-      <view class="section-content indent">
-        （1）要求用户立即停止违约行为；
-      </view>
-      <view class="section-content indent">
-        （2）暂停或终止向用户提供服务；
-      </view>
-      <view class="section-content indent">
-        （3）要求用户赔偿因违约行为给云宽带造成的损失；
-      </view>
-      <view class="section-content indent">
-        （4）向有关部门报告用户的违法违规行为。
-      </view>
-      <view class="section-content">
-        10.2 云宽带违反本协议约定的，应承担相应的违约责任，但云宽带的责任以用户实际支付的服务费用为限。
-      </view>
-    </view>
-    
-    <!-- 第十一条 -->
-    <view class="section">
-      <view class="section-title">十一、协议的变更</view>
-      <view class="section-content">
-        11.1 云宽带有权根据国家法律法规变化、业务发展需要等原因修改本协议。修改后的协议将通过网站公告、系统通知等方式告知用户。
-      </view>
-      <view class="section-content">
-        11.2 如用户不同意修改后的协议，有权停止使用云宽带服务。用户继续使用云宽带服务的，视为接受修改后的协议。
-      </view>
-    </view>
-    
-    <!-- 第十二条 -->
-    <view class="section">
-      <view class="section-title">十二、争议解决</view>
-      <view class="section-content">
-        12.1 本协议的订立、执行和解释及争议的解决均应适用中华人民共和国法律。
-      </view>
-      <view class="section-content">
-        12.2 如双方就本协议内容或其执行发生任何争议，双方应尽量友好协商解决；协商不成时，任何一方均可向云宽带所在地人民法院提起诉讼。
-      </view>
-    </view>
-    
-    <!-- 第十三条 -->
-    <view class="section">
-      <view class="section-title">十三、其他</view>
-      <view class="section-content">
-        13.1 本协议的标题仅为方便阅读而设，不影响本协议任何条款的含义或解释。
-      </view>
-      <view class="section-content">
-        13.2 本协议任何条款被认定为无效或不可执行的，不影响其他条款的效力。
-      </view>
-      <view class="section-content">
-        13.3 云宽带未行使或延迟行使本协议项下的权利，不构成对该权利的放弃。
-      </view>
-      <view class="section-content">
-        13.4 本协议自用户点击同意之日起生效，除非依照本协议约定终止。
-      </view>
-    </view>
-    
-    <!-- 联系方式 -->
-    <view class="section">
-      <view class="section-title">联系我们</view>
-      <view class="section-content">
-        如您对本协议有任何疑问、意见或建议，请通过以下方式联系我们：
-      </view>
-      <view class="section-content indent">
-        客服热线：400-XXX-XXXX
-      </view>
-      <view class="section-content indent">
-        在线客服：小程序内在线客服
-      </view>
-      <view class="section-content indent">
-        电子邮箱：service@cloudbroadband.com
-      </view>
-    </view>
-    
-    <!-- 结尾 -->
-    <view class="section">
-      <view class="section-content center">
-        <text class="bold">云宽带服务提供方</text>
-      </view>
-      <view class="section-content center">
-        2025年12月10日
-      </view>
-    </view>
-    
-  </view>
+  <view class="main-title">用户服务协议</view>
+  
+  <view class="p">尊敬的用户，欢迎您使用“chmura云”小程序（以下简称"本小程序"）。</view>
+  <view class="p">本小程序由云联网（江苏）通讯技术有限公司（以下简称“我们”）所拥有、运营。在登录、使用本小程序之前，您应当仔细阅读、充分理解《用户服务协议》（简称“本协议”）的全部内容，如果您不同意本协议或其中任何条款，请您立即停止登录或使用本小程序；您开始登录或使用本小程序，即表明您已同意本协议内容，本协议即构成对用户和我们（合称“双方”）有约束力的法律文件。</view>
+
+  <view class="h1">第一条 定义</view>
+  <view class="p">1.1 本小程序：是指由云联网（江苏）通讯技术有限公司所有并负责运营的“chmura云”小程序软件。</view>
+  <view class="p">1.2 所有权以及相关的权利：在本协议中是指：第一，所有权；第二，知识产权，包括但不限于著作权、专利权、商标权、商业秘密等；第三，除上述权利之外的对物、信息及其载体和表现形式的使用、利用、传播、复制、发行、编辑、修改、处分等权利。</view>
+  <view class="p">1.3 用户：是指接受本小程序服务的自然人、法人或其他组织。</view>
+  <view class="p">1.4 网络服务：是指本小程序基于互联网方式向用户提供的业务宣传、业务查询、业务办理、交费充值、商品交易、用户关怀、营销活动等服务。</view>
+
+  <view class="h1">第二条 网络服务内容</view>
+  <view class="p">2.1 本小程序向用户提供的网络服务包括：</view>
+  <view class="list-item">(1) 用户注册、登录、安全退出、历史订单查询等服务；</view>
+  <view class="list-item">(2) 业务查询、业务办理、充值缴费等服务；</view>
+  <view class="list-item">(3) 商品交易服务；</view>
+  <view class="list-item">(4) 本小程序为用户提供的其他服务。</view>
+  <view class="p">其中，本小程序展示的网络服务以用户所选择的本地网页面展示的为准，各本地网页所展示的服务宣传仅在该本地网范围内有效。</view>
+  <view class="p">2.2 本小程序有权根据情况变化调整网络服务的具体内容，本小程序服务内容进行调整的，我们无需另行通知用户，调整后的内容一经发布即自动生效。如用户不同意上述调整，应当立即停止使用服务；如用户继续使用服务，视为用户同意调整后的内容并同意遵守。</view>
+  <view class="p">2.3 本小程序仅提供服务，与服务有关的通信设备（包括但不限于电脑终端、手机终端、调制解调器及其他与接入互联网有关的装置）及通信服务所需的费用（包括但不限于为接入互联网而支付的电话费及宽带费）由用户自行承担。</view>
+  <view class="p">2.4 用户使用本小程序提供的具体服务时，应当满足相应的前提条件、具备相应的服务使用权限。用户不满足使用服务的前提条件、不具备服务使用权限的，无法使用相应服务。</view>
+  <view class="p">2.5 用户使用本小程序提供的基础网络服务的，应当同时遵守用户与云联网及/或关联公司另行签订的相应服务协议。</view>
+
+  <view class="h1">第三条 用户账号管理</view>
+  <view class="p">3.1 用户确认，用户注册、登录以及实际使用本小程序提供的服务时，应当是具备完全民事权利能力和完全民事行为能力的自然人、法人或其他组织。若用户是未成年人，必须在征得父母或其他监护人同意的前提下使用本小程序提供的服务。若用户是未满14周岁的未成年人，必须在取得父母或其他监护人对《儿童个人信息保护政策及监护人须知》的同意后，才可以在监护人的指导下使用本提供的服务。如用户不具备前述主体资格，则用户及用户的监护人应当依照法律规定承担因此而导致的一切后果，本小程序有权注销或永久冻结用户的账户。</view>
+  <view class="p">3.2 用户可以使用实名认证的微信登录本小程序，用户也可以按照本小程序要求的程序进行注册，获得在本小程序的账号，登录本小程序；按照本注册程序获得本小程序账号的用户，可以在登录后通过“chmura”进行注册信息的变更及注销。</view>
+  <view class="p">3.3 用户使用具体服务时，本小程序可能会要求用户完成进一步激活或验证流程，用户应当按照相应页面的提示提供身份信息及资料，并应保证提供的身份信息及资料真实、及时、完整和准确。</view>
+  <view class="p">3.4 为享受本小程序提供的网络服务，用户应当按照对应的服务要求键入正确的用户账号及密码或短信验证码或其他身份信息。</view>
+  <view class="p">3.5 用户应妥善保管用户账号，因非本小程序原因导致用户的账号、密码遗失、遗忘或被他人窃取的，本小程序不承担责任。</view>
+  <view class="p">3.6 用户通过账号登录后使用本小程序的行为，均视为用户行为，用户应当承担由此导致的相关后果和责任。</view>
+
+  <view class="h1">第四条 商品交易服务规则</view>
+  <view class="p">4.1 用户可以使用本小程序提供的商品交易服务，可以通过本小程序订购平台内经营者销售的商品和服务（统称“商品”）。</view>
+  <view class="p">4.2 对于平台销售的商品，本小程序依法履行平台责任，同时用户应当遵守与平台内经营者之间的约定。</view>
+  <view class="p">4.3 用户应当按照本协议约定订购商品。用户订购商品时，应当仔细确认所购商品的名称、价格、数量、型号、联系地址、电话、收货人等信息。收货人与用户本人不一致的，收货人/用户的行为和意思表示视为用户/收货人的行为和意思表示，用户/收货人应对收货人/用户的行为及意思表示的法律后果承担连带责任。</view>
+
+  <view class="h1">第五条 用户的权利和义务</view>
+  <view class="p">5.1 用户使用本协议项下服务，应当遵守《中华人民共和国网络安全法》《中华人民共和国电信条例》《中华人民共和国计算机信息网络国际联网暂行规定》和其他有关法律、法规或相关规定、以及本协议的约定，不得存在任何违法违规行为，不得侵犯我们以及任何第三方的合法权益。</view>
+  <view class="p">5.2 本小程序所提供的网络服务需要获得用户授权终端设备的部分信息方可正常使用；本小程序按照相关法律法规，以最小化权限原则、区分网络服务场景进行授权获取的提示。若您不同意获取相关信息，我们将因无法获取必要信息而无法提供相应网络服务。</view>
+  <view class="p">5.3 用户承诺使用网络服务应当符合国家法律法规的规定，且行为符合下列要求：</view>
+  <view class="list-item">(1) 不干扰本小程序的正常运转，不进行任何破坏或试图破坏网络安全的行为，不进行任何改变或试图改变本小程序系统配置或破坏系统安全的行为，不得侵入本小程序及国家计算机信息系统；</view>
+  <view class="list-item">(2) 不对本小程序展示或提供的、由我们所有的任何数据或信息作商业性利用，包括但不限于在未经我们事先书面同意的情况下，以复制、传播等任何方式使用本小程序展示或提供的、由我们所有的资料、信息、数据等；</view>
+  <view class="list-item">(3) 遵守所有使用网络服务的网络协议、规定、程序和惯例；</view>
+  <view class="list-item">(4) 不从事其他违反法律法规规定或双方约定的行为。</view>
+  <view class="p">5.4 用户不得通过本小程序制作、复制、发布、传播含有下列内容的信息：</view>
+  <view class="list-item">（1）反对宪法所确定的基本原则的；</view>
+  <view class="list-item">（2）危害国家安全，泄露国家秘密，颠覆国家政权，破坏国家统一的；</view>
+  <view class="list-item">（3）损害国家荣誉和利益的；</view>
+  <view class="list-item">（4）煽动民族仇恨、民族歧视，破坏民族团结的；</view>
+  <view class="list-item">（5）破坏国家宗教政策，宣扬邪教和封建迷信的；</view>
+  <view class="list-item">（6）散布谣言，扰乱社会秩序，破坏社会稳定的；</view>
+  <view class="list-item">（7）散布淫秽、色情、赌博、暴力、凶杀、恐怖或者教唆犯罪的；</view>
+  <view class="list-item">（8）侮辱或者诽谤他人，侵害他人合法权益的；</view>
+  <view class="list-item">（9）含有法律、行政法规禁止的其他内容的。</view>
+  <view class="p">5.5 若用户存在违反法律规定或本协议约定的任一情形，本小程序有权按相关规定暂停或终止提供服务，保存有关记录，并向政府主管部门报告，由此引起的一切后果和责任由用户负责。同时，我们有权终止本协议，并不承担任何责任。</view>
+  <view class="p">5.6 用户违反本协议使用网络服务导致我们和/或第三人损失的，应当承担相应法律责任、赔偿我们和/或第三人的损失。</view>
+  
+  <view class="h2">6. 为您办理关联组织企业身份校验手续</view>
+  <view class="p">用户了解并同意，基于保证账号和交易安全以及进一步保证服务质量等原因，用户应当按照国家相关规定及本小程序相关流程、规则完成政企门户账号的企业身份校验；企业身份校验作为判断账号使用权利归属以及责任承担等的主要依据，用户在进行校验时应当确保认证主体与账号使用主体保持一致，避免将企业使用的账号认证在个人名下，或将本人使用的账号认证在他人名下等任何不当认证行为。否则，用户承担由此产生的全部后果、损失和责任。如发现企业用户提供的信息、证明、资料等造假、不完整或失效的，有权立即终止本协议，并追究用户违约责任。</view>
+
+  <view class="h1">第六条 本小程序的权利和义务</view>
+  <view class="p">6.1 任何本小程序所发布的信息及/或其载体，及/或其表现形式，及/或服务，除以下情况之外，其所有权及相关的权利均独占性地属于我们及/或关联公司所有：依据相关法律规定该信息及/或载体，及/或服务，不享有所有权以及与此相关的权利的；</view>
+  <view class="p">6.2 非经我们及/或授权其使用的第三方权利人书面同意，用户不得擅自使用本小程序内容，且无权擅自复制、修改这些内容，任何对本小程序享有的基于该信息及/或其载体，及/或其表现形式，及/或服务的权利的侵犯，均属于对我们权利的侵犯。</view>
+
+  <view class="h1">第七条 用户信息保护</view>
+  <view class="p">7.1 用户应保证自己在登录使用本小程序时用户身份信息的真实性、准确性及完整性</view>
+  <view class="p">7.2 用户未能按照本小程序的要求和内容提供本小程序要求的必要信息的，本小程序有权中止本小程序所提供的对应服务，由此所导致的任何已经或可能发生的损失，由用户自行承担，本小程序并保留对该用户进行追索的权利。本小程序有权对用户的信息及相关操作进行查阅，发现信息或相关操作中存在任何问题或怀疑，均有权向用户发出询问及要求改正的通知或者直接作出删除账户等处理。</view>
+  <view class="p">7.3 我们非常重视用户个人信息的保护，通过本小程序向用户提供服务时，将按照相关法律法规的规定收集、存储、使用、共享、转移、公开披露、保护和管理用户信息和隐私。本小程序的隐私政策具体见《用户隐私政策》，用户同意仔细阅读并充分理解和接受该隐私政策，并同意该隐私政策作为本协议的重要组成部分。</view>
+
+  <view class="h1">第八条 违约责任</view>
+  <view class="p">8.1 双方应共同遵守本协议约定，如一方违约给对方造成损失的，违约方应赔偿守约方的损失。</view>
+  <view class="p">8.2 除双方另有约定外，用户违反本协议中的义务、承诺、保证等的任意内容，我们均有权就其违约情节，尤其是对我们信或相关第三方造成的损失，随时采取以下措施中的一种或多种：</view>
+  <view class="list-item">（1）要求用户立即更换、修改相应内容；</view>
+  <view class="list-item">（2）限制、中止用户使用相应服务；</view>
+  <view class="list-item">（3）终止用户使用全部服务，终止本协议；</view>
+  <view class="list-item">（4）依法追究用户的法律责任。</view>
+  <view class="p">8.3 如用户因违反有关法律法规或者本协议，使我们遭受任何损失，受到其他用户、任何第三方的索赔或任何行政管理部门的处罚，用户应对我们或相关第三方的实际损失进行全额赔偿（包括合理的律师费用等必要费用）。</view>
+
+  <view class="h1">第九条 责任限制</view>
+  <view class="p">9.1 本小程序不就通信系统或互联网的中断或无法运作、技术故障、计算机错误或终端病毒、信息损坏或丢失或其它在本小程序合理控制范围之外的原因而产生的其他任何性质的破坏而向用户或任何第三方承担赔偿责任。</view>
+  <view class="p">9.2 本小程序需要定期或不定期地对相关的信息网络系统、设备进行检修、维护或升级，如因此类情况而造成网络服务在合理时间内的中断，本小程序无需为此承担任何责任，但本小程序将尽可能事先进行通知。</view>
+  <view class="p">9.3 我们将致力于提供快捷、准确的网络服务；但因网络环境、信息交互时延等客观因素，我们不保证用户在使用本小程序时在操作上不会中断或没有错误，不保证能及时纠正本小程序所有缺陷，不保证本小程序能满足用户的所有要求，亦不保证用户能通过本小程序订购所有业务和产品，对网络服务的及时性、安全性、准确性也都不作担保。</view>
+  <view class="p">9.4 用户通过本小程序进行交易、获取有偿服务而发生的所有税费及有关费用，均由用户承担。我们提醒用户应该通过自己的谨慎判断确定相关服务及陈列商品及相关信息的准确性、真实性、合法性和有效性。</view>
+
+  <view class="h1">第十条 网络服务的停止</view>
+  <view class="p">10.1 在以下情形下，本小程序有权停止对用户提供网络服务，且无需通知用户或取得用户同意:</view>
+  <view class="list-item">(1) 如用户通过手机号码微信销号后；</view>
+  <view class="list-item">(2) 用户违反本协议规定使用网络服务；</view>
+  <view class="list-item">(3) 用户提供的身份信息等资料不真实；</view>
+  <view class="list-item">(4) 用户账户被删除。</view>
+  <view class="p">10.2 用户不同意本协议的内容及对本协议的后续修改，应当停止使用本小程序的网络服务。用户如对本小程序的服务不满意，可以停止使用本小程序的网络服务，或通知本小程序停止对该用户的服务。</view>
+  <view class="p">10.3、用户服务停止后，本小程序没有义务向该用户或第三方传送任何未处理的信息或未完成的服务，亦无需对该用户或第三方负责。但本协议的终止并不意味着终止前所发生的未完成用户指令的撤销，也不能消除因终止前的交易所带来的法律后果。</view>
+
+  <view class="h1">第十一条 其他网络应用或服务提供</view>
+  <view class="p">从本小程序链接至本小程序以外的应用或服务：某些情况下，跳转至其它应用或服务，此应用或服务将会引导用户到第三方发行或经营的应用或服务界面，该第三方可能并非我们的合作机构。</view>
+
+  <view class="h1">第十二条 通知</view>
+  <view class="p">12.1 本小程序对于用户的所有通知均可通过用户预留的任一联系方式（包括但不限于微信、手机号码）或者本小程序公告的方式送达。该等通知于发送之日视为已送达用户。</view>
+
+  <view class="h1">第十三条 协议范围及协议变更</view>
+  <view class="p">13.1 本协议包括《用户服务协议》正文以及所有本小程序已经发布的或将来可能发布的各类规则、通知、公告等（统称“规则”）。所有规则为本协议不可分割的组成部分，与本协议正文具有同等法律效力。</view>
+  <view class="p">13.2 本协议仅适用于云联网通过本小程序提供的服务，本小程序有权根据法律法规变化和运营需要，不时地制定、修改本协议条款和/或各类规则。本协议及/或各类规则如有任何变更，将以本小程序公示方式进行公告，而不再单独通知用户。用户如果不同意相关变更，应立即停止使用本小程序提供的网络服务。如果用户继续享用本小程序服务，则视为用户对修改后的协议和规则的同意和遵守。</view>
+
+  <view class="h1">第十四条 法律适用与争议解决</view>
+  <view class="p">14.1 本协议之效力、解释、变更、履行与争议解决均适用中华人民共和国（为本协议之目的，不含香港、澳门、台湾）法律法规。</view>
+  <view class="p">14.2 因双方就本协议的签订、履行或解释发生争议，双方应持平等、友好、争取合理解决问题的态度协商解决；如协商未成，任何一方均应向所在地人民法院提起诉讼。</view>
+  <view class="p">14.3 用户应妥善管理账号和密码，不得擅自转让给任何第三方。如用户变更账号信息，因变更产生的全部法律责任由用户独自承担。</view>
+  
+  <!-- 底部留白 -->
+  <view style="height: 60rpx;"></view>
 </view>

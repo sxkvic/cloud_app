@@ -1,19 +1,9 @@
-// pages/user-agreement/user-agreement.js
 Page({
-  data: {
-    
-  },
-
-  onLoad(options) {
-    wx.setNavigationBarTitle({
-      title: '用户服务协议'
-    });
-  },
-
-  onShareAppMessage() {
+  data: {},
+  onLoad: function (options) {},
+  onShareAppMessage: function () {
     return {
-      title: '云宽带用户服务协议',
-      path: '/pages/user-agreement/user-agreement'
-    };
+      title: '用户服务协议'
+    }
   }
-});
+})
