@@ -98,8 +98,8 @@ Page({
           ? `${bill.billing_start_date} 至 ${bill.billing_end_date}` 
           : '月度账单',
         amount: `¥${parseFloat(bill.amount).toFixed(2)}`,
-        status: bill.bill_status == 1 ? 'paid' : 'pending',
-        statusText: bill.bill_status == 1 ? '已缴费' : '待缴费'
+        status: bill.bill_status == 2 ? 'invoiced' : 'not_invoiced',
+        statusText: bill.bill_status == 2 ? '已开票' : '未开票'
       }));
 
       this.setData({
@@ -122,8 +122,8 @@ Page({
             date: '2025-11-21',
             period: '2025-11-21 至 2026-11-21',
             amount: '¥998.00',
-            status: 'pending',
-            statusText: '待缴费'
+            status: 'not_invoiced',
+            statusText: '未开票'
           }
         ]
       });

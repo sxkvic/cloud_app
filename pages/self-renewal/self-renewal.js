@@ -34,7 +34,7 @@ Page({
     if (!deviceCode) {
       message.error('未找到设备信息，请先绑定设备');
       setTimeout(() => {
-        navigation.back();
+        navigation.navigateBack();
       }, 1500);
       return;
     }
@@ -48,21 +48,36 @@ Page({
     try {
       this.setData({ loading: true });
       
-      // 强制从服务器获取最新数据，不使用缓存
-      const result = await DataManager.getCompleteCustomerInfo(this.data.deviceCode, true);
+      // 从服务器获取最新数据
+      const result = await DataManager.getCompleteCustomerInfo(this.data.deviceCode);
       console.log('设备信息:', result);
       
-      if (result.success && result.data && result.data.binding_info) {
-        const binding = result.data.binding_info;
-        const customer = result.data.customer;
+      if (result.success && result.data) {
+        const data = result.data;
+        const binding = data.binding_info;
+        const customer = data.customer;
+        const packageData = data.package;
+        
+        // 优先从 package 获取套餐信息，其次从 binding_info 获取
+        // 兼容多种可能的字段名
+        const packageInfo = {
+          package_name: packageData?.package_name || packageData?.name || binding?.current_package_name || binding?.package_name || '未知套餐',
+          package_id: packageData?.id || packageData?.package_id || binding?.current_package_id || binding?.package_id,
+          expire_time: binding?.expire_time || binding?.expiry_date || '未知',
+          price: packageData?.monthly_fee || packageData?.price || binding?.current_package_price || binding?.monthly_fee || 0
+        };
+        
+        // 检查是否有有效的套餐信息
+        if (!packageInfo.package_id) {
+          message.error('未找到有效的套餐信息');
+          setTimeout(() => {
+            navigation.navigateBack();
+          }, 1500);
+          return;
+        }
         
         this.setData({
-          packageInfo: {
-            package_name: binding.current_package_name || '未知套餐',
-            package_id: binding.current_package_id,
-            expire_time: binding.expire_time || '未知',
-            price: binding.current_package_price || 0
-          },
+          packageInfo: packageInfo,
           customerInfo: customer,
           bindingInfo: binding
         });
@@ -70,14 +85,14 @@ Page({
       } else {
         message.error(result.message || '加载套餐信息失败');
         setTimeout(() => {
-          navigation.back();
+          navigation.navigateBack();
         }, 1500);
       }
     } catch (error) {
       console.error('加载套餐信息失败:', error);
       message.error('加载套餐信息失败');
       setTimeout(() => {
-        navigation.back();
+        navigation.navigateBack();
       }, 1500);
     } finally {
       this.setData({ loading: false });
@@ -172,7 +187,7 @@ Page({
       // 调用小程序支付接口
       const paymentParams = {
         payment_type: 1,
-        customer_id: customerInfo.customer?.id || customerInfo.id,
+        customer_id: customerInfo.id,
         device_no: this.data.deviceCode,
         package_id: packageInfo.package_id,
         orderType: 1, // 套餐订购（续费也是订购类型）
@@ -250,7 +265,7 @@ Page({
       
       const orderData = {
         payment_type: 1,
-        customer_id: customerInfo.customer?.id || customerInfo.id,
+        customer_id: customerInfo.id,
         device_no: this.data.deviceCode,
         package_id: packageInfo.package_id,
         orderType: 1,
@@ -312,7 +327,7 @@ Page({
       
       const orderData = {
         payment_type: 2, // 支付宝支付
-        customer_id: customerInfo.customer?.id || customerInfo.id,
+        customer_id: customerInfo.id,
         device_no: this.data.deviceCode,
         package_id: packageInfo.package_id,
         orderType: 1,
@@ -356,7 +371,7 @@ Page({
       
       const orderData = {
         payment_type: 3,
-        customer_id: customerInfo.customer?.id || customerInfo.id,
+        customer_id: customerInfo.id,
         device_no: this.data.deviceCode,
         package_id: packageInfo.package_id,
         orderType: 1,

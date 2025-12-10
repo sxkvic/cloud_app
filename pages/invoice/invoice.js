@@ -420,7 +420,7 @@ Page({
         }
       });
     } else {
-      message.info('发票正在开具中，请稍后查看');
+      message.error('发票正在开具中，请稍后查看');
     }
   },
 

@@ -3,8 +3,8 @@
   <scroll-view class="detail-content" scroll-y enhanced show-scrollbar="{{false}}">
     <!-- 账单状态卡片 -->
     <view class="status-card">
-      <view class="status-badge {{ billDetail.bill_status == 1 ? 'paid' : 'pending' }}">
-        <text class="status-text">{{ billDetail.bill_status == 1 ? '已支付' : '待支付' }}</text>
+      <view class="status-badge {{ billDetail.bill_status == 2 ? 'invoiced' : 'not_invoiced' }}">
+        <text class="status-text">{{ billDetail.bill_status == 2 ? '已开票' : '未开票' }}</text>
       </view>
       <view class="amount-display">
         <text class="amount-label">账单金额</text>
@@ -97,10 +97,10 @@
     </view>
   </scroll-view>
 
-  <!-- 底部操作按钮（仅未支付时显示） -->
-  <view wx:if="{{ billDetail.bill_status != 1 }}" class="bottom-action">
-    <button class="pay-button" bindtap="payNow">
-      <text class="btn-text">立即支付</text>
+  <!-- 底部操作按钮（仅未开票时显示） -->
+  <view wx:if="{{ billDetail.bill_status != 2 }}" class="bottom-action">
+    <button class="pay-button" bindtap="applyInvoice">
+      <text class="btn-text">申请开票</text>
     </button>
   </view>
 </view>
