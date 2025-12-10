@@ -17,7 +17,7 @@ page {
 /* --- 1. 头部区域 --- */
 .header-bg {
   position: relative;
-  background: linear-gradient(135deg, #4D6AFF 0%, #2B4CFF 100%);
+  background: linear-gradient(135deg, #2B7FF0 0%, #1E64D8 100%);
   padding-bottom: 140rpx; /* 给下方卡片留出悬浮空间 */
   border-bottom-left-radius: 60rpx;
   border-bottom-right-radius: 60rpx;
@@ -92,8 +92,8 @@ page {
 
 /* 扫码块 */
 .scan-box {
-  background: rgba(77, 106, 255, 0.04);
-  border: 2rpx dashed rgba(77, 106, 255, 0.2);
+  background: rgba(43, 127, 240, 0.04);
+  border: 2rpx dashed rgba(43, 127, 240, 0.2);
   border-radius: 32rpx;
   padding: 40rpx;
   display: flex;
@@ -103,7 +103,7 @@ page {
 }
 
 .scan-box:active {
-  background: rgba(77, 106, 255, 0.08);
+  background: rgba(43, 127, 240, 0.08);
 }
 
 .scan-icon-wrapper {
@@ -132,8 +132,8 @@ page {
   left: 0;
   width: 100%;
   height: 4rpx;
-  background: #4D6AFF;
-  box-shadow: 0 0 8rpx #4D6AFF;
+  background: #2B7FF0;
+  box-shadow: 0 0 8rpx #2B7FF0;
   animation: scanDown 2s infinite linear;
 }
 
@@ -147,7 +147,7 @@ page {
 .scan-title {
   font-size: 28rpx;
   font-weight: bold;
-  color: #4D6AFF;
+  color: #2B7FF0;
   margin-bottom: 6rpx;
   display: block;
 }
@@ -211,8 +211,8 @@ page {
 }
 
 .input-wrapper:focus-within {
-  border-color: #4D6AFF;
-  box-shadow: 0 0 0 4rpx rgba(77, 106, 255, 0.1);
+  border-color: #2B7FF0;
+  box-shadow: 0 0 0 4rpx rgba(43, 127, 240, 0.1);
 }
 
 .input-field {
@@ -250,7 +250,7 @@ page {
 .btn-primary {
   width: 100% !important;
   height: 100rpx;
-  background: #4D6AFF;
+  background: #2B7FF0;
   border-radius: 24rpx;
   color: #ffffff;
   font-size: 32rpx;
@@ -258,11 +258,11 @@ page {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 10rpx 30rpx rgba(77, 106, 255, 0.25);
+  box-shadow: 0 10rpx 30rpx rgba(43, 127, 240, 0.25);
 }
 
 .btn-primary:active {
-  background: #3d5ce6;
+  background: #1E64D8;
 }
 
 .btn-ghost {
@@ -293,6 +293,6 @@ page {
 
 .footer-link text {
   font-size: 24rpx;
-  color: #4D6AFF;
+  color: #2B7FF0;
   opacity: 0.8;
 }
