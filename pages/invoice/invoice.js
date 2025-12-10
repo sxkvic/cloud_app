@@ -13,7 +13,7 @@ Page({
     loading: true,
     
     // 表单数据
-    titleType: '2', // "2"=个人, "1"=企业
+    titleType: '1', // "1"=个人, "2"=企业
     invoiceType: 1, // 1=增值税普通发票（固定，不可选择专票）
     invoiceTitle: '',
     socialCreditCode: '',
@@ -129,11 +129,13 @@ Page({
         console.log('开票信息:', result.data);
         const info = result.data;
 
-        // 填充表单
+        // 填充表单，title_type: 1=个人, 2=企业
+        const titleType = String(info.title_type || '2');
         this.setData({
-          titleType: info.title_type || '2',
+          titleType: titleType,
           invoiceTitle: info.invoice_title || '',
-          socialCreditCode: info.social_credit_code || '',
+          // 企业类型时才填充社会信用代码
+          socialCreditCode: titleType == '2' ? (info.social_credit_code || '') : '',
           receiveEmail: info.receive_email || '',
           bankName: info.bank_name || '',
           bankAccount: info.bank_account || ''
@@ -388,40 +390,9 @@ Page({
     }
   },
 
-  // 查看发票详情
+  // 查看发票详情（小程序不支持查看，点击无效果）
   viewInvoice(e) {
-    const invoice = e.currentTarget.dataset.invoice;
-    
-    if (invoice.fileurl) {
-      // 如果有发票文件，下载并预览
-      wx.showLoading({ title: '加载中...' });
-      wx.downloadFile({
-        url: invoice.fileurl,
-        success: (res) => {
-          wx.hideLoading();
-          if (res.statusCode === 200) {
-            wx.openDocument({
-              filePath: res.tempFilePath,
-              fileType: 'pdf',
-              success: () => {
-                console.log('打开文档成功');
-              },
-              fail: (err) => {
-                console.error('打开文档失败:', err);
-                message.error('无法打开发票文件');
-              }
-            });
-          }
-        },
-        fail: (err) => {
-          wx.hideLoading();
-          console.error('下载失败:', err);
-          message.error('下载发票失败');
-        }
-      });
-    } else {
-      message.error('发票正在开具中，请稍后查看');
-    }
+    // 小程序暂不支持查看发票，不做任何操作
   },
 
   // 分享给好友

@@ -42,26 +42,26 @@
       <view class="form-title">开票信息</view>
       <view class="form-subtitle">请填写真实有效的开票信息</view>
     
-      <!-- 抬头类型 -->
+      <!-- 抬头类型: 1=个人, 2=企业 -->
       <view class="form-group">
         <view class="label">抬头类型</view>
         <view class="radio-group">
-          <view 
-            class="radio-item {{ titleType === '2' ? 'selected' : '' }}"
-            bindtap="selectTitleType"
-            data-type="2"
-          >
-            <view class="radio-circle {{ titleType === '2' ? 'selected' : '' }}">
-              <view class="radio-dot"></view>
-            </view>
-            <text class="radio-label">个人</text>
-          </view>
           <view 
             class="radio-item {{ titleType === '1' ? 'selected' : '' }}"
             bindtap="selectTitleType"
             data-type="1"
           >
             <view class="radio-circle {{ titleType === '1' ? 'selected' : '' }}">
+              <view class="radio-dot"></view>
+            </view>
+            <text class="radio-label">个人</text>
+          </view>
+          <view 
+            class="radio-item {{ titleType === '2' ? 'selected' : '' }}"
+            bindtap="selectTitleType"
+            data-type="2"
+          >
+            <view class="radio-circle {{ titleType === '2' ? 'selected' : '' }}">
               <view class="radio-dot"></view>
             </view>
             <text class="radio-label">企业</text>
@@ -76,7 +76,7 @@
           <input 
             class="weui-input"
             type="text"
-            placeholder="{{ titleType === '2' ? '请输入个人姓名' : '请输入企业名称' }}"
+            placeholder="{{ titleType === '1' ? '请输入个人姓名' : '请输入企业名称' }}"
             placeholder-class="placeholder-style"
             value="{{ invoiceTitle }}"
             bindinput="onInvoiceTitleInput"
@@ -111,8 +111,8 @@
         </view>
       </view>
 
-      <!-- 统一社会信用代码 -->
-      <view class="form-group" wx:if="{{ titleType === '1' }}">
+      <!-- 统一社会信用代码（企业才显示） -->
+      <view class="form-group" wx:if="{{ titleType === '2' }}">
         <view class="label">统一社会信用代码</view>
         <view class="input-wrapper">
           <input 
@@ -142,8 +142,8 @@
         </view>
       </view>
 
-      <!-- 企业额外信息 -->
-      <view wx:if="{{ titleType === '1' }}">
+      <!-- 企业额外信息（企业才显示） -->
+      <view wx:if="{{ titleType === '2' }}">
         <view class="form-group">
           <view class="label">开户银行（选填）</view>
           <view class="input-wrapper">
