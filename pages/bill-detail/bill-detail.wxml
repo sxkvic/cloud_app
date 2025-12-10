@@ -1,6 +1,45 @@
 <!--pages/bill-detail/bill-detail.wxml-->
 <view class="bill-detail-page">
-  <scroll-view class="detail-content" scroll-y enhanced show-scrollbar="{{false}}">
+  <!-- 骨架屏 -->
+  <view wx:if="{{loading}}" class="skeleton-wrapper">
+    <!-- 状态卡片骨架屏 -->
+    <view class="status-card skeleton-status-card">
+      <view class="skeleton-line skeleton-badge"></view>
+      <view class="skeleton-line skeleton-amount"></view>
+      <view class="skeleton-line skeleton-bill-no"></view>
+    </view>
+    
+    <!-- 基本信息骨架屏 -->
+    <view class="info-card skeleton-info-card">
+      <view class="skeleton-line skeleton-card-title"></view>
+      <view class="skeleton-line skeleton-row"></view>
+      <view class="skeleton-line skeleton-row"></view>
+      <view class="skeleton-line skeleton-row"></view>
+      <view class="skeleton-line skeleton-row"></view>
+      <view class="skeleton-line skeleton-row"></view>
+    </view>
+    
+    <!-- 计费信息骨架屏 -->
+    <view class="info-card skeleton-info-card">
+      <view class="skeleton-line skeleton-card-title"></view>
+      <view class="skeleton-line skeleton-row"></view>
+      <view class="skeleton-line skeleton-row"></view>
+      <view class="skeleton-line skeleton-row"></view>
+    </view>
+    
+    <!-- 费用明细骨架屏 -->
+    <view class="info-card skeleton-info-card">
+      <view class="skeleton-line skeleton-card-title"></view>
+      <view class="skeleton-line skeleton-row"></view>
+      <view class="skeleton-line skeleton-row"></view>
+      <view class="skeleton-line skeleton-row"></view>
+      <view class="skeleton-line skeleton-row"></view>
+      <view class="skeleton-line skeleton-total"></view>
+    </view>
+  </view>
+
+  <!-- 实际内容 -->
+  <scroll-view wx:else class="detail-content fade-in" scroll-y enhanced show-scrollbar="{{false}}">
     <!-- 账单状态卡片 -->
     <view class="status-card">
       <view class="status-badge {{ billDetail.bill_status == 2 ? 'invoiced' : 'not_invoiced' }}">

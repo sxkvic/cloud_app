@@ -61,10 +61,10 @@ Page({
       { iconClass: 'icon-xufei', text: '自助续费', color: '#f5222d', route: '/pages/self-renewal/self-renewal' },
       { iconClass: 'icon-shenqing', text: '业务申请', color: '#3071a9', route: '/pages/business-application/business-application' },
       { iconClass: 'icon-xieyi', text: '电子协议', color: '#13c2c2', route: '/pages/electronic-agreement/electronic-agreement' },
-      { iconClass: 'icon-kaipiao', text: '开票申请', color: '#fa8c16', route: '/pages/invoice/invoice' },
       { iconClass: 'icon-tousu', text: '举报投诉', color: '#8c8c8c', route: '/pages/complaint/complaint' },
       { iconClass: 'icon-pingjia', text: '服务评价', color: '#faad14', route: '/pages/service-evaluation/service-evaluation' }
-      // 暂时隐藏代缴代扣入口
+      // 暂时隐藏的功能入口
+      // { iconClass: 'icon-kaipiao', text: '开票申请', color: '#fa8c16', route: '/pages/invoice/invoice' }, // 已移至我的账单页面
       // { iconClass: 'icon-daikou', text: '代缴代扣', color: '#eb2f96', route: '/pages/payment-collection/payment-collection' }
     ]
   },
