@@ -16,9 +16,10 @@ Page({
   },
 
   async onShow() {
-    console.log('我的页面显示');
-    // 验证设备绑定状态
-    await this.validateDeviceBinding();
+    console.log('我的页面显示，刷新数据...');
+    
+    // 每次显示页面都获取最新数据，确保数据始终是最新的
+    await this.refreshDeviceInfo();
   },
 
   // 加载设备和客户信息

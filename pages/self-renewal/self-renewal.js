@@ -219,7 +219,7 @@ Page({
             setTimeout(() => {
               wx.showModal({
                 title: '续费完成',
-                content: `套餐"${packageInfo.package_name}"续费成功！\n月费：¥${packageInfo.price}\n\n新的到期时间将自动更新。`,
+                content: `套餐"${packageInfo.package_name}"续费成功！\n月费：￥${packageInfo.price}\n\n新的到期时间将自动更新。`,
                 showCancel: false,
                 confirmText: '知道了',
                 success: () => {

@@ -35,10 +35,12 @@ Page({
         return;
       }
     } else {
-      // 重新绑定时，显示当前绑定的设备信息
+      // 重新绑定时，立即清除旧的设备缓存数据
       const currentDeviceNo = wx.getStorageSync('device_no');
       if (currentDeviceNo) {
         console.log('当前绑定的设备码:', currentDeviceNo);
+        console.log('🗑️ 重新绑定：清除旧设备缓存...');
+        cacheManager.clearDeviceCache();
         wx.showToast({
           title: '可以重新绑定设备',
           icon: 'none',

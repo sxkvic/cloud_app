@@ -10,7 +10,8 @@ Page({
     deviceCode: '',              // 设备编号，从缓存读取
     customerInfo: null,          // 客户信息
     billDetail: null,            // 当前账单详情
-    showDetail: false            // 是否显示详情页面
+    showDetail: false,           // 是否显示详情页面
+    isFirstLoad: true            // 是否首次加载
   },
 
   async onLoad() {
@@ -32,11 +33,17 @@ Page({
     
     await this.loadCustomerInfo();
     await this.loadBills();
+    
+    // 标记首次加载完成
+    this.setData({ isFirstLoad: false });
   },
 
   async onShow() {
     console.log('我的账单页面显示');
-    await this.loadBills();
+    // 只有非首次加载时才刷新数据（从其他页面返回时）
+    if (!this.data.isFirstLoad) {
+      await this.loadBills();
+    }
   },
 
   // 加载客户信息

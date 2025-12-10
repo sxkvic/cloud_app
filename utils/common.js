@@ -8,15 +8,32 @@ const cacheManager = {
   clearDeviceCache() {
     console.log('🗑️ 清除所有设备相关缓存...');
     
-    // 清除存储缓存
+    // 清除存储缓存 - 包含所有设备和客户相关的缓存键
     const deviceKeys = [
+      // 设备绑定状态
       'deviceBound',
       'device_no', 
       'device_info',
-      'customer_info',
-      'binding_info',
       'deviceCode',  // 旧版本兼容
-      'bindingSkipped'  // 跳过绑定状态
+      'device_name',
+      'bindingSkipped',  // 跳过绑定状态
+      
+      // 客户信息
+      'customer_info',
+      'customer_name',
+      
+      // 绑定信息
+      'binding_info',
+      'recharge_account',
+      'current_package',
+      
+      // 完整信息
+      'complete_customer_info',
+      
+      // 套餐和账户信息
+      'package_info',
+      'account_info',
+      'balance'
     ];
     
     deviceKeys.forEach(key => {
@@ -127,24 +144,6 @@ const message = {
     });
   },
   
-  // 智能加载提示 - 只在慢速操作时显示
-  smartLoading(title = '加载中...', delay = 500) {
-    let timer = null;
-    let isShowing = false;
-    
-    // 延迟显示 loading
-    timer = setTimeout(() => {
-      wx.showLoading({ title, mask: true });
-      isShowing = true;
-    }, delay);
-    
-    // 返回隐藏函数
-    return () => {
-      if (timer) clearTimeout(timer);
-      if (isShowing) wx.hideLoading();
-    };
-  },
-  
   /**
    * 带最小显示时长的 Loading 包装器
    * 解决接口太快导致 loading 闪烁的问题
@@ -200,159 +199,12 @@ const message = {
       
       throw error;
     }
-  },
-  
-  // 立即显示加载提示（用于必须显示的场景）
-  loading(title = '加载中...') {
-    wx.showLoading({ title, mask: true });
-  },
-  
-  // 隐藏加载提示
-  hideLoading() {
-    wx.hideLoading();
-  },
-  
-  // 确认对话框
-  confirm(options) {
-    return new Promise((resolve) => {
-      wx.showModal({
-        title: options.title || '提示',
-        content: options.content || '',
-        confirmText: options.confirmText || '确定',
-        cancelText: options.cancelText || '取消',
-        success: (res) => {
-          resolve(res.confirm);
-        }
-      });
-    });
   }
 };
-
-/**
- * 存储工具
- */
-const storage = {
-  // 设置存储
-  set(key, value) {
-    try {
-      wx.setStorageSync(key, value);
-    } catch (e) {
-      console.error('存储失败:', e);
-    }
-  },
-  
-  // 获取存储
-  get(key, defaultValue = null) {
-    try {
-      return wx.getStorageSync(key) || defaultValue;
-    } catch (e) {
-      console.error('获取存储失败:', e);
-      return defaultValue;
-    }
-  },
-  
-  // 删除存储
-  remove(key) {
-    try {
-      wx.removeStorageSync(key);
-    } catch (e) {
-      console.error('删除存储失败:', e);
-    }
-  }
-};
-
-/**
- * 格式化工具
- */
-const format = {
-  // 格式化金额
-  money(amount) {
-    return parseFloat(amount).toFixed(2);
-  },
-  
-  // 格式化日期
-  date(date, format = 'YYYY-MM-DD') {
-    const d = new Date(date);
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    
-    return format
-      .replace('YYYY', year)
-      .replace('MM', month)
-      .replace('DD', day);
-  },
-  
-  // 格式化手机号
-  phone(phone) {
-    if (!phone) return '';
-    return phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2');
-  }
-};
-
-/**
- * 图标映射 - Font Awesome 到小程序图标
- */
-const iconMap = {
-  // 基础图标
-  'home': 'wap-home',
-  'user': 'manager',
-  'bell': 'bell',
-  'search': 'search',
-  'setting': 'setting',
-  'arrow-left': 'arrow-left',
-  'arrow-right': 'arrow',
-  'check': 'success',
-  'close': 'cross',
-  'plus': 'plus',
-  'minus': 'minus',
-  
-  // 功能图标
-  'shopping-cart': 'shopping-cart',
-  'bill': 'bill',
-  'service': 'service',
-  'replay': 'replay',
-  'gold-coin': 'gold-coin',
-  'exchange': 'exchange',
-  'calendar': 'calendar',
-  'todo-list': 'todo-list',
-  'description': 'description',
-  'orders': 'orders',
-  'warning': 'warning',
-  'star': 'star',
-  'paid': 'paid',
-  
-  // 其他图标
-  'qrcode': 'scan',
-  'camera': 'photo',
-  'location': 'location',
-  'phone': 'phone',
-  'mail': 'mail',
-  'clock': 'clock',
-  'map-marker': 'location',
-  'wallet': 'gold-coin',
-  'box-open': 'shop',
-  'receipt': 'bill',
-  'list-alt': 'todo-list',
-  'id-card': 'contact',
-  'cog': 'setting'
-};
-
-/**
- * 获取图标名称
- */
-function getIconName(faIcon) {
-  // 移除 fa- 前缀
-  const cleanIcon = faIcon.replace(/^fa-/, '');
-  return iconMap[cleanIcon] || 'question';
-}
 
 module.exports = {
   navigation,
   message,
-  storage,
-  format,
-  getIconName,
   cacheManager
 };
 

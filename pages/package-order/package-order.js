@@ -801,7 +801,7 @@ Page({
     setTimeout(() => {
       wx.showModal({
         title: '订购完成',
-        content: `${packageInfo.name} 订购成功！\n客户：${customerInfo.customer?.customer_name || customerInfo.customer_name || customerInfo.name}\n订单号：${paymentParams.order_id || ''}\n月费：¥${packageInfo.price}\n我们将尽快为您安排服务。`,
+        content: `${packageInfo.name} 订购成功！\n客户：${customerInfo.customer?.customer_name || customerInfo.customer_name || customerInfo.name}\n订单号：${paymentParams.order_id || ''}\n月费：￥${packageInfo.price}\n我们将尽快为您安排服务。`,
         showCancel: false,
         confirmText: '知道了',
         success: () => {

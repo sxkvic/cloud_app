@@ -626,8 +626,6 @@ Page({
   onPaymentSuccess(orderNo) {
     console.log("支付成功，订单号:", orderNo);
     message.success("充值成功！");
-    // 可以在这里添加支付成功后的逻辑
-    // 比如刷新余额、跳转到成功页面等
   },
 
   // 重置表单

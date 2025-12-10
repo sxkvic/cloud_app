@@ -82,9 +82,10 @@ Page({
   },
 
   async onShow() {
-    console.log('首页显示');
-    // 验证设备绑定状态，防止使用过期缓存
-    await this.validateDeviceBinding();
+    console.log('首页显示，刷新数据...');
+    
+    // 每次显示页面都获取最新数据，确保数据始终是最新的
+    await this.loadAccountInfo();
   },
 
   // 验证设备绑定状态
@@ -316,6 +317,24 @@ Page({
     if (index === 1) {
       // 直接切换Tab
       navigation.switchTab('/pages/my/my');
+    }
+  },
+
+  // 下拉刷新
+  async onPullDownRefresh() {    
+    try {
+      // 并行刷新数据
+      await Promise.all([
+        this.loadAccountInfo(),
+        this.loadBanners()
+      ]);
+      
+      message.success('刷新成功');
+    } catch (error) {
+      message.error('刷新失败，请重试');
+    } finally {
+      // 停止下拉刷新动画
+      wx.stopPullDownRefresh();
     }
   },
 
