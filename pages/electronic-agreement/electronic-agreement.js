@@ -54,6 +54,9 @@ Page({
   onLoad(options) {
     console.log('📄 电子协议页面加载', options);
     
+    // 清理旧的缓存数据，确保数据最新
+    this.clearOldCache();
+    
     // 获取设备码
     const deviceCode = wx.getStorageSync('device_no');
     this.setData({ deviceCode });
@@ -82,17 +85,28 @@ Page({
     console.log('业务登记单页面显示');
   },
 
+  // 清理旧缓存
+  clearOldCache() {
+    try {
+      // 清理可能存在的旧缓存
+      wx.removeStorageSync('complete_customer_info');
+      console.log('✅ 已清理旧缓存');
+    } catch (error) {
+      console.error('清理缓存失败:', error);
+    }
+  },
+
   // 加载客户信息（从缓存）
   async loadCustomerInfo() {
     try {
       this.setData({ loading: true });
       console.log('📦 加载客户信息...');
       
-      // 从缓存获取完整客户信息
-      let customerInfo = wx.getStorageSync('complete_customer_info');
+      // 直接从DataManager获取最新数据，不依赖旧缓存
+      let customerInfo = null;
       
-      if (!customerInfo && this.data.deviceCode) {
-        console.log('⚠️ 缓存不存在，重新获取...');
+      if (this.data.deviceCode) {
+        console.log('⚠️ 重新获取最新客户信息...');
         const result = await DataManager.getCompleteCustomerInfo(this.data.deviceCode, true);
         customerInfo = result.data;
       }
@@ -162,8 +176,8 @@ Page({
       originalPrice: packageInfo.order_amount || packageInfo.price || '',
       discountPrice: packageInfo.price || packageInfo.order_amount || '',
       downloadSpeed: packageInfo.flow || '',
-      uploadSpeed: '20M', // 默认上传速度
-      contractMonths: 12,
+      uploadSpeed: packageInfo.upload_speed || '', // 不使用默认值
+      contractMonths: packageInfo.contract_months || 0, // 不使用默认值
       
       // 产品信息
       broadbandNo: device.device_no || '',
@@ -176,9 +190,7 @@ Page({
       actualPayment: packageInfo.price || packageInfo.order_amount || '',
       
       // 物品清单
-      itemList: [
-        { name: '千兆网关路由', quantity: 1 }
-      ],
+      itemList: [], // 不设置默认物品
       
       // 预约信息
       appointmentTime: '',

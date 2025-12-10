@@ -40,7 +40,7 @@
           </checkbox-group>
           <view class="agreement-text-wrapper">
             <text class="agreement-text">我已阅读并同意</text>
-            <view class="agreement-link" bindtap="navigateToUserAgreement">《用户服务协议》</view>
+            <view class="agreement-link" bindtap="navigateToUserAgreement">《用户协议》</view>
             <text class="agreement-text">和</text>
             <view class="agreement-link" bindtap="navigateToPrivacyPolicy">《隐私政策》</view>
           </view>

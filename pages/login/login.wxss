@@ -167,31 +167,32 @@ checkbox .wx-checkbox-input-checked {
 .agreement-text-wrapper {
   flex: 1;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   line-height: 44rpx;
   height: 44rpx;
+  white-space: nowrap;
 }
 
 .agreement-text {
-  font-size: 24rpx;
+  font-size: 22rpx;
   color: #9CA3AF;
-  margin-right: 4rpx;
+  margin-right: 2rpx;
   line-height: 44rpx;
   height: 44rpx;
   display: inline-block;
 }
 
 .agreement-link {
-  font-size: 24rpx;
+  font-size: 22rpx;
   color: #2B7FF0;
   font-weight: 600;
-  margin: 0 4rpx;
+  margin: 0 2rpx;
   text-decoration: none;
   line-height: 44rpx;
   height: 44rpx;
   display: inline-block;
-  padding: 0 4rpx;
+  padding: 0 2rpx;
   cursor: pointer;
   position: relative;
   z-index: 10;
