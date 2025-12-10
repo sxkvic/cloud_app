@@ -143,19 +143,109 @@ Page({
     }
   },
 
-  // 重新绑定设备
-  rebindDevice() {
+  // 重新绑定设备（先查询用户绑定的设备列表）
+  async rebindDevice() {
     const currentDeviceNo = DataManager.getDeviceCode();
-    const deviceName = this.data.deviceInfo?.device_name || '当前设备';
+    
+    try {
+      wx.showLoading({ title: '加载中...' });
+      
+      // 查询用户绑定的所有设备
+      const devicesResult = await API.getUserDevices();
+      const devices = devicesResult.data?.devices || [];
+      
+      wx.hideLoading();
+      
+      console.log('用户绑定的设备列表:', devices);
+      
+      // 过滤掉当前设备，获取其他可切换的设备
+      const otherDevices = devices.filter(d => {
+        const deviceNo = d.deviceCode || d.device_no;
+        return deviceNo !== currentDeviceNo;
+      });
+      
+      if (otherDevices.length > 0) {
+        // 有其他设备，显示切换选项
+        this.showDeviceSwitchOptions(currentDeviceNo, otherDevices);
+      } else {
+        // 没有其他设备，直接跳转绑定页面
+        this.showBindNewDeviceConfirm(currentDeviceNo);
+      }
+      
+    } catch (error) {
+      wx.hideLoading();
+      console.error('获取设备列表失败:', error);
+      // 获取失败时，直接显示绑定新设备选项
+      this.showBindNewDeviceConfirm(currentDeviceNo);
+    }
+  },
+  
+  // 显示设备切换选项（有多个设备时）
+  showDeviceSwitchOptions(currentDeviceNo, otherDevices) {
+    const currentName = this.data.deviceInfo?.device_name || '当前设备';
+    
+    // 构建选项列表
+    const itemList = otherDevices.map(d => {
+      const name = d.device_name || d.deviceName || '未命名设备';
+      const code = d.deviceCode || d.device_no;
+      return `切换到：${name}（${code}）`;
+    });
+    itemList.push('绑定其他设备码');
+    
+    wx.showActionSheet({
+      itemList: itemList,
+      success: (res) => {
+        if (res.tapIndex < otherDevices.length) {
+          // 切换到其他已绑定的设备
+          const selectedDevice = otherDevices[res.tapIndex];
+          this.switchToDevice(selectedDevice);
+        } else {
+          // 绑定其他设备码
+          navigation.navigateTo('/pages/bind-device-code/bind-device-code?rebind=true');
+        }
+      }
+    });
+  },
+  
+  // 切换到指定设备
+  async switchToDevice(device) {
+    const deviceCode = device.deviceCode || device.device_no;
+    const deviceName = device.device_name || device.deviceName || '未命名设备';
     
     wx.showModal({
-      title: '重新绑定设备',
-      content: `当前绑定：${deviceName}\n设备码：${currentDeviceNo || '无'}\n\n确定要重新绑定设备吗？`,
-      confirmText: '重新绑定',
+      title: '切换设备',
+      content: `确定切换到设备：${deviceName}？`,
+      confirmText: '确定切换',
+      cancelText: '取消',
+      success: async (res) => {
+        if (res.confirm) {
+          // 保存新的设备码
+          DataManager.saveDeviceCode(deviceCode);
+          
+          // 更新全局数据
+          const app = getApp();
+          app.globalData.device_no = deviceCode;
+          
+          message.success('设备切换成功');
+          
+          // 刷新页面数据
+          await this.loadDeviceAndCustomerInfo();
+        }
+      }
+    });
+  },
+  
+  // 显示绑定新设备确认（只有一个设备时）
+  showBindNewDeviceConfirm(currentDeviceNo) {
+    const currentName = this.data.deviceInfo?.device_name || '当前设备';
+    
+    wx.showModal({
+      title: '绑定其他设备',
+      content: `当前绑定：${currentName}\n设备码：${currentDeviceNo || '无'}\n\n确定要绑定其他设备吗？`,
+      confirmText: '去绑定',
       cancelText: '取消',
       success: (res) => {
         if (res.confirm) {
-          // 跳转到绑定页面，带上 rebind 参数
           navigation.navigateTo('/pages/bind-device-code/bind-device-code?rebind=true');
         }
       }
