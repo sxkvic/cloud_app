@@ -1,89 +1,85 @@
-/* pages/privacy-policy/privacy-policy.wxss */
-
-page {
-  background-color: #f7f8fa;
-  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-}
-
+/* 全局容器 */
 .container {
-  min-height: 100vh;
-  padding: 30rpx;
-}
-
-.document {
+  padding: 30rpx 40rpx;
   background-color: #ffffff;
-  border-radius: 16rpx;
-  padding: 40rpx 30rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", STHeiti, "Microsoft Yahei", Tahoma, Simsun, sans-serif;
+  color: #333333;
+  line-height: 1.7; /* 增加行高，提升阅读体验 */
+  font-size: 30rpx; /* 微信小程序标准正文字号 */
 }
 
-/* 标题 */
-.doc-title {
-  font-size: 44rpx;
+/* 主标题 */
+.main-title {
+  font-size: 38rpx;
   font-weight: bold;
-  color: #1a1a1a;
   text-align: center;
-  margin-bottom: 20rpx;
-  line-height: 1.5;
+  margin-bottom: 40rpx;
+  color: #000000;
+  margin-top: 20rpx;
 }
 
-.doc-subtitle {
-  font-size: 24rpx;
-  color: #999;
-  text-align: center;
+/* 一级标题 (一、二、三) */
+.h1 {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #000000;
+  margin-top: 50rpx;
+  margin-bottom: 20rpx;
+  text-indent: 2em; /* 标题也保持缩进 */
+}
+
+/* 二级标题 (（一）、（二）) */
+.h2 {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-top: 30rpx;
+  margin-bottom: 16rpx;
+  text-indent: 2em;
+}
+
+/* 正文段落 */
+.p {
+  margin-bottom: 20rpx;
+  text-indent: 2em; /* 首行缩进 */
+  text-align: justify; /* 两端对齐 */
+  color: #4a4a4a; /* 稍微柔和的黑色 */
+}
+
+/* 列表项（无缩进或特殊缩进） */
+.list-item {
+  text-indent: 2em;
+  margin-bottom: 10rpx;
+  color: #4a4a4a;
+}
+
+/* 联系方式块，增加左边距 */
+.contact-info {
+  margin: 20rpx 0;
+  padding-left: 2em; /* 整体缩进 */
+  color: #4a4a4a;
+}
+
+.contact-info view {
   margin-bottom: 10rpx;
 }
 
-/* 章节 */
-.section {
-  margin-top: 40rpx;
+/* 分割线区域 */
+.divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 60rpx 0;
+  color: #999999;
+  font-size: 24rpx;
 }
 
-.section:first-child {
-  margin-top: 30rpx;
+.divider-line {
+  height: 1px;
+  background-color: #e5e5e5;
+  flex: 1;
 }
 
-.section-title {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #2B7FF0;
-  margin-bottom: 20rpx;
-  line-height: 1.5;
-}
-
-.subsection-title {
-  font-size: 30rpx;
-  font-weight: bold;
-  color: #333;
-  margin-top: 30rpx;
-  margin-bottom: 16rpx;
-  line-height: 1.5;
-}
-
-.section-content {
-  font-size: 28rpx;
-  color: #333;
-  line-height: 1.8;
-  margin-bottom: 16rpx;
-  text-align: justify;
-}
-
-.section-content.indent {
-  padding-left: 40rpx;
-  margin-bottom: 12rpx;
-}
-
-.bold {
-  font-weight: bold;
-  color: #1a1a1a;
-}
-
-/* 底部 */
-.doc-footer {
-  margin-top: 60rpx;
-  padding-top: 30rpx;
-  border-top: 1rpx solid #eee;
-  text-align: center;
-  font-size: 26rpx;
-  color: #666;
+.divider-text {
+  margin: 0 20rpx;
 }

@@ -1,19 +1,25 @@
-// pages/privacy-policy/privacy-policy.js
 Page({
+  /**
+   * 页面的初始数据
+   */
   data: {
-    
+
   },
 
-  onLoad(options) {
-    wx.setNavigationBarTitle({
-      title: '隐私政策'
-    });
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: function (options) {
+
   },
 
-  onShareAppMessage() {
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage: function () {
     return {
-      title: '云宽带隐私政策',
-      path: '/pages/privacy-policy/privacy-policy'
-    };
+      title: '用户隐私政策',
+      path: '/pages/privacy/privacy' // 请根据您的实际路径修改
+    }
   }
-});
+})
