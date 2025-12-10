@@ -125,44 +125,22 @@ Page({
     console.log('开始绑定设备，设备码:', deviceCode, '充值账号:', rechargeAccount);
 
     try {
-      // 清除旧的设备缓存数据
+      // 清除旧的设备绑定
       cacheManager.clearDeviceCache();
       
       // 直接调用绑定接口，后端会处理所有验证逻辑
       console.log('调用绑定接口...');
       await API.bindDevice(deviceCode, rechargeAccount);
 
-      // 绑定成功后，查询完整的设备信息
-      console.log('查询设备详细信息...');
-      const deviceInfoResult = await API.getCustomerByDeviceCode(deviceCode);
-      
-      if (!deviceInfoResult.success || !deviceInfoResult.data) {
-        throw new Error('获取设备信息失败');
-      }
-      
-      const { customer, binding_info, device_info } = deviceInfoResult.data;
-      
-      // 存储完整的设备信息到本地缓存（移除旧的deviceCode，只使用device_no）
+      // 绑定成功后，只保存设备码（不缓存其他数据，所有数据实时获取）
       wx.setStorageSync('deviceBound', true);
-      wx.setStorageSync('device_no', device_info?.device_no || deviceCode);
-      wx.setStorageSync('device_info', device_info);
-      wx.setStorageSync('customer_info', customer);
-      wx.setStorageSync('binding_info', binding_info);
+      wx.setStorageSync('device_no', deviceCode);
       
-      // 同步到全局数据
+      // 同步到全局数据（只保存设备码）
       app.globalData.deviceBound = true;
-      app.globalData.device_no = device_info?.device_no || deviceCode;
-      app.globalData.device_info = device_info;
-      app.globalData.customer_info = customer;
-      app.globalData.binding_info = binding_info;
+      app.globalData.device_no = deviceCode;
       
-      console.log('✅ 设备信息已存储:', {
-        device_no: device_info?.device_no,
-        device_name: device_info?.device_name,
-        customer_name: customer?.customer_name,
-        customer_id: customer?.id,
-        device_id: device_info?.id
-      });
+      console.log('✅ 设备绑定成功，设备码:', deviceCode);
 
       this.setData({ isLoading: false });
       message.success('设备绑定成功！');

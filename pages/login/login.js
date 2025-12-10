@@ -172,7 +172,7 @@ Page({
     }
   },
 
-  // 检查设备绑定状态并导航
+  // 检查设备绑定状态并导航（简化版：只保存设备码）
   async checkDeviceBindingAndNavigate() {
     try {
       console.log('🔍 检查用户设备绑定状态...');
@@ -185,86 +185,26 @@ Page({
       console.log('📊 设备数量:', devices.length);
       
       if (devices.length > 0) {
-        // 用户已绑定设备
+        // 用户已绑定设备，只保存设备码
         const firstDevice = devices[0];
         const deviceCode = firstDevice.deviceCode || firstDevice.device_no;
         
-        console.log('📦 从 getUserDevices 获取到的设备数据:', firstDevice);
+        // 只保存设备码，其他数据实时获取
+        DataManager.saveDeviceCode(deviceCode);
+        app.globalData.deviceBound = true;
+        app.globalData.device_no = deviceCode;
         
-        try {
-          // 使用 DataManager 获取完整信息（包括新接口数据）
-          console.log('🔍 使用 DataManager 获取完整客户信息...');
-          const completeInfoResult = await DataManager.getCompleteCustomerInfo(deviceCode, true);
-          
-          if (completeInfoResult.success && completeInfoResult.data) {
-            const completeData = completeInfoResult.data;
-            const { customer, binding_info, device_info } = completeData;
-            
-            // 存储完整的设备信息（包括新接口返回的额外数据）
-            wx.setStorageSync('deviceBound', true);
-            wx.setStorageSync('device_no', device_info?.device_no || deviceCode);
-            wx.setStorageSync('device_info', device_info);
-            wx.setStorageSync('customer_info', customer);
-            wx.setStorageSync('binding_info', binding_info);
-            wx.setStorageSync('complete_customer_info', completeData);
-            
-            // 同步到全局数据
-            app.globalData.deviceBound = true;
-            app.globalData.device_no = device_info?.device_no || deviceCode;
-            app.globalData.device_info = device_info;
-            app.globalData.customer_info = customer;
-            app.globalData.binding_info = binding_info;
-            app.globalData.complete_customer_info = completeData;
-            
-            console.log('✅ 完整客户信息已存储（包含新接口数据）:', {
-              device_no: device_info?.device_no,
-              device_name: device_info?.device_name,
-              customer_name: customer?.customer_name,
-              customer_id: customer?.id,
-              device_id: device_info?.id,
-              expire_time: binding_info?.expire_time,
-              current_package: binding_info?.current_package_name,
-              has_package_info: !!completeData.package_info,
-              has_balance_info: !!completeData.balance_info,
-              has_usage_info: !!completeData.usage_info
-            });
-          } else {
-            // 如果获取完整信息失败，至少保存基本信息
-            console.log('⚠️ 获取完整信息失败，使用 getUserDevices 的数据');
-            wx.setStorageSync('deviceBound', true);
-            wx.setStorageSync('device_no', firstDevice.device_no || deviceCode);
-            
-            app.globalData.deviceBound = true;
-            app.globalData.device_no = firstDevice.device_no || deviceCode;
-          }
-        } catch (error) {
-          console.error('❌ 查询完整客户信息失败:', error);
-          // 即使查询失败，也保存基本信息以便继续登录
-          wx.setStorageSync('deviceBound', true);
-          wx.setStorageSync('device_no', firstDevice.device_no || deviceCode);
-          
-          app.globalData.deviceBound = true;
-          app.globalData.device_no = firstDevice.device_no || deviceCode;
-        }
+        console.log('✅ 设备码已保存:', deviceCode);
         
-        // 直接跳转，不显示中间提示避免闪烁
-        console.log('用户已绑定设备，跳转首页');
+        // 跳转首页
         setTimeout(() => {
           this.setData({ loading: false });
           navigation.switchTab('/pages/home/home');
         }, 300);
       } else {
         // 用户未绑定设备
-        console.log('⚠️ 用户未绑定设备，清除可能存在的旧缓存');
-        
-        // 清除所有设备相关缓存（防止使用过期数据）
+        console.log('⚠️ 用户未绑定设备');
         cacheManager.clearDeviceCache();
-        app.globalData.device_no = null;
-        app.globalData.device_info = null;
-        app.globalData.customer_info = null;
-        app.globalData.binding_info = null;
-        
-        console.log('✅ 旧缓存已清除，跳转设备绑定页面');
         
         setTimeout(() => {
           this.setData({ loading: false });
@@ -273,7 +213,6 @@ Page({
       }
     } catch (error) {
       console.error('检查设备绑定失败:', error);
-      // 如果检查失败，也跳转到设备绑定页面
       setTimeout(() => {
         this.setData({ loading: false });
         navigation.navigateTo('/pages/bind-device-code/bind-device-code');

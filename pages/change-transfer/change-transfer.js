@@ -42,27 +42,24 @@ Page({
     console.log('变更过户页面显示');
   },
 
-  // 加载客户信息
+  // 加载客户信息（每次都从服务器获取最新数据，避免变更过户等场景下数据不一致）
   async loadCustomerInfo() {
     try {
       console.log('查询客户信息，设备码:', this.data.deviceCode);
       
       await message.withMinLoading(
         async () => {
-          // 优先从缓存获取
-          let customerInfo = wx.getStorageSync('complete_customer_info');
+          // 强制从服务器获取最新数据，不使用缓存
+          const result = await DataManager.getCompleteCustomerInfo(this.data.deviceCode, true);
           
-          if (!customerInfo) {
-            const result = await DataManager.getCompleteCustomerInfo(this.data.deviceCode, true);
-            customerInfo = result.data;
+          if (result.success && result.data) {
+            console.log('客户信息查询成功:', result.data);
+            this.setData({
+              customerInfo: result.data
+            });
+          } else {
+            console.error('获取客户信息失败:', result.message);
           }
-          
-          const result = { data: customerInfo };
-          console.log('客户信息查询成功:', result.data);
-          
-          this.setData({
-            customerInfo: result.data
-          });
         },
         {
           minDuration: 600,

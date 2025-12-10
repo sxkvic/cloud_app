@@ -1,106 +1,73 @@
 // pages/my/my.js
 const { navigation, message, cacheManager } = require('../../utils/common');
 const API = require('../../utils/api');
+const DataManager = require('../../utils/dataManager');
 const { getShareConfig, getTimelineShareConfig } = require('../../utils/share');
 
 Page({
   data: {
     loading: true,
     deviceInfo: {},
-    customerInfo: {}
+    customerInfo: {},
+    isFirstLoad: true
   },
 
-  onLoad() {
+  async onLoad() {
     console.log('我的页面加载');
-    this.loadDeviceAndCustomerInfo();
+    await this.loadDeviceAndCustomerInfo();
+    this.setData({ isFirstLoad: false });
   },
 
   async onShow() {
-    console.log('我的页面显示，刷新数据...');
-    
-    // 每次显示页面都获取最新数据，确保数据始终是最新的
-    await this.refreshDeviceInfo();
+    console.log('我的页面显示');
+    // 非首次加载时刷新数据
+    if (!this.data.isFirstLoad) {
+      await this.loadDeviceAndCustomerInfo();
+    }
   },
 
-  // 加载设备和客户信息
+  // 加载设备和客户信息（实时从服务器获取）
   async loadDeviceAndCustomerInfo() {
     try {
       this.setData({ loading: true });
-      console.log('加载设备和客户信息...');
-
-      // 从缓存获取设备信息
-      const deviceInfo = wx.getStorageSync('device_info') || {};
-      const customerInfo = wx.getStorageSync('customer_info') || {};
-      const bindingInfo = wx.getStorageSync('binding_info') || {};
       
-      console.log('缓存设备信息:', deviceInfo);
-      console.log('缓存客户信息:', customerInfo);
-
-      // 如果缓存中没有信息，尝试重新获取
-      if (!deviceInfo.device_name && wx.getStorageSync('device_no')) {
-        await this.refreshDeviceInfo();
+      const deviceNo = DataManager.getDeviceCode();
+      if (!deviceNo) {
+        console.log('未绑定设备');
+        this.setData({ loading: false });
         return;
       }
 
-      // 设置设备状态文本
-      const statusText = this.getDeviceStatusText(deviceInfo);
+      console.log('📊 实时获取设备和客户信息...');
       
-      this.setData({
-        deviceInfo: {
-          ...deviceInfo,
-          status_text: statusText
-        },
-        customerInfo,
-        loading: false
-      });
+      // 实时获取完整客户信息
+      const result = await DataManager.getCompleteCustomerInfo(deviceNo);
+      
+      if (result.success && result.data) {
+        const { customer, device_info, device } = result.data;
+        const deviceData = device_info || device || {};
+        
+        // 设置设备状态文本
+        const statusText = this.getDeviceStatusText(deviceData);
+        
+        this.setData({
+          deviceInfo: {
+            ...deviceData,
+            status_text: statusText
+          },
+          customerInfo: customer || {},
+          loading: false
+        });
+        
+        console.log('✅ 设备和客户信息已更新');
+      } else {
+        throw new Error(result.message || '获取设备信息失败');
+      }
 
     } catch (error) {
       console.error('加载设备信息失败:', error);
       this.setData({ loading: false });
       message.error('加载信息失败');
-    }
-  },
-
-  // 刷新设备信息
-  async refreshDeviceInfo() {
-    try {
-      const deviceCode = wx.getStorageSync('device_no');
-      if (!deviceCode) {
-        this.setData({ loading: false });
-        return;
-      }
-
-      console.log('重新获取设备信息...');
-      const result = await API.getCustomerByDeviceCode(deviceCode);
-      
-      if (result.success && result.data) {
-        const { customer, binding_info, device_info } = result.data;
-        
-        // 更新缓存
-        wx.setStorageSync('device_info', device_info);
-        wx.setStorageSync('customer_info', customer);
-        wx.setStorageSync('binding_info', binding_info);
-        
-        // 更新页面数据
-        const statusText = this.getDeviceStatusText(device_info);
-        
-        this.setData({
-          deviceInfo: {
-            ...device_info,
-            status_text: statusText
-          },
-          customerInfo: customer,
-          loading: false
-        });
-        
-        console.log('设备信息已刷新');
-      } else {
-        throw new Error('获取设备信息失败');
-      }
-    } catch (error) {
-      console.error('刷新设备信息失败:', error);
-      this.setData({ loading: false });
-      message.error('获取设备信息失败');
     }
   },
 
@@ -123,7 +90,7 @@ Page({
     }
   },
 
-  // 验证设备绑定状态
+  // 验证设备绑定状态（简化版：只检查设备码是否有效）
   async validateDeviceBinding() {
     try {
       const app = getApp();
@@ -134,83 +101,36 @@ Page({
         return;
       }
 
+      const deviceNo = DataManager.getDeviceCode();
+      if (!deviceNo) {
+        console.log('⚠️ 未绑定设备');
+        return;
+      }
+
       console.log('🔍 验证设备绑定状态...');
       
-      // 调用 getUserDevices 获取最新的设备列表
-      const devicesResult = await API.getUserDevices();
-      const devices = devicesResult.data.devices || [];
+      // 调用接口验证设备码是否有效
+      const result = await API.getCustomerByDeviceCode(deviceNo);
       
-      console.log('📋 服务器返回的设备列表:', devices);
-      
-      // 获取缓存中的设备编号
-      const cachedDeviceNo = wx.getStorageSync('device_no');
-      
-      if (devices.length === 0) {
-        // 服务器返回空设备列表
-        if (cachedDeviceNo) {
-          console.log('❌ 设备已解绑，清除本地缓存');
-          
-          // 清除所有设备相关缓存
-          cacheManager.clearDeviceCache();
-          app.globalData.device_no = null;
-          app.globalData.device_info = null;
-          app.globalData.customer_info = null;
-          app.globalData.binding_info = null;
-          
-          // 提示用户并跳转到绑定页面
-          wx.showModal({
-            title: '设备已解绑',
-            content: '您的设备绑定已失效，请重新绑定设备',
-            showCancel: false,
-            confirmText: '去绑定',
-            success: () => {
-              navigation.navigateTo('/pages/bind-device-code/bind-device-code');
-            }
-          });
-        }
-      } else {
-        // 服务器有设备数据
-        const firstDevice = devices[0];
-        const serverDeviceNo = firstDevice.deviceCode || firstDevice.device_no;
+      if (!result.success || !result.data) {
+        console.log('❌ 设备已解绑或无效，清除本地绑定');
+        cacheManager.clearDeviceCache();
         
-        if (cachedDeviceNo !== serverDeviceNo) {
-          console.log('⚠️ 缓存设备码与服务器不一致，更新缓存');
-          console.log('缓存设备码:', cachedDeviceNo);
-          console.log('服务器设备码:', serverDeviceNo);
-          
-          // 重新获取完整设备信息
-          try {
-            const deviceInfoResult = await API.getCustomerByDeviceCode(serverDeviceNo);
-            
-            if (deviceInfoResult.success && deviceInfoResult.data) {
-              const { customer, binding_info, device_info } = deviceInfoResult.data;
-              
-              // 更新缓存
-              wx.setStorageSync('deviceBound', true);
-              wx.setStorageSync('device_no', device_info?.device_no || serverDeviceNo);
-              wx.setStorageSync('device_info', device_info);
-              wx.setStorageSync('customer_info', customer);
-              wx.setStorageSync('binding_info', binding_info);
-              
-              // 更新全局数据
-              app.globalData.deviceBound = true;
-              app.globalData.device_no = device_info?.device_no || serverDeviceNo;
-              app.globalData.device_info = device_info;
-              app.globalData.customer_info = customer;
-              app.globalData.binding_info = binding_info;
-              
-              console.log('✅ 设备信息已更新');
-            }
-          } catch (error) {
-            console.error('❌ 更新设备信息失败:', error);
+        // 提示用户并跳转到绑定页面
+        wx.showModal({
+          title: '设备已解绑',
+          content: '您的设备绑定已失效，请重新绑定设备',
+          showCancel: false,
+          confirmText: '去绑定',
+          success: () => {
+            navigation.navigateTo('/pages/bind-device-code/bind-device-code');
           }
-        } else {
-          console.log('✅ 设备绑定状态正常');
-        }
+        });
+      } else {
+        console.log('✅ 设备绑定状态正常');
       }
     } catch (error) {
       console.error('❌ 验证设备绑定状态失败:', error);
-      // 验证失败不影响页面正常显示，只记录错误
     }
   },
 
@@ -225,8 +145,8 @@ Page({
 
   // 重新绑定设备
   rebindDevice() {
-    const currentDeviceNo = wx.getStorageSync('device_no');
-    const deviceName = wx.getStorageSync('device_info')?.device_name || '未知设备';
+    const currentDeviceNo = DataManager.getDeviceCode();
+    const deviceName = this.data.deviceInfo?.device_name || '当前设备';
     
     wx.showModal({
       title: '重新绑定设备',

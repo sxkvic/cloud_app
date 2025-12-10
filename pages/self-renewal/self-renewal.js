@@ -43,32 +43,18 @@ Page({
     await this.loadDeviceInfo();
   },
 
-  // 加载设备信息
+  // 加载设备信息（每次都从服务器获取最新数据，避免变更过户等场景下数据不一致）
   async loadDeviceInfo() {
     try {
       this.setData({ loading: true });
       
-      // 优先从缓存获取
-      let deviceInfo = wx.getStorageSync('complete_customer_info');
-      
-      if (!deviceInfo) {
-        console.log('⚠️ 缓存不存在，重新获取...');
-        const result = await DataManager.getCompleteCustomerInfo(this.data.deviceCode, true);
-        deviceInfo = result.data;
-      } else {
-        console.log('✅ 使用缓存的设备信息');
-      }
-      
-      const result = { success: true, data: deviceInfo };
+      // 强制从服务器获取最新数据，不使用缓存
+      const result = await DataManager.getCompleteCustomerInfo(this.data.deviceCode, true);
       console.log('设备信息:', result);
       
       if (result.success && result.data && result.data.binding_info) {
         const binding = result.data.binding_info;
         const customer = result.data.customer;
-        
-        // 保存到缓存
-        wx.setStorageSync('customer_info', customer);
-        wx.setStorageSync('binding_info', binding);
         
         this.setData({
           packageInfo: {

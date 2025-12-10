@@ -1,209 +1,168 @@
 /**
- * 数据管理工具
- * 用于管理客户信息、设备信息等数据的缓存和刷新
+ * 数据管理工具 - 无缓存版本
+ * 只存储设备码，所有数据实时从服务器获取
+ * 避免因缓存导致的数据污染问题（如变更过户场景）
  */
 
 const API = require('./api.js');
 
 /**
- * 需要清除的缓存键列表
+ * 获取当前绑定的设备码
+ * @returns {String|null} 设备码
  */
-const CACHE_KEYS = [
-  'customer_info',
-  'binding_info',
-  'device_info',
-  'complete_customer_info',
-  'device_no',
-  'device_name',
-  'customer_name',
-  'recharge_account',
-  'current_package',
-  'package_info',
-  'account_info',
-  'balance'
-];
-
-/**
- * 清除所有客户相关缓存
- */
-function clearCustomerCache() {
-  console.log('🗑️ 清除客户相关缓存...');
-  CACHE_KEYS.forEach(key => {
-    try {
-      wx.removeStorageSync(key);
-    } catch (error) {
-      console.error(`清除缓存失败: ${key}`, error);
-    }
-  });
-  console.log('✅ 缓存已清除');
+function getDeviceCode() {
+  return wx.getStorageSync('device_no') || null;
 }
 
 /**
- * 获取完整的客户信息（每次都从服务器获取最新数据）
+ * 保存设备码（绑定设备时调用）
  * @param {String} deviceCode 设备码
- * @param {Boolean} forceRefresh 是否强制刷新（默认true）
- * @returns {Promise} 完整的客户信息
  */
-async function getCompleteCustomerInfo(deviceCode, forceRefresh = true) {
-  try {
-    console.log('📊 获取完整客户信息...', { deviceCode, forceRefresh });
-
-    // 如果强制刷新，先清除缓存
-    if (forceRefresh) {
-      clearCustomerCache();
-    }
-
-    // 调用 API 获取完整信息
-    const result = await API.getCompleteCustomerInfo(deviceCode);
-
-    if (result.success && result.data) {
-      // 存储到缓存
-      saveCustomerInfoToCache(result.data);
-      console.log('✅ 客户信息已更新并缓存');
-      return result;
-    } else {
-      console.error('❌ 获取客户信息失败:', result.message);
-      return result;
-    }
-  } catch (error) {
-    console.error('❌ 获取完整客户信息异常:', error);
-    throw error;
-  }
+function saveDeviceCode(deviceCode) {
+  wx.setStorageSync('device_no', deviceCode);
+  wx.setStorageSync('deviceBound', true);
+  console.log('✅ 设备码已保存:', deviceCode);
 }
 
 /**
- * 保存客户信息到缓存
- * @param {Object} data 客户信息数据
+ * 清除设备绑定（解绑时调用）
  */
-function saveCustomerInfoToCache(data) {
-  try {
-    console.log('💾 保存客户信息到缓存...');
-
-    // 保存完整数据
-    wx.setStorageSync('complete_customer_info', data);
-
-    // 保存各个字段（兼容旧代码）
-    if (data.customer) {
-      wx.setStorageSync('customer_info', data.customer);
-      wx.setStorageSync('customer_name', data.customer.customer_name || '');
-    }
-
-    if (data.binding_info) {
-      wx.setStorageSync('binding_info', data.binding_info);
-      wx.setStorageSync('recharge_account', data.binding_info.recharge_account || '');
-      wx.setStorageSync('current_package', data.binding_info.current_package_name || '');
-    }
-
-    // 优先使用 device_info，如果没有则使用 device（新接口字段）
-    const deviceData = data.device_info || data.device;
-    if (deviceData) {
-      wx.setStorageSync('device_info', deviceData);
-      wx.setStorageSync('device_no', deviceData.device_no || '');
-      wx.setStorageSync('device_name', deviceData.device_name || '');
-    }
-
-    // 保存新接口的额外数据
-    if (data.package) {
-      wx.setStorageSync('package_info', data.package);
-    }
-
-    if (data.account) {
-      wx.setStorageSync('account_info', data.account);
-      wx.setStorageSync('balance', data.account.balance || '0');
-    }
-
-    console.log('✅ 客户信息已保存到缓存', {
-      has_customer: !!data.customer,
-      has_binding: !!data.binding_info,
-      has_device: !!(data.device_info || data.device),
-      has_package: !!data.package,
-      has_account: !!data.account
-    });
-  } catch (error) {
-    console.error('❌ 保存缓存失败:', error);
-  }
+function clearDeviceBinding() {
+  wx.removeStorageSync('device_no');
+  wx.removeStorageSync('deviceBound');
+  console.log('✅ 设备绑定已清除');
 }
 
 /**
- * 从缓存获取客户信息（不推荐使用，建议每次都获取最新数据）
- * @returns {Object|null} 缓存的客户信息
+ * 检查是否已绑定设备
+ * @returns {Boolean}
  */
-function getCustomerInfoFromCache() {
+function isDeviceBound() {
+  return !!getDeviceCode();
+}
+
+/**
+ * 获取完整的客户信息（实时从服务器获取）
+ * 调用两个接口获取完整数据：
+ * 1. getCustomerByDeviceCode - 获取基本信息和 recharge_account
+ * 2. getCustomerAndPackageByDeviceNo - 获取完整信息（包含套餐和账户）
+ * 
+ * @param {String} deviceCode 设备码（可选，不传则从本地获取）
+ * @returns {Promise<{success: Boolean, data: Object, message: String}>}
+ */
+async function getCompleteCustomerInfo(deviceCode) {
   try {
-    const completeInfo = wx.getStorageSync('complete_customer_info');
-    if (completeInfo) {
-      console.log('📦 从缓存获取客户信息');
-      return completeInfo;
+    // 如果没传设备码，从本地获取
+    const device_no = deviceCode || getDeviceCode();
+    
+    if (!device_no) {
+      return { success: false, message: '未绑定设备', data: null };
     }
 
-    // 兼容旧缓存结构
-    const customer = wx.getStorageSync('customer_info');
-    const binding = wx.getStorageSync('binding_info');
-    const device = wx.getStorageSync('device_info');
+    console.log('📊 实时获取客户信息...', { device_no });
 
-    if (customer || binding || device) {
-      console.log('📦 从旧缓存结构获取客户信息');
+    // 1. 先调用基本接口获取 recharge_account
+    const basicResult = await API.getCustomerByDeviceCode(device_no);
+    
+    if (!basicResult.success || !basicResult.data) {
+      console.error('❌ 获取基本信息失败:', basicResult.message);
+      return basicResult;
+    }
+
+    const rechargeAccount = basicResult.data.binding_info?.recharge_account;
+    
+    if (!rechargeAccount) {
+      // 没有 recharge_account，直接返回基本信息
+      console.log('⚠️ 未找到 recharge_account，返回基本信息');
       return {
-        customer,
-        binding_info: binding,
-        device_info: device
+        success: true,
+        message: '获取成功',
+        data: {
+          customer: basicResult.data.customer,
+          binding_info: basicResult.data.binding_info,
+          device_info: basicResult.data.device_info,
+          device: basicResult.data.device_info,
+          package: null,
+          account: null
+        }
       };
     }
 
-    return null;
+    // 2. 调用完整接口获取套餐和账户信息
+    console.log('📞 获取完整信息...', { device_no, rechargeAccount });
+    const completeResult = await API.getCustomerAndPackageByDeviceNo(device_no, rechargeAccount);
+    
+    if (completeResult.success && completeResult.data) {
+      // 合并数据，确保字段完整
+      const mergedData = {
+        customer: completeResult.data.customer || basicResult.data.customer,
+        binding_info: completeResult.data.binding_info || basicResult.data.binding_info,
+        device_info: basicResult.data.device_info,
+        device: completeResult.data.device,
+        package: completeResult.data.package,
+        account: completeResult.data.account
+      };
+      
+      console.log('✅ 完整客户信息获取成功', {
+        customer_name: mergedData.customer?.customer_name,
+        device_no: mergedData.device_info?.device_no || mergedData.device?.device_no,
+        has_package: !!mergedData.package,
+        balance: mergedData.account?.balance
+      });
+      
+      return { success: true, message: '获取成功', data: mergedData };
+    }
+
+    // 完整接口失败，返回基本信息
+    console.warn('⚠️ 完整接口调用失败，返回基本信息');
+    return {
+      success: true,
+      message: '获取成功（部分）',
+      data: {
+        customer: basicResult.data.customer,
+        binding_info: basicResult.data.binding_info,
+        device_info: basicResult.data.device_info,
+        device: basicResult.data.device_info,
+        package: null,
+        account: null
+      }
+    };
+
   } catch (error) {
-    console.error('❌ 获取缓存失败:', error);
-    return null;
+    console.error('❌ 获取客户信息异常:', error);
+    return { success: false, message: error.message || '获取失败', data: null };
   }
 }
 
 /**
- * 页面加载时获取最新数据的标准流程
- * @param {Object} page 页面实例
- * @param {String} deviceCode 设备码
- * @param {Function} callback 数据加载完成后的回调
+ * 快速获取基本客户信息（只调用一个接口，速度更快）
+ * 适用于只需要客户名称、设备信息等基本数据的场景
+ * 
+ * @param {String} deviceCode 设备码（可选）
+ * @returns {Promise<{success: Boolean, data: Object, message: String}>}
  */
-async function loadPageData(page, deviceCode, callback) {
+async function getBasicCustomerInfo(deviceCode) {
   try {
-    console.log('🔄 页面加载数据流程开始...', { deviceCode });
-
-    // 设置加载状态
-    if (page.setData) {
-      page.setData({ loading: true });
+    const device_no = deviceCode || getDeviceCode();
+    
+    if (!device_no) {
+      return { success: false, message: '未绑定设备', data: null };
     }
 
-    // 获取最新数据（强制刷新）
-    const result = await getCompleteCustomerInfo(deviceCode, true);
+    console.log('📊 获取基本客户信息...', { device_no });
+    return await API.getCustomerByDeviceCode(device_no);
 
-    if (result.success && result.data) {
-      // 执行回调
-      if (typeof callback === 'function') {
-        callback(result.data);
-      }
-      return result.data;
-    } else {
-      throw new Error(result.message || '获取数据失败');
-    }
   } catch (error) {
-    console.error('❌ 页面加载数据失败:', error);
-    wx.showToast({
-      title: '加载失败',
-      icon: 'none'
-    });
-    throw error;
-  } finally {
-    // 关闭加载状态
-    if (page.setData) {
-      page.setData({ loading: false });
-    }
+    console.error('❌ 获取基本信息异常:', error);
+    return { success: false, message: error.message || '获取失败', data: null };
   }
 }
 
 module.exports = {
-  clearCustomerCache,
+  getDeviceCode,
+  saveDeviceCode,
+  clearDeviceBinding,
+  isDeviceBound,
   getCompleteCustomerInfo,
-  saveCustomerInfoToCache,
-  getCustomerInfoFromCache,
-  loadPageData,
-  CACHE_KEYS
+  getBasicCustomerInfo
 };

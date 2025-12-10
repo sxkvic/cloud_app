@@ -1,46 +1,27 @@
 // utils/common.js - 通用工具函数
 
 /**
- * 缓存清理工具 - 统一清理设备相关的缓存数据
+ * 缓存清理工具 - 简化版（只管理设备绑定状态）
+ * 不再缓存客户信息等数据，所有数据实时从服务器获取
  */
 const cacheManager = {
-  // 清除所有设备相关缓存
+  // 清除设备绑定（解绑设备时调用）
   clearDeviceCache() {
-    console.log('🗑️ 清除所有设备相关缓存...');
+    console.log('🗑️ 清除设备绑定...');
     
-    // 清除存储缓存 - 包含所有设备和客户相关的缓存键
+    // 只清除设备绑定相关的键
     const deviceKeys = [
-      // 设备绑定状态
       'deviceBound',
-      'device_no', 
-      'device_info',
+      'device_no',
       'deviceCode',  // 旧版本兼容
-      'device_name',
-      'bindingSkipped',  // 跳过绑定状态
-      
-      // 客户信息
-      'customer_info',
-      'customer_name',
-      
-      // 绑定信息
-      'binding_info',
-      'recharge_account',
-      'current_package',
-      
-      // 完整信息
-      'complete_customer_info',
-      
-      // 套餐和账户信息
-      'package_info',
-      'account_info',
-      'balance'
+      'bindingSkipped'
     ];
     
     deviceKeys.forEach(key => {
       try {
         wx.removeStorageSync(key);
       } catch (error) {
-        console.warn(`清除缓存 ${key} 失败:`, error);
+        console.warn(`清除 ${key} 失败:`, error);
       }
     });
     
@@ -49,17 +30,14 @@ const cacheManager = {
     if (app && app.globalData) {
       app.globalData.deviceBound = false;
       app.globalData.device_no = '';
-      app.globalData.device_info = null;
-      app.globalData.customer_info = null;
-      app.globalData.binding_info = null;
     }
     
-    console.log('✅ 设备缓存清理完成');
+    console.log('✅ 设备绑定已清除');
   },
 
-  // 清除用户相关缓存（但保留设备信息）
+  // 清除用户登录状态
   clearUserCache() {
-    console.log('🗑️ 清除用户相关缓存...');
+    console.log('🗑️ 清除用户登录状态...');
     
     const userKeys = [
       'token',
@@ -72,7 +50,7 @@ const cacheManager = {
       try {
         wx.removeStorageSync(key);
       } catch (error) {
-        console.warn(`清除缓存 ${key} 失败:`, error);
+        console.warn(`清除 ${key} 失败:`, error);
       }
     });
     
@@ -85,15 +63,15 @@ const cacheManager = {
       app.globalData.isLoggedIn = false;
     }
     
-    console.log('✅ 用户缓存清理完成');
+    console.log('✅ 用户登录状态已清除');
   },
 
   // 完全清除所有缓存（登出时使用）
   clearAllCache() {
-    console.log('🗑️ 清除所有应用缓存...');
+    console.log('🗑️ 清除所有缓存...');
     this.clearDeviceCache();
     this.clearUserCache();
-    console.log('✅ 所有缓存清理完成');
+    console.log('✅ 所有缓存已清除');
   }
 };
 

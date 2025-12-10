@@ -78,40 +78,38 @@ Page({
     // 不需要每次都重新加载，使用登录时缓存的数据即可
   },
 
-  // 加载客户信息（优先使用缓存，登录时已获取完整数据）
+  // 加载客户信息（每次都从服务器获取最新数据，避免变更过户等场景下数据不一致）
   async loadCustomerInfo() {
     try {
       this.setData({ isLoadingCustomer: true });
-      console.log("� 加载客户信息，设备码:", this.data.deviceCode);
+      console.log("📦 加载客户信息，设备码:", this.data.deviceCode);
 
       if (!this.data.deviceCode) {
         message.error("设备码未设置，请重新登录");
         return;
       }
 
-      // 优先从缓存获取（登录时已通过 DataManager 获取完整信息）
-      let customerInfo = wx.getStorageSync('complete_customer_info');
+      // 强制从服务器获取最新数据，不使用缓存
+      const result = await DataManager.getCompleteCustomerInfo(this.data.deviceCode, true);
       
-      if (!customerInfo) {
-        // 如果缓存不存在，则重新获取
-        console.log("⚠️ 缓存不存在，重新获取完整信息...");
-        const result = await DataManager.getCompleteCustomerInfo(this.data.deviceCode, true);
-        customerInfo = result.data;
+      if (result.success && result.data) {
+        // 存储到页面数据
+        this.setData({
+          customerInfo: result.data,
+          isLoadingCustomer: false,
+        });
+
+        // 显示客户基本信息
+        const customerInfo = result.data;
+        if (customerInfo && customerInfo.customer) {
+          console.log(
+            `客户：${customerInfo.customer.customer_name}, 设备：${customerInfo.device_info?.device_name || '未知'}`
+          );
+        }
       } else {
-        console.log("✅ 使用缓存的客户信息");
-      }
-
-      // 存储到页面数据
-      this.setData({
-        customerInfo: customerInfo,
-        isLoadingCustomer: false,
-      });
-
-      // 显示客户基本信息
-      if (customerInfo && customerInfo.customer) {
-        console.log(
-          `客户：${customerInfo.customer.customer_name}, 设备：${customerInfo.device_info?.device_name || '未知'}`
-        );
+        console.error("获取客户信息失败:", result.message);
+        this.setData({ isLoadingCustomer: false });
+        message.error("无法获取客户信息，请稍后重试");
       }
     } catch (error) {
       console.error("❌ 加载客户信息失败:", error);

@@ -67,20 +67,17 @@ Page({
     this.setData({ loading: false });
   },
 
-  // 加载客户信息
+  // 加载客户信息（只需要基本信息，使用单接口获取）
   async loadCustomerInfo() {
     try {
-      // 优先从缓存获取
-      let customerInfo = wx.getStorageSync('complete_customer_info');
+      // 开票只需要客户基本信息，使用 getBasicCustomerInfo 只调用一次接口
+      const result = await DataManager.getBasicCustomerInfo(this.data.deviceNo);
       
-      if (!customerInfo) {
-        const result = await DataManager.getCompleteCustomerInfo(this.data.deviceNo, true);
-        customerInfo = result.data;
+      if (result.success && result.data) {
+        this.setData({
+          customerInfo: result.data
+        });
       }
-      
-      this.setData({
-        customerInfo: customerInfo
-      });
     } catch (error) {
       console.error('加载客户信息失败:', error);
     }

@@ -145,25 +145,22 @@ Page({
     }
   },
 
-  // 加载客户信息
+  // 加载客户信息（每次都从服务器获取最新数据，避免变更过户等场景下数据不一致）
   async loadCustomerInfo() {
     try {
       console.log('📦 加载客户信息，设备码:', this.data.deviceCode);
       
-      // 优先从缓存获取（登录时已获取完整信息）
-      let customerInfo = wx.getStorageSync('complete_customer_info');
+      // 强制从服务器获取最新数据，不使用缓存
+      const result = await DataManager.getCompleteCustomerInfo(this.data.deviceCode, true);
       
-      if (!customerInfo) {
-        console.log('⚠️ 缓存不存在，重新获取完整信息...');
-        const result = await DataManager.getCompleteCustomerInfo(this.data.deviceCode, true);
-        customerInfo = result.data;
+      if (result.success && result.data) {
+        this.setData({
+          customerInfo: result.data
+        });
       } else {
-        console.log('✅ 使用缓存的客户信息');
+        console.error('获取客户信息失败:', result.message);
+        message.error('无法获取客户信息，请稍后重试');
       }
-      
-      this.setData({
-        customerInfo: customerInfo
-      });
       
     } catch (error) {
       console.error('查询客户信息失败:', error);
