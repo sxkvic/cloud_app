@@ -1,0 +1,347 @@
+<!--pages/user-agreement/user-agreement.wxml-->
+<view class="container">
+  <view class="document">
+    
+    <!-- 标题 -->
+    <view class="doc-title">云宽带用户服务协议</view>
+    <view class="doc-subtitle">更新日期：2025年12月10日</view>
+    <view class="doc-subtitle">生效日期：2025年12月10日</view>
+    <view class="doc-subtitle">版本号：V1.0</view>
+    
+    <!-- 重要提示 -->
+    <view class="section">
+      <view class="section-title important">【重要提示】</view>
+      <view class="section-content">
+        欢迎您使用云宽带服务！在使用云宽带服务前，请您务必审慎阅读、充分理解本《云宽带用户服务协议》（以下简称"本协议"）各条款内容，特别是<text class="bold">免除或限制责任的条款、法律适用和争议解决条款</text>。免除或限制责任条款将以<text class="bold">加粗</text>形式提示您注意。
+      </view>
+      <view class="section-content">
+        本协议是您（以下简称"用户"或"您"）与云宽带服务提供方（以下简称"我们"或"云宽带"）之间就云宽带服务的使用所订立的协议。当您勾选"我已阅读并同意《云宽带用户服务协议》"或实际使用云宽带服务时，即视为您已充分阅读、理解并接受本协议的全部内容，本协议即在您与云宽带之间产生法律约束力。
+      </view>
+      <view class="section-content">
+        如您为无民事行为能力人或限制民事行为能力人，请在法定监护人的陪同下阅读本协议，并在取得法定监护人的同意后使用云宽带服务。
+      </view>
+    </view>
+    
+    <!-- 第一条 -->
+    <view class="section">
+      <view class="section-title">一、定义与说明</view>
+      <view class="section-content">
+        1.1 <text class="bold">云宽带服务</text>：指云宽带向用户提供的互联网接入服务，包括但不限于固定宽带接入、移动宽带接入、设备租赁、技术支持、增值服务等。
+      </view>
+      <view class="section-content">
+        1.2 <text class="bold">用户</text>：指通过合法途径获取云宽带服务使用权的自然人、法人或其他组织。
+      </view>
+      <view class="section-content">
+        1.3 <text class="bold">服务期限</text>：指用户订购云宽带服务的有效使用期限，具体以用户选择的套餐为准。
+      </view>
+      <view class="section-content">
+        1.4 <text class="bold">服务费用</text>：指用户使用云宽带服务应支付的费用，包括但不限于套餐费、设备租赁费、安装费、增值服务费等。
+      </view>
+    </view>
+    
+    <!-- 第二条 -->
+    <view class="section">
+      <view class="section-title">二、服务内容与标准</view>
+      <view class="section-content">
+        2.1 云宽带为用户提供符合国家标准的互联网接入服务，服务质量应符合《互联网接入服务规范》等相关标准。
+      </view>
+      <view class="section-content">
+        2.2 云宽带承诺提供7×24小时技术支持服务，用户可通过客服热线、在线客服等方式获取技术支持。
+      </view>
+      <view class="section-content">
+        2.3 <text class="bold">云宽带有权根据业务发展需要、技术升级或监管要求，对服务内容进行调整、升级或优化，并提前通过网站公告、短信、系统通知等方式告知用户。</text>
+      </view>
+      <view class="section-content">
+        2.4 因网络维护、系统升级等原因需要暂停服务的，云宽带将提前24小时通知用户；因不可抗力或紧急情况需要暂停服务的，云宽带将在事后及时通知用户并说明原因。
+      </view>
+    </view>
+    
+    <!-- 第三条 -->
+    <view class="section">
+      <view class="section-title">三、用户注册与实名认证</view>
+      <view class="section-content">
+        3.1 <text class="bold">实名制要求</text>：根据《中华人民共和国网络安全法》《电信和互联网用户个人信息保护规定》等法律法规要求，用户在使用云宽带服务前，必须提供真实、准确、完整的身份信息进行实名认证。
+      </view>
+      <view class="section-content">
+        3.2 用户应提供以下信息进行实名认证：
+      </view>
+      <view class="section-content indent">
+        （1）个人用户：真实姓名、有效身份证件号码、联系电话等；
+      </view>
+      <view class="section-content indent">
+        （2）企业用户：企业名称、统一社会信用代码、法定代表人信息、联系方式等。
+      </view>
+      <view class="section-content">
+        3.3 用户保证所提供的身份信息真实、准确、完整。如信息发生变更，应及时更新。因用户提供虚假信息或未及时更新信息导致的一切后果，由用户自行承担。
+      </view>
+      <view class="section-content">
+        3.4 用户账号仅限本人使用，不得转让、出借或以其他方式提供给第三方使用。用户应妥善保管账号信息，对账号下的所有行为承担责任。
+      </view>
+    </view>
+    
+    <!-- 第四条 -->
+    <view class="section">
+      <view class="section-title">四、用户权利与义务</view>
+      
+      <view class="subsection-title">4.1 用户权利</view>
+      <view class="section-content indent">
+        （1）按照所订购的服务套餐享受相应的网络服务；
+      </view>
+      <view class="section-content indent">
+        （2）对服务质量提出意见和建议，云宽带将及时处理并反馈；
+      </view>
+      <view class="section-content indent">
+        （3）查询本人的服务使用情况、费用账单等信息；
+      </view>
+      <view class="section-content indent">
+        （4）要求云宽带按照本协议约定提供服务；
+      </view>
+      <view class="section-content indent">
+        （5）法律法规规定的其他权利。
+      </view>
+      
+      <view class="subsection-title">4.2 用户义务</view>
+      <view class="section-content indent">
+        （1）遵守国家法律法规、社会公德和互联网相关规定；
+      </view>
+      <view class="section-content indent">
+        （2）不得利用云宽带服务从事危害国家安全、泄露国家秘密、侵犯国家、社会、集体利益和公民合法权益的活动；
+      </view>
+      <view class="section-content indent">
+        （3）不得制作、复制、发布、传播含有下列内容的信息：
+      </view>
+      <view class="section-content indent-2">
+        ① 反对宪法所确定的基本原则的；
+      </view>
+      <view class="section-content indent-2">
+        ② 危害国家安全，泄露国家秘密，颠覆国家政权，破坏国家统一的；
+      </view>
+      <view class="section-content indent-2">
+        ③ 损害国家荣誉和利益的；
+      </view>
+      <view class="section-content indent-2">
+        ④ 煽动民族仇恨、民族歧视，破坏民族团结的；
+      </view>
+      <view class="section-content indent-2">
+        ⑤ 破坏国家宗教政策，宣扬邪教和封建迷信的；
+      </view>
+      <view class="section-content indent-2">
+        ⑥ 散布谣言，扰乱社会秩序，破坏社会稳定的；
+      </view>
+      <view class="section-content indent-2">
+        ⑦ 散布淫秽、色情、赌博、暴力、凶杀、恐怖或者教唆犯罪的；
+      </view>
+      <view class="section-content indent-2">
+        ⑧ 侵害他人合法权益或者其他有害于社会道德风尚的；
+      </view>
+      <view class="section-content indent">
+        （4）不得传播计算机病毒、恶意程序或进行网络攻击、网络侵入等危害网络安全的行为；
+      </view>
+      <view class="section-content indent">
+        （5）按时缴纳服务费用；
+      </view>
+      <view class="section-content indent">
+        （6）合理使用网络资源，不得恶意占用带宽或影响其他用户正常使用；
+      </view>
+      <view class="section-content indent">
+        （7）配合云宽带进行网络维护、安全检查等工作。
+      </view>
+    </view>
+    
+    <!-- 第五条 -->
+    <view class="section">
+      <view class="section-title">五、服务费用与支付</view>
+      <view class="section-content">
+        5.1 云宽带服务采用预付费或后付费模式，具体以用户订购的套餐为准。用户应按照约定的方式和期限支付服务费用。
+      </view>
+      <view class="section-content">
+        5.2 用户可通过微信支付、支付宝、银行卡等云宽带支持的方式缴纳服务费用。
+      </view>
+      <view class="section-content">
+        5.3 云宽带有权根据市场情况、成本变化或监管要求调整服务资费标准，调整前将提前30天通过网站公告、短信、系统通知等方式告知用户。用户如不同意调整后的资费标准，有权在调整生效前终止服务。
+      </view>
+      <view class="section-content">
+        5.4 <text class="bold">用户欠费期间，云宽带有权暂停服务；欠费超过30天的，云宽带有权终止服务并解除本协议。因欠费导致的服务中断，云宽带不承担任何责任。</text>
+      </view>
+      <view class="section-content">
+        5.5 用户申请退费的，应符合云宽带的退费政策。因用户自身原因（如主动停机、违约等）导致的退费，云宽带有权扣除相应的违约金、已使用费用等。
+      </view>
+    </view>
+    
+    <!-- 第六条 -->
+    <view class="section">
+      <view class="section-title">六、服务暂停与终止</view>
+      <view class="section-content">
+        6.1 出现以下情形之一的，云宽带有权暂停或终止向用户提供服务：
+      </view>
+      <view class="section-content indent">
+        （1）用户违反本协议约定的；
+      </view>
+      <view class="section-content indent">
+        （2）用户利用云宽带服务从事违法违规活动的；
+      </view>
+      <view class="section-content indent">
+        （3）用户欠费的；
+      </view>
+      <view class="section-content indent">
+        （4）用户提供虚假身份信息的；
+      </view>
+      <view class="section-content indent">
+        （5）根据司法机关、行政机关的要求；
+      </view>
+      <view class="section-content indent">
+        （6）其他法律法规规定的情形。
+      </view>
+      <view class="section-content">
+        6.2 用户申请终止服务的，应提前通知云宽带并办理相关手续。用户应结清所有费用后，方可办理销户。
+      </view>
+      <view class="section-content">
+        6.3 服务终止后，云宽带有权删除用户的账号信息及相关数据。用户应自行备份重要数据。
+      </view>
+    </view>
+    
+    <!-- 第七条 -->
+    <view class="section">
+      <view class="section-title">七、隐私保护与信息安全</view>
+      <view class="section-content">
+        7.1 云宽带高度重视用户隐私保护，将按照《云宽带隐私政策》的约定收集、使用、存储和保护用户个人信息。
+      </view>
+      <view class="section-content">
+        7.2 云宽带采取符合行业标准的安全措施保护用户信息安全，防止用户信息遭到未经授权的访问、公开披露、使用、修改、损坏或丢失。
+      </view>
+      <view class="section-content">
+        7.3 <text class="bold">除法律法规规定或司法机关、行政机关要求外，云宽带不会向第三方披露用户个人信息。</text>
+      </view>
+    </view>
+    
+    <!-- 第八条 -->
+    <view class="section">
+      <view class="section-title">八、知识产权</view>
+      <view class="section-content">
+        8.1 云宽带服务中包含的所有内容（包括但不限于文字、图片、音频、视频、软件、程序、版面设计等）的知识产权均归云宽带或相关权利人所有。
+      </view>
+      <view class="section-content">
+        8.2 未经云宽带或相关权利人事先书面许可，用户不得擅自使用、复制、修改、传播上述内容，否则应承担相应的法律责任。
+      </view>
+    </view>
+    
+    <!-- 第九条 -->
+    <view class="section">
+      <view class="section-title">九、免责声明</view>
+      <view class="section-content">
+        9.1 <text class="bold">因以下原因导致的服务中断或故障，云宽带不承担责任：</text>
+      </view>
+      <view class="section-content indent">
+        （1）不可抗力，包括但不限于自然灾害、政府行为、法律法规变化等；
+      </view>
+      <view class="section-content indent">
+        （2）基础电信运营商的原因；
+      </view>
+      <view class="section-content indent">
+        （3）用户自身设备故障、操作不当等原因；
+      </view>
+      <view class="section-content indent">
+        （4）黑客攻击、计算机病毒等网络安全事件；
+      </view>
+      <view class="section-content indent">
+        （5）其他非云宽带原因。
+      </view>
+      <view class="section-content">
+        9.2 <text class="bold">用户理解并同意，互联网服务可能受到多种因素影响，云宽带不保证服务不中断、不延迟，不保证服务的安全性、准确性、及时性。</text>
+      </view>
+      <view class="section-content">
+        9.3 <text class="bold">用户使用云宽带服务访问第三方网站或使用第三方服务时，应遵守第三方的服务条款。因第三方网站或服务导致的任何损失，云宽带不承担责任。</text>
+      </view>
+    </view>
+    
+    <!-- 第十条 -->
+    <view class="section">
+      <view class="section-title">十、违约责任</view>
+      <view class="section-content">
+        10.1 用户违反本协议约定的，云宽带有权采取以下措施：
+      </view>
+      <view class="section-content indent">
+        （1）要求用户立即停止违约行为；
+      </view>
+      <view class="section-content indent">
+        （2）暂停或终止向用户提供服务；
+      </view>
+      <view class="section-content indent">
+        （3）要求用户赔偿因违约行为给云宽带造成的损失；
+      </view>
+      <view class="section-content indent">
+        （4）向有关部门报告用户的违法违规行为。
+      </view>
+      <view class="section-content">
+        10.2 云宽带违反本协议约定的，应承担相应的违约责任，但云宽带的责任以用户实际支付的服务费用为限。
+      </view>
+    </view>
+    
+    <!-- 第十一条 -->
+    <view class="section">
+      <view class="section-title">十一、协议的变更</view>
+      <view class="section-content">
+        11.1 云宽带有权根据国家法律法规变化、业务发展需要等原因修改本协议。修改后的协议将通过网站公告、系统通知等方式告知用户。
+      </view>
+      <view class="section-content">
+        11.2 如用户不同意修改后的协议，有权停止使用云宽带服务。用户继续使用云宽带服务的，视为接受修改后的协议。
+      </view>
+    </view>
+    
+    <!-- 第十二条 -->
+    <view class="section">
+      <view class="section-title">十二、争议解决</view>
+      <view class="section-content">
+        12.1 本协议的订立、执行和解释及争议的解决均应适用中华人民共和国法律。
+      </view>
+      <view class="section-content">
+        12.2 如双方就本协议内容或其执行发生任何争议，双方应尽量友好协商解决；协商不成时，任何一方均可向云宽带所在地人民法院提起诉讼。
+      </view>
+    </view>
+    
+    <!-- 第十三条 -->
+    <view class="section">
+      <view class="section-title">十三、其他</view>
+      <view class="section-content">
+        13.1 本协议的标题仅为方便阅读而设，不影响本协议任何条款的含义或解释。
+      </view>
+      <view class="section-content">
+        13.2 本协议任何条款被认定为无效或不可执行的，不影响其他条款的效力。
+      </view>
+      <view class="section-content">
+        13.3 云宽带未行使或延迟行使本协议项下的权利，不构成对该权利的放弃。
+      </view>
+      <view class="section-content">
+        13.4 本协议自用户点击同意之日起生效，除非依照本协议约定终止。
+      </view>
+    </view>
+    
+    <!-- 联系方式 -->
+    <view class="section">
+      <view class="section-title">联系我们</view>
+      <view class="section-content">
+        如您对本协议有任何疑问、意见或建议，请通过以下方式联系我们：
+      </view>
+      <view class="section-content indent">
+        客服热线：400-XXX-XXXX
+      </view>
+      <view class="section-content indent">
+        在线客服：小程序内在线客服
+      </view>
+      <view class="section-content indent">
+        电子邮箱：service@cloudbroadband.com
+      </view>
+    </view>
+    
+    <!-- 结尾 -->
+    <view class="section">
+      <view class="section-content center">
+        <text class="bold">云宽带服务提供方</text>
+      </view>
+      <view class="section-content center">
+        2025年12月10日
+      </view>
+    </view>
+    
+  </view>
+</view>

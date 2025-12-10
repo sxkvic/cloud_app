@@ -20,7 +20,9 @@
     "pages/change-transfer/change-transfer",
     "pages/product-query/product-query",
     "pages/complaint/complaint",
-    "pages/order-management/order-management"
+    "pages/order-management/order-management",
+    "pages/user-agreement/user-agreement",
+    "pages/privacy-policy/privacy-policy"
   ],
   "window": {
     "backgroundTextStyle": "light",

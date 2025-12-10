@@ -129,6 +129,80 @@ page {
   animation: slide-up 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
+/* 协议区域 */
+.agreement-box {
+  margin-bottom: 30rpx;
+}
+
+.agreement-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44rpx;
+}
+
+.agreement-checkbox-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12rpx;
+  height: 44rpx;
+}
+
+.agreement-checkbox {
+  transform: scale(0.65);
+  border-radius: 50% !important;
+  vertical-align: middle;
+}
+
+/* 尝试通过伪元素实现圆形效果 */
+checkbox .wx-checkbox-input {
+  border-radius: 50% !important;
+}
+
+checkbox .wx-checkbox-input-checked {
+  border-radius: 50% !important;
+}
+
+.agreement-text-wrapper {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  line-height: 44rpx;
+  height: 44rpx;
+}
+
+.agreement-text {
+  font-size: 24rpx;
+  color: #9CA3AF;
+  margin-right: 4rpx;
+  line-height: 44rpx;
+  height: 44rpx;
+  display: inline-block;
+}
+
+.agreement-link {
+  font-size: 24rpx;
+  color: #2B7FF0;
+  font-weight: 600;
+  margin: 0 4rpx;
+  text-decoration: none;
+  line-height: 44rpx;
+  height: 44rpx;
+  display: inline-block;
+  padding: 0 4rpx;
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
+  transition: opacity 0.2s ease;
+}
+
+.agreement-link:active {
+  opacity: 0.6;
+  transform: scale(0.98);
+}
+
 .login-btn {
   position: relative;
   width: 100% !important;
@@ -153,6 +227,12 @@ page {
 
 .login-btn.loading-state {
   opacity: 0.9;
+}
+
+.login-btn.disabled-state {
+  background: linear-gradient(135deg, #D1D5DB 0%, #9CA3AF 100%);
+  box-shadow: 0 10rpx 20rpx rgba(156, 163, 175, 0.15);
+  opacity: 0.6;
 }
 
 .btn-content {
@@ -191,21 +271,6 @@ page {
   z-index: 1;
 }
 
-.agreement-box {
-  text-align: center;
-  font-size: 24rpx;
-  line-height: 1.5;
-  margin-top: 20rpx; /* 增加顶部间距 */
-}
-
-.agreement-text {
-  color: #9CA3AF;
-}
-
-.agreement-link {
-  color: #2B7FF0;
-  font-weight: bold;
-}
 
 /* --- 动画关键帧定义 --- */
 

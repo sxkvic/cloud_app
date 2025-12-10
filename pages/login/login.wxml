@@ -30,10 +30,27 @@
 
     <!-- B. 底部操作区 -->
     <view class="action-section">
+      <!-- 隐私协议勾选 -->
+      <view class="agreement-box">
+        <view class="agreement-container">
+          <checkbox-group bindchange="onAgreeChange">
+            <label class="agreement-checkbox-label">
+              <checkbox value="agree" checked="{{agreed}}" color="#2B7FF0" class="agreement-checkbox"/>
+            </label>
+          </checkbox-group>
+          <view class="agreement-text-wrapper">
+            <text class="agreement-text">我已阅读并同意</text>
+            <view class="agreement-link" bindtap="navigateToUserAgreement">《用户服务协议》</view>
+            <text class="agreement-text">和</text>
+            <view class="agreement-link" bindtap="navigateToPrivacyPolicy">《隐私政策》</view>
+          </view>
+        </view>
+      </view>
+
       <!-- 登录按钮 -->
       <button 
-        class="login-btn {{loading ? 'loading-state' : ''}}" 
-        disabled="{{loading}}"
+        class="login-btn {{loading ? 'loading-state' : ''}} {{!agreed ? 'disabled-state' : ''}}" 
+        disabled="{{loading || !agreed}}"
         bindtap="onWeChatLogin"
         hover-class="btn-hover"
       >
@@ -41,17 +58,9 @@
         <view class="btn-shine"></view>
         
         <view class="btn-content">          
-          <text>{{loading ? '正在连接云端...' : '微信一键登录'}}</text>
+          <text>{{loading ? '正在登录...' : '微信一键登录'}}</text>
         </view>
       </button>
-
-      <!-- 协议链接 -->
-      <view class="agreement-box">
-        <text class="agreement-text">登录即代表您同意 </text>
-        <text class="agreement-link" bindtap="showAgreement">《用户协议》</text>
-        <text class="agreement-text"> 与 </text>
-        <text class="agreement-link">《隐私政策》</text>
-      </view>
     </view>
 
   </view>

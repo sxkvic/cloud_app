@@ -24,6 +24,19 @@ button::after {
   border: none !important;
 }
 
+/* 圆形 checkbox 样式 */
+checkbox .wx-checkbox-input {
+  border-radius: 50% !important;
+}
+
+checkbox .wx-checkbox-input-checked {
+  border-radius: 50% !important;
+}
+
+checkbox .wx-checkbox-input-checked::before {
+  border-radius: 50% !important;
+}
+
 /* 优化 Picker 选择器样式 */
 picker-view-column {
   font-size: 36rpx !important;

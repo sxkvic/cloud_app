@@ -6,7 +6,8 @@ const app = getApp();
 
 Page({
   data: {
-    loading: false
+    loading: false,
+    agreed: false  // 隐私协议同意状态
   },
 
   onLoad() {
@@ -18,8 +19,63 @@ Page({
     console.log('登录页显示');
   },
 
+  // 隐私协议勾选变化
+  onAgreeChange(e) {
+    const agreed = e.detail.value.length > 0;
+    this.setData({ agreed });
+    console.log('隐私协议同意状态:', agreed);
+  },
+
+  // 跳转到用户协议
+  navigateToUserAgreement(e) {
+    console.log('🔗 点击用户协议链接', e);
+    if (e && e.stopPropagation) {
+      e.stopPropagation();
+    }
+    
+    console.log('🚀 准备跳转到用户协议页面');
+    wx.navigateTo({
+      url: '/pages/user-agreement/user-agreement',
+      success: () => {
+        console.log('✅ 跳转用户协议成功');
+      },
+      fail: (err) => {
+        console.error('❌ 跳转用户协议失败:', err);
+      }
+    });
+  },
+
+  // 跳转到隐私政策
+  navigateToPrivacyPolicy(e) {
+    console.log('🔗 点击隐私政策链接', e);
+    if (e && e.stopPropagation) {
+      e.stopPropagation();
+    }
+    
+    console.log('🚀 准备跳转到隐私政策页面');
+    wx.navigateTo({
+      url: '/pages/privacy-policy/privacy-policy',
+      success: () => {
+        console.log('✅ 跳转隐私政策成功');
+      },
+      fail: (err) => {
+        console.error('❌ 跳转隐私政策失败:', err);
+      }
+    });
+  },
+
   // 微信登录
   async onWeChatLogin() {
+    // 检查是否同意协议
+    if (!this.data.agreed) {
+      wx.showToast({
+        title: '请先同意用户协议和隐私政策',
+        icon: 'none',
+        duration: 2000
+      });
+      return;
+    }
+
     // 防止重复调用
     if (this.data.loading) {
       console.log('登录进行中，忽略重复调用');
@@ -225,17 +281,6 @@ Page({
     }
   },
 
-
-  // 显示协议
-  showAgreement(e) {
-    e.stopPropagation();
-    wx.showModal({
-      title: '用户服务协议',
-      content: '这里是用户服务协议的内容...\n\n1. 服务条款\n2. 隐私政策\n3. 免责声明',
-      showCancel: false,
-      confirmText: '我知道了'
-    });
-  },
 
   // 联系客服
   contactService() {
