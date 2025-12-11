@@ -7,21 +7,83 @@
 const API = require('./api.js');
 
 /**
- * 获取当前绑定的设备码
- * @returns {String|null} 设备码
+ * 获取设备码（从本地缓存）
+ * @returns {String|null}
  */
 function getDeviceCode() {
-  return wx.getStorageSync('device_no') || null;
+  return wx.getStorageSync('device_no') || wx.getStorageSync('deviceCode') || null;
 }
 
 /**
- * 保存设备码（绑定设备时调用）
- * @param {String} deviceCode 设备码
+ * 获取当前用户的所有设备（实时从服务器获取）
+ * @returns {Promise<Array>} 设备列表
+ */
+async function getUserDeviceList() {
+  try {
+    const result = await API.getUserDevices();
+    if (result.success && result.data?.devices) {
+      console.log('获取到用户设备列表:', result.data.devices.length, '个设备');
+      return result.data.devices || [];
+    }
+    return [];
+  } catch (error) {
+    console.error('获取设备列表失败:', error);
+    return [];
+  }
+}
+
+/**
+ * 获取或验证当前设备码
+ * 如果缓存的设备码无效，自动切换到第一个可用设备
+ * @returns {Promise<String|null>} 有效的设备码
+ */
+async function getValidDeviceCode() {
+  try {
+    // 获取用户的所有设备
+    const devices = await getUserDeviceList();
+    
+    if (!devices || devices.length === 0) {
+      console.log('用户未绑定任何设备');
+      clearDeviceBinding();
+      return null;
+    }
+    
+    // 获取缓存的设备码
+    const cachedDeviceCode = getDeviceCode();
+    
+    // 检查缓存的设备码是否在设备列表中
+    const isValid = devices.some(device => 
+      device.device_no === cachedDeviceCode || 
+      device.device_code === cachedDeviceCode
+    );
+    
+    if (isValid) {
+      console.log('缓存设备码有效:', cachedDeviceCode);
+      return cachedDeviceCode;
+    }
+    
+    // 缓存的设备码无效，使用第一个设备
+    const firstDevice = devices[0];
+    const newDeviceCode = firstDevice.device_no || firstDevice.device_code;
+    
+    console.log('切换到新设备:', newDeviceCode);
+    saveDeviceCode(newDeviceCode);
+    
+    return newDeviceCode;
+  } catch (error) {
+    console.error('验证设备码失败:', error);
+    return getDeviceCode(); // 降级使用缓存
+  }
+}
+
+/**
+ * 保存设备码（绑定时调用）
+ * @param {String} deviceCode 
  */
 function saveDeviceCode(deviceCode) {
   wx.setStorageSync('device_no', deviceCode);
   wx.setStorageSync('deviceBound', true);
-  console.log('✅ 设备码已保存:', deviceCode);
+  console.log('设备码已保存:', deviceCode);
 }
 
 /**
@@ -52,8 +114,8 @@ function isDeviceBound() {
  */
 async function getCompleteCustomerInfo(deviceCode) {
   try {
-    // 如果没传设备码，从本地获取
-    const device_no = deviceCode || getDeviceCode();
+    // 如果没传设备码，获取有效的设备码（会自动验证和切换）
+    const device_no = deviceCode || await getValidDeviceCode();
     
     if (!device_no) {
       return { success: false, message: '未绑定设备', data: null };
@@ -143,7 +205,8 @@ async function getCompleteCustomerInfo(deviceCode) {
  */
 async function getBasicCustomerInfo(deviceCode) {
   try {
-    const device_no = deviceCode || getDeviceCode();
+    // 如果没传设备码，获取有效的设备码（会自动验证和切换）
+    const device_no = deviceCode || await getValidDeviceCode();
     
     if (!device_no) {
       return { success: false, message: '未绑定设备', data: null };
@@ -160,6 +223,8 @@ async function getBasicCustomerInfo(deviceCode) {
 
 module.exports = {
   getDeviceCode,
+  getValidDeviceCode,
+  getUserDeviceList,
   saveDeviceCode,
   clearDeviceBinding,
   isDeviceBound,

@@ -86,7 +86,7 @@ Page({
     await this.loadAccountInfo();
   },
 
-  // 验证设备绑定状态（简化版：只检查设备码是否有效）
+  // 验证设备绑定状态（使用新的验证逻辑）
   async validateDeviceBinding() {
     try {
       const app = getApp();
@@ -96,27 +96,22 @@ Page({
         return;
       }
 
-      const deviceNo = DataManager.getDeviceCode();
-      if (!deviceNo) {
-        return;
-      }
+      // 使用新的验证逻辑，会自动处理设备切换
+      const validDeviceNo = await DataManager.getValidDeviceCode();
       
-      // 调用接口验证设备码是否有效
-      const result = await API.getCustomerByDeviceCode(deviceNo);
-      
-      if (!result.success || !result.data) {
-        cacheManager.clearDeviceCache();
-        
-        // 提示用户并跳转到绑定页面
+      if (!validDeviceNo) {
+        // 没有任何有效设备，提示用户绑定
         wx.showModal({
-          title: '设备已解绑',
-          content: '您的设备绑定已失效，请重新绑定设备',
+          title: '设备未绑定',
+          content: '您还没有绑定任何设备，请先绑定设备',
           showCancel: false,
           confirmText: '去绑定',
           success: () => {
             navigation.navigateTo('/pages/bind-device-code/bind-device-code');
           }
         });
+      } else {
+        console.log('✅ 设备验证成功:', validDeviceNo);
       }
     } catch (error) {
       console.error('❌ 验证设备绑定状态失败:', error);
@@ -126,13 +121,14 @@ Page({
   // 加载账户信息（实时从服务器获取）
   async loadAccountInfo() {
     try {
-      const deviceNo = DataManager.getDeviceCode();
+      // 使用新的验证逻辑，自动获取有效的设备码
+      const deviceNo = await DataManager.getValidDeviceCode();
       
       if (!deviceNo) {
         return;
       }
       
-      // 实时获取完整客户信息
+      // 实时获取完整客户信息（已经传入了有效的设备码）
       const result = await DataManager.getCompleteCustomerInfo(deviceNo);
       
       if (result.success && result.data) {
