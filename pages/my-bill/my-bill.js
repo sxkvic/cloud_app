@@ -5,6 +5,9 @@ const DataManager = require('../../utils/dataManager');
 
 Page({
   data: {
+    statusBarHeight: 0,
+    navBarHeight: 44,
+    scrollViewHeight: 0,
     bills: [],
     loading: true,
     deviceCode: '',              // 设备编号，从缓存读取
@@ -15,10 +18,27 @@ Page({
     currentPage: 1,              // 当前页码
     pageSize: 10,                // 每页数量
     hasMore: true,               // 是否有更多数据
-    loadingMore: false           // 是否正在加载更多
+    loadingMore: false,          // 是否正在加载更多
+    refreshing: false            // 是否正在下拉刷新
   },
 
   async onLoad() {
+    // 获取系统信息设置状态栏高度
+    const systemInfo = wx.getSystemInfoSync();
+    const statusBarHeight = systemInfo.statusBarHeight || 0;
+    const menuButtonInfo = wx.getMenuButtonBoundingClientRect();
+    const navBarHeight = menuButtonInfo.height + (menuButtonInfo.top - statusBarHeight) * 2;
+    
+    // 计算滚动区域高度 = 屏幕高度 - 导航栏高度 - 状态栏高度 - 头部卡片高度(约120px)
+    const windowHeight = systemInfo.windowHeight;
+    const headerCardHeight = 120; // 头部卡片大约高度
+    const scrollViewHeight = windowHeight - statusBarHeight - navBarHeight - headerCardHeight;
+    
+    this.setData({
+      statusBarHeight,
+      navBarHeight,
+      scrollViewHeight
+    });
     // 从本地缓存读取设备编号
     const device_no = wx.getStorageSync('device_no') || wx.getStorageSync('deviceCode');
     
@@ -48,9 +68,8 @@ Page({
 
   // 下拉刷新
   async onPullDownRefresh() {
-    
-    // 显示刷新动画
-    wx.showNavigationBarLoading();
+    // 设置刷新状态
+    this.setData({ refreshing: true });
     
     // 重置页码并重新加载
     this.setData({ 
@@ -60,8 +79,7 @@ Page({
     const result = await this.loadBills(true); // true表示刷新
     
     // 停止下拉刷新
-    wx.stopPullDownRefresh();
-    wx.hideNavigationBarLoading();
+    this.setData({ refreshing: false });
     
     // 根据结果显示提示
     if (result && result.success) {
@@ -423,5 +441,17 @@ Page({
     const diffTime = Math.abs(end - start);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
+  },
+
+  // 返回上一页
+  handleBack() {
+    const pages = getCurrentPages();
+    if (pages.length > 1) {
+      wx.navigateBack();
+    } else {
+      wx.switchTab({
+        url: '/pages/home/home'
+      });
+    }
   }
 });
