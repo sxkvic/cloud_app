@@ -50,23 +50,19 @@ Page({
   async onPullDownRefresh() {
     console.log('下拉刷新账单列表');
     
-    try {
-      // 显示刷新动画
-      wx.showNavigationBarLoading();
-      
-      // 重新加载账单列表
-      await this.loadBills();
-      
-      // 停止下拉刷新
-      wx.stopPullDownRefresh();
-      wx.hideNavigationBarLoading();
-      
+    // 显示刷新动画
+    wx.showNavigationBarLoading();
+    
+    // 重新加载账单列表
+    const result = await this.loadBills();
+    
+    // 停止下拉刷新
+    wx.stopPullDownRefresh();
+    wx.hideNavigationBarLoading();
+    
+    // 根据结果显示提示
+    if (result && result.success) {
       message.success('刷新成功');
-    } catch (error) {
-      console.error('下拉刷新失败:', error);
-      wx.stopPullDownRefresh();
-      wx.hideNavigationBarLoading();
-      message.error('刷新失败，请重试');
     }
   },
 
@@ -133,11 +129,16 @@ Page({
         bills: bills,
         loading: false
       });
+      
+      // 返回成功状态
+      return { success: true };
 
     } catch (error) {
       console.error('加载账单失败:', error);
       this.setData({ loading: false });
       message.error('加载失败，请下拉刷新');
+      // 返回失败状态
+      return { success: false };
     }
   },
 
@@ -240,8 +241,8 @@ Page({
             wx.hideLoading();
             message.success('发票已生成完成');
             
-            // 刷新列表
-            this.loadBills();
+            // 刷新列表（不需要再显示提示）
+            await this.loadBills();
           } catch (e) {
             wx.hideLoading();
             message.error('更新状态失败');
