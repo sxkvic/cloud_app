@@ -12,6 +12,13 @@ Page({
     customerInfo: null,
     loading: true,
     
+    // 账单信息
+    billId: null,
+    billNo: '',
+    orderNo: '',
+    orderAmount: '',
+    rechargeAccount: '',
+    
     // 表单数据
     titleType: '1', // "1"=个人, "2"=企业
     invoiceType: 1, // 1=增值税普通发票（固定，不可选择专票）
@@ -29,9 +36,43 @@ Page({
     pageSize: 10
   },
 
-  async onLoad() {
-    console.log('开票页面加载');
+  async onLoad(options) {
+    console.log('开票页面加载', options);
+    
+    // 获取账单ID（兼容 bill_id、billId 和 id）
+    const billId = options.billId || options.bill_id || options.id;
+    
+    if (billId) {
+      this.setData({ billId: parseInt(billId) });
+      // 加载账单详情
+      await this.loadBillDetail();
+    }
+    
     await this.init();
+  },
+
+  // 加载账单详情
+  async loadBillDetail() {
+    try {
+      console.log('加载账单详情，ID:', this.data.billId);
+      const result = await API.getCustomerBillDetail(this.data.billId);
+      
+      if (result.success && result.data) {
+        const billDetail = result.data;
+        console.log('账单详情:', billDetail);
+        
+        // 从账单详情中提取所需数据
+        this.setData({
+          billNo: billDetail.bill_no || '',
+          orderNo: billDetail.order_no || billDetail.bill_no || '',
+          orderAmount: billDetail.amount || '',
+          rechargeAccount: billDetail.recharge_account || ''
+        });
+      }
+    } catch (error) {
+      console.error('加载账单详情失败:', error);
+      message.error('加载账单信息失败');
+    }
   },
 
   async onShow() {
@@ -130,7 +171,7 @@ Page({
         const info = result.data;
 
         // 填充表单，title_type: 1=个人, 2=企业
-        const titleType = String(info.title_type || '2');
+        const titleType = String(info.title_type || '1');
         this.setData({
           titleType: titleType,
           invoiceTitle: info.invoice_title || '',
@@ -228,7 +269,7 @@ Page({
     const hasEmail = receiveEmail && receiveEmail.trim().length > 0;
     const isValidEmail = this.validateEmail(receiveEmail);
 
-    if (titleType === '2') {
+    if (titleType == '1') {
       // 个人发票验证
       canSubmit = hasTitle && hasEmail && isValidEmail;
     } else {
@@ -295,18 +336,18 @@ Page({
     }
 
     // 企业发票验证社会信用代码
-    if (titleType === '1') {
+    if (titleType == '2') {
       if (!this.validateTaxNumber(socialCreditCode)) {
         message.error('请输入正确的统一社会信用代码');
         return;
       }
     }
 
-    const typeText = titleType === '2' ? '个人' : '企业';
-    const invoiceTypeText = invoiceType === 1 ? '增值税普通发票' : '增值税专用发票';
+    const typeText = titleType == '1' ? '个人' : '企业';
+    const invoiceTypeText = invoiceType == 1 ? '增值税普通发票' : '增值税专用发票';
     
     let content = `抬头类型：${typeText}\n发票抬头：${invoiceTitle}\n发票类型：${invoiceTypeText}\n接收邮箱：${receiveEmail}\n`;
-    if (titleType === '1') {
+    if (titleType == '2') {
       content += `社会信用代码：${socialCreditCode}\n`;
     }
     content += `\n确认提交开票申请？`;
@@ -324,14 +365,18 @@ Page({
     });
   },
 
-  // 处理开票申请
+  // 处理开票申请 - 完全重构版本
   async processInvoice() {
-    const { titleType, invoiceType, invoiceTitle, socialCreditCode, receiveEmail, bankName, bankAccount, deviceNo, customerInfo } = this.data;
+    const { 
+      titleType, invoiceType, invoiceTitle, socialCreditCode, receiveEmail, 
+      bankName, bankAccount, deviceNo, customerInfo,
+      billId, billNo, orderNo, orderAmount, rechargeAccount 
+    } = this.data;
+
+    wx.showLoading({ title: '正在处理...', mask: true });
 
     try {
-      console.log('提交开票申请');
-
-      // 构建API参数
+      // ============ 步骤1: 保存开票信息 ============
       const invoiceInfo = {
         title_type: titleType,
         invoice_title: invoiceTitle,
@@ -343,51 +388,307 @@ Page({
       };
 
       // 企业发票额外参数
-      if (titleType === '1') {
+      if (titleType == '2') {
         invoiceInfo.social_credit_code = socialCreditCode;
-        if (bankName) {
-          invoiceInfo.bank_name = bankName;
-        }
-        if (bankAccount) {
-          invoiceInfo.bank_account = bankAccount;
-        }
+        if (bankName) invoiceInfo.bank_name = bankName;
+        if (bankAccount) invoiceInfo.bank_account = bankAccount;
       }
 
-      console.log('开票参数:', invoiceInfo);
+      const saveResult = await API.createOrUpdateInvoiceInfo(invoiceInfo);
+      if (!saveResult || !saveResult.success) {
+        wx.hideLoading();
+        message.error(saveResult?.message || '保存开票信息失败');
+        return;
+      }
 
-      // 调用API
-      await message.withMinLoading(
-        async () => {
-          return await API.createOrUpdateInvoiceInfo(invoiceInfo);
-        },
-        {
-          minDuration: 800,
-          successText: '开票信息保存成功',
-          errorText: '保存失败，请重试'
+      // 如果没有账单ID，只保存开票信息
+      if (!billId) {
+        wx.hideLoading();
+        message.success('开票信息保存成功');
+        setTimeout(() => navigation.switchTab('/pages/home/home'), 1500);
+        return;
+      }
+
+      // 检查必要参数
+      if (!orderNo) {
+        wx.hideLoading();
+        message.error('缺少订单号，无法开票');
+        return;
+      }
+
+      // ============ 步骤2: 生成开票订单 ============
+      const orderData = {
+        OuterOrderId: orderNo,
+        CallBackUrl: '',
+        MerchantTaxID: '92320508MA7LMLTE51',
+        MerchantAddress: '江苏省苏州市姑苏区广济南路288号1003室',
+        MerchantPhone: '',
+        PurchaserName: invoiceTitle,
+        PurchaserTaxID: titleType == '2' ? socialCreditCode : '',
+        PurchaserEmail: receiveEmail,
+        IsPurchaserNaturalPerson: titleType == '1' ? '1' : '0',
+        InvoiceType: 12,
+        OrderType: 1,
+        ItemList: [{
+          ItemName: '电信服务费',
+          Amount: orderAmount,
+          TaxRate: '0.01',
+          CatalogCode: '3030299000000000000'
+        }]
+      };
+
+      const generateResult = await API.generateInvoiceOrder(orderData);
+      console.log('生成订单返回:', generateResult);
+      
+      // 只在Code明确不等于'0'时才认为失败
+      if (generateResult && generateResult.Code != '0' && generateResult.Code != 0) {
+        console.log('订单生成失败，Code:', generateResult.Code);
+        wx.hideLoading();
+        message.error(generateResult.Msg || '生成开票订单失败');
+        return;
+      }
+      
+      console.log('订单生成成功，继续流程');
+
+      // ============ 步骤3: 更新账单状态为开票中（非关键步骤） ============
+      try {
+        console.log('更新账单状态，billId:', billId, 'status: 3');
+        await API.updateBillStatus(billId, 3);
+        console.log('账单状态更新成功');
+      } catch (e) {
+        console.log('更新账单状态失败，不影响开票流程', e);
+      }
+
+      // ============ 步骤4: 查询发票信息（带重试机制） ============
+      
+      // 先隐藏之前的loading
+      wx.hideLoading();
+      
+      // 显示开票进度提示
+      wx.showModal({
+        title: '正在开具发票',
+        content: '发票正在生成中，请耐心等待...\n\n预计需要10-20秒',
+        showCancel: false,
+        confirmText: '知道了',
+        success: (res) => {
+          // 用户点击确定后，继续显示loading
         }
-      );
-
-      console.log('开票申请成功');
-
-      setTimeout(() => {
-        const typeText = titleType === '2' ? '个人' : '企业';
-        const invoiceTypeText = invoiceType === 1 ? '增值税普通发票' : '增值税专用发票';
-
+      });
+      
+      // 等待用户确认后再显示loading
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // 创建进度提示
+      const stepMessages = [
+        '正在提交开票请求...',
+        '正在生成电子发票...',
+        '正在加盖电子印章...',
+        '正在生成PDF文件...',
+        '即将完成，请稍候...'
+      ];
+      
+      let invoiceInfoResult = null;
+      let pdfFile = null;
+      const maxRetries = 15; // 增加到15次重试（总共30秒）
+      const retryDelay = 2000; // 每次重试间隔2秒
+      
+      for (let i = 0; i < maxRetries; i++) {
+        // 动态更新提示文字
+        const messageIndex = Math.min(Math.floor((i / maxRetries) * stepMessages.length), stepMessages.length - 1);
+        const currentMessage = stepMessages[messageIndex];
+        
+        // 添加进度百分比
+        const progress = Math.min(Math.floor(((i + 1) / maxRetries) * 90), 90); // 最多显示90%
+        
+        wx.showLoading({
+          title: `${currentMessage}(${progress}%)`,
+          mask: true
+        });
+        
+        if (i > 0) {
+          console.log(`第${i}次重试查询发票信息...`);
+          await new Promise(resolve => setTimeout(resolve, retryDelay));
+        } else {
+          // 第一次查询前等待2秒
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+        
+        invoiceInfoResult = await API.getInvoiceInfo(orderNo);
+        console.log(`第${i + 1}次查询发票信息返回:`, invoiceInfoResult);
+        
+        // 检查是否成功获取发票信息
+        if (invoiceInfoResult && 
+            (invoiceInfoResult.Code == '0' || invoiceInfoResult.Code == 0) &&
+            invoiceInfoResult.InvoiceList && 
+            invoiceInfoResult.InvoiceList.length > 0) {
+          
+          const invoice = invoiceInfoResult.InvoiceList[0];
+          console.log('发票详情:', invoice);
+          console.log('ElecInvoiceFileList:', invoice.ElecInvoiceFileList);
+          
+          // 查找PDF文件
+          pdfFile = invoice.ElecInvoiceFileList?.find(f => {
+            console.log('检查文件:', f);
+            return f.FileType == 13 || f.FileType == '13';
+          });
+          
+          if (pdfFile && pdfFile.FileUrl) {
+            console.log('找到PDF文件:', pdfFile);
+            break; // 成功找到PDF，退出循环
+          } else {
+            console.log(`第${i + 1}次查询：PDF文件尚未生成`);
+          }
+        } else {
+          console.log(`第${i + 1}次查询：发票信息不完整`);
+        }
+      }
+      
+      // 检查最终结果
+      if (!pdfFile || !pdfFile.FileUrl) {
+        console.log('发票尚未生成完成');
+        wx.hideLoading();
+        
+        // 显示开票中状态，提供刷新按钮
         wx.showModal({
-          title: '申请已受理',
-          content: `您的开票信息已成功保存！\n\n抬头类型：${typeText}\n发票抬头：${invoiceTitle}\n发票类型：${invoiceTypeText}\n\n订单完成后，电子发票将在3-5个工作日内开具并发送至邮箱。`,
-          showCancel: false,
-          confirmText: '知道了',
-          success: () => {
-            // 跳转到首页
-            navigation.switchTab('/pages/home/home');
+          title: '发票生成中',
+          content: '您的发票正在后台生成，这可能需要1-2分钟。\n\n您可以点击"刷新状态"查看最新进度，或稍后在发票列表中查看。',
+          confirmText: '刷新状态',
+          cancelText: '稍后查看',
+          success: async (res) => {
+            if (res.confirm) {
+              // 用户选择刷新状态
+              wx.showLoading({ title: '正在查询...', mask: true });
+              
+              // 再次尝试获取发票信息
+              const retryResult = await API.getInvoiceInfo(orderNo);
+              console.log('手动刷新发票信息:', retryResult);
+              
+              if (retryResult && 
+                  (retryResult.Code == '0' || retryResult.Code == 0) &&
+                  retryResult.InvoiceList && 
+                  retryResult.InvoiceList.length > 0) {
+                
+                const invoice = retryResult.InvoiceList[0];
+                const retryPdfFile = invoice.ElecInvoiceFileList?.find(f => f.FileType == 13 || f.FileType == '13');
+                
+                if (retryPdfFile && retryPdfFile.FileUrl) {
+                  // 找到PDF了，继续后续流程
+                  pdfFile = retryPdfFile;
+                  invoiceInfoResult = retryResult;
+                  
+                  // 继续执行步骤6和7
+                  await this.completeInvoiceProcess(orderNo, pdfFile.FileUrl, billId, receiveEmail);
+                } else {
+                  wx.hideLoading();
+                  wx.showModal({
+                    title: '提示',
+                    content: '发票仍在生成中，请稍后在发票列表查看',
+                    showCancel: false,
+                    confirmText: '确定',
+                    success: () => {
+                      navigation.switchTab('/pages/home/home');
+                    }
+                  });
+                }
+              } else {
+                wx.hideLoading();
+                wx.showModal({
+                  title: '提示',
+                  content: '发票仍在生成中，请稍后在发票列表查看',
+                  showCancel: false,
+                  confirmText: '确定',
+                  success: () => {
+                    navigation.switchTab('/pages/home/home');
+                  }
+                });
+              }
+            } else {
+              // 用户选择稍后查看
+              navigation.switchTab('/pages/home/home');
+            }
           }
         });
-      }, 600);
+        return;
+      }
+      
+      console.log('发票PDF获取成功:', pdfFile.FileUrl);
+
+      // ============ 步骤6: 创建发票记录（非关键步骤） ============
+      try {
+        await API.createInvoiceForOrder({
+          orderNo: orderNo,
+          fileDownloadUrl: pdfFile.FileUrl
+        });
+        console.log('发票记录创建成功');
+      } catch (e) {
+        console.log('创建发票记录失败，不影响开票结果', e);
+      }
+
+      // ============ 步骤7: 更新账单状态为已开票（非关键步骤） ============
+      try {
+        console.log('更新账单状态为已开票，billId:', billId, 'status: 2');
+        await API.updateBillStatus(billId, 2);
+        console.log('账单状态更新为已开票成功');
+      } catch (e) {
+        console.log('更新账单状态失败，不影响开票结果', e);
+      }
+
+      wx.hideLoading();
+
+      // ============ 成功提示（开票已成功） ============
+      wx.showModal({
+        title: '开票成功',
+        content: `电子发票已成功开具！\n\n发票将通过邮件发送至：\n${receiveEmail}\n\n请注意查收。`,
+        showCancel: false,
+        confirmText: '确定',
+        success: () => {
+          navigation.switchTab('/pages/home/home');
+        }
+      });
 
     } catch (error) {
-      console.error('开票申请失败:', error);
+      wx.hideLoading();
+      console.error('开票流程异常:', error);
+      message.error('开票失败，请重试');
     }
+  },
+
+  // 完成发票流程的后续步骤
+  async completeInvoiceProcess(orderNo, fileUrl, billId, receiveEmail) {
+    // ============ 步骤6: 创建发票记录（非关键步骤） ============
+    try {
+      await API.createInvoiceForOrder({
+        orderNo: orderNo,
+        fileDownloadUrl: fileUrl
+      });
+      console.log('发票记录创建成功');
+    } catch (e) {
+      console.log('创建发票记录失败，不影响开票结果', e);
+    }
+
+    // ============ 步骤7: 更新账单状态为已开票（非关键步骤） ============
+    if (billId) {
+      try {
+        console.log('更新账单状态为已开票，billId:', billId, 'status: 2');
+        await API.updateBillStatus(billId, 2);
+        console.log('账单状态更新为已开票成功');
+      } catch (e) {
+        console.log('更新账单状态失败，不影响开票结果', e);
+      }
+    }
+
+    wx.hideLoading();
+
+    // ============ 成功提示（开票已成功） ============
+    wx.showModal({
+      title: '开票成功',
+      content: `电子发票已成功开具！\n\n发票将通过邮件发送至：\n${receiveEmail}\n\n请注意查收。`,
+      showCancel: false,
+      confirmText: '确定',
+      success: () => {
+        navigation.switchTab('/pages/home/home');
+      }
+    });
   },
 
   // 查看发票详情（小程序不支持查看，点击无效果）

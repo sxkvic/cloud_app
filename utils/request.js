@@ -27,8 +27,15 @@ function request(options) {
     } = options;
 
     // 构建完整URL
-    const apiBaseUrl = app.globalData.apiBaseUrl || 'https://your-api-domain.com';
-    const fullUrl = `${apiBaseUrl}${url}`;
+    // 对于以 /out 开头的URL（如开票服务），不添加 /node 前缀
+    let fullUrl;
+    if (url.startsWith('/out/')) {
+      const baseUrl = 'https://www.chmura.cn';
+      fullUrl = `${baseUrl}${url}`;
+    } else {
+      const apiBaseUrl = app.globalData.apiBaseUrl || 'https://your-api-domain.com';
+      fullUrl = `${apiBaseUrl}${url}`;
+    }
 
     // 构建请求头
     const header = {
@@ -77,8 +84,12 @@ function request(options) {
 
         // 统一处理响应
         if (res.statusCode === 200) {
-          if (res.data.success) {
-            // 业务成功
+          // 特殊处理开票服务接口（使用Code字段）
+          if (url.includes('/invoice-service/')) {
+            // 开票服务接口直接返回数据，由业务层判断成功失败
+            resolve(res.data);
+          } else if (res.data.success) {
+            // 普通接口 - 业务成功
             resolve(res.data);
           } else {
             // 业务错误 - 提取错误信息（支持多种字段）

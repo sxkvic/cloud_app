@@ -475,23 +475,59 @@ const API = {
   },
 
   /**
-   * 为订单创建发票
-   * @param {String} orderId 订单ID
+   * 为订单创建发票记录
    * @param {Object} invoiceData 发票数据
-   * @param {String} invoiceData.invoice_title 发票抬头
-   * @param {String} invoiceData.taxpayer_id 纳税人识别号
-   * @param {String} invoiceData.invoice_type 发票类型
-   * @param {String} invoiceData.address 地址（可选）
-   * @param {String} invoiceData.phone 电话（可选）
-   * @param {String} invoiceData.bank_name 开户银行（可选）
-   * @param {String} invoiceData.bank_account 银行账号（可选）
-   * @returns {Promise} { success, data: { invoiceId }, message }
+   * @param {String} invoiceData.orderNo 订单号
+   * @param {String} invoiceData.fileDownloadUrl 发票文件下载地址
+   * @returns {Promise} { success, data: { invoice }, message }
    */
-  createInvoiceForOrder(orderId, invoiceData) {
+  createInvoiceForOrder(invoiceData) {
     return request({
-      url: `/api/v1/invoices/create/${orderId}`,
+      url: '/api/v1/invoices/createInvoiceForOrder',
       method: 'POST',
       data: invoiceData,
+      needAuth: true
+    });
+  },
+
+  /**
+   * 生成开票订单
+   * @param {Object} orderData 订单数据
+   * @returns {Promise} { Code, Msg, OuterOrderId, ... }
+   */
+  generateInvoiceOrder(orderData) {
+    return request({
+      url: '/out/invoice-service/api/invoice/generate-order',
+      method: 'POST',
+      data: { orderData },
+      needAuth: true
+    });
+  },
+
+  /**
+   * 查询发票信息
+   * @param {String} outerOrderId 外部订单ID
+   * @returns {Promise} { Code, Msg, InvoiceList, ... }
+   */
+  getInvoiceInfo(outerOrderId) {
+    return request({
+      url: `/out/invoice-service/api/invoice/invoice-info?outerOrderId=${outerOrderId}`,
+      method: 'GET',
+      needAuth: true
+    });
+  },
+
+  /**
+   * 更新账单状态
+   * @param {Number} billId 账单ID
+   * @param {Number} status 账单状态 (1:待开票, 2:已开票, 3:开票中)
+   * @returns {Promise} { success, data: { bill }, message }
+   */
+  updateBillStatus(billId, status) {
+    return request({
+      url: `/api/v1/customer-bills/updateBillStatus/${billId}/status`,
+      method: 'PUT',
+      data: { bill_status: status },
       needAuth: true
     });
   },

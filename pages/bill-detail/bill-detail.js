@@ -59,7 +59,7 @@ Page({
 
     const billDetail = this.data.billDetail;
     
-    // 跳转到开票申请页面，携带账单信息
-    navigation.navigateTo(`/pages/invoice/invoice?bill_id=${billDetail.id}&bill_no=${billDetail.bill_no || billDetail.order_no}&amount=${billDetail.amount}`);
+    // 跳转到开票申请页面，只需要传递账单ID
+    navigation.navigateTo(`/pages/invoice/invoice?id=${billDetail.id}`);
   }
 });
