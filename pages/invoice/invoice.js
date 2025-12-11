@@ -27,17 +27,10 @@ Page({
     receiveEmail: '',
     bankName: '',
     bankAccount: '',
-    canSubmit: false,
-    
-    // 发票历史记录
-    invoiceList: [],
-    hasMore: true,
-    currentPage: 1,
-    pageSize: 10
+    canSubmit: false
   },
 
   async onLoad(options) {
-    console.log('开票页面加载', options);
     
     // 获取账单ID（兼容 bill_id、billId 和 id）
     const billId = options.billId || options.bill_id || options.id;
@@ -54,12 +47,10 @@ Page({
   // 加载账单详情
   async loadBillDetail() {
     try {
-      console.log('加载账单详情，ID:', this.data.billId);
       const result = await API.getCustomerBillDetail(this.data.billId);
       
       if (result.success && result.data) {
         const billDetail = result.data;
-        console.log('账单详情:', billDetail);
         
         // 从账单详情中提取所需数据
         this.setData({
@@ -76,7 +67,6 @@ Page({
   },
 
   async onShow() {
-    console.log('开票页面显示');
   },
 
   // 下拉刷新
@@ -101,8 +91,7 @@ Page({
     // 并行加载数据
     await Promise.all([
       this.loadCustomerInfo(),
-      this.loadInvoiceInfo(),
-      this.loadInvoiceList()
+      this.loadInvoiceInfo()
     ]);
     
     this.setData({ loading: false });
@@ -124,50 +113,17 @@ Page({
     }
   },
 
-  // 加载发票列表
-  async loadInvoiceList(loadMore = false) {
-    try {
-      const { currentPage, pageSize, invoiceList } = this.data;
-      const page = loadMore ? currentPage + 1 : 1;
-      
-      console.log('加载发票列表，页码:', page);
-
-      const result = await API.getInvoiceList({
-        page,
-        limit: pageSize,
-        device_no: this.data.deviceNo
-      });
-
-      console.log('发票列表加载成功:', result.data);
-      
-      const newList = result.data.list || [];
-      const total = result.data.pagination?.total || 0;
-      
-      this.setData({
-        invoiceList: loadMore ? [...invoiceList, ...newList] : newList,
-        currentPage: page,
-        hasMore: page * pageSize < total
-      });
-
-    } catch (error) {
-      console.error('加载发票列表失败:', error);
-      message.error('加载发票列表失败');
-    }
-  },
 
   // 加载开票信息
   async loadInvoiceInfo() {
     if (!this.data.deviceNo) {
-      console.log('设备号为空，跳过加载开票信息');
       return;
     }
 
     try {
-      console.log('加载设备开票信息...');
       const result = await API.getInvoiceInfoByDevice(this.data.deviceNo);
 
       if (result.data) {
-        console.log('开票信息:', result.data);
         const info = result.data;
 
         // 填充表单，title_type: 1=个人, 2=企业
@@ -438,25 +394,18 @@ Page({
       };
 
       const generateResult = await API.generateInvoiceOrder(orderData);
-      console.log('生成订单返回:', generateResult);
       
       // 只在Code明确不等于'0'时才认为失败
       if (generateResult && generateResult.Code != '0' && generateResult.Code != 0) {
-        console.log('订单生成失败，Code:', generateResult.Code);
         wx.hideLoading();
         message.error(generateResult.Msg || '生成开票订单失败');
         return;
       }
-      
-      console.log('订单生成成功，继续流程');
 
       // ============ 步骤3: 更新账单状态为开票中（非关键步骤） ============
       try {
-        console.log('更新账单状态，billId:', billId, 'status: 3');
         await API.updateBillStatus(billId, 3);
-        console.log('账单状态更新成功');
       } catch (e) {
-        console.log('更新账单状态失败，不影响开票流程', e);
       }
 
       // ============ 步骤4: 查询发票信息（带重试机制） ============
@@ -506,7 +455,6 @@ Page({
         });
         
         if (i > 0) {
-          console.log(`第${i}次重试查询发票信息...`);
           await new Promise(resolve => setTimeout(resolve, retryDelay));
         } else {
           // 第一次查询前等待2秒
@@ -514,7 +462,6 @@ Page({
         }
         
         invoiceInfoResult = await API.getInvoiceInfo(orderNo);
-        console.log(`第${i + 1}次查询发票信息返回:`, invoiceInfoResult);
         
         // 检查是否成功获取发票信息
         if (invoiceInfoResult && 
@@ -523,29 +470,20 @@ Page({
             invoiceInfoResult.InvoiceList.length > 0) {
           
           const invoice = invoiceInfoResult.InvoiceList[0];
-          console.log('发票详情:', invoice);
-          console.log('ElecInvoiceFileList:', invoice.ElecInvoiceFileList);
           
           // 查找PDF文件
           pdfFile = invoice.ElecInvoiceFileList?.find(f => {
-            console.log('检查文件:', f);
             return f.FileType == 13 || f.FileType == '13';
           });
           
           if (pdfFile && pdfFile.FileUrl) {
-            console.log('找到PDF文件:', pdfFile);
             break; // 成功找到PDF，退出循环
-          } else {
-            console.log(`第${i + 1}次查询：PDF文件尚未生成`);
           }
-        } else {
-          console.log(`第${i + 1}次查询：发票信息不完整`);
         }
       }
       
       // 检查最终结果
       if (!pdfFile || !pdfFile.FileUrl) {
-        console.log('发票尚未生成完成');
         wx.hideLoading();
         
         // 显示开票中状态，提供刷新按钮
@@ -561,7 +499,6 @@ Page({
               
               // 再次尝试获取发票信息
               const retryResult = await API.getInvoiceInfo(orderNo);
-              console.log('手动刷新发票信息:', retryResult);
               
               if (retryResult && 
                   (retryResult.Code == '0' || retryResult.Code == 0) &&
@@ -610,8 +547,6 @@ Page({
         });
         return;
       }
-      
-      console.log('发票PDF获取成功:', pdfFile.FileUrl);
 
       // ============ 步骤6: 创建发票记录（非关键步骤） ============
       try {
@@ -619,18 +554,13 @@ Page({
           orderNo: orderNo,
           fileDownloadUrl: pdfFile.FileUrl
         });
-        console.log('发票记录创建成功');
       } catch (e) {
-        console.log('创建发票记录失败，不影响开票结果', e);
       }
 
       // ============ 步骤7: 更新账单状态为已开票（非关键步骤） ============
       try {
-        console.log('更新账单状态为已开票，billId:', billId, 'status: 2');
         await API.updateBillStatus(billId, 2);
-        console.log('账单状态更新为已开票成功');
       } catch (e) {
-        console.log('更新账单状态失败，不影响开票结果', e);
       }
 
       wx.hideLoading();
@@ -661,19 +591,14 @@ Page({
         orderNo: orderNo,
         fileDownloadUrl: fileUrl
       });
-      console.log('发票记录创建成功');
     } catch (e) {
-      console.log('创建发票记录失败，不影响开票结果', e);
     }
 
     // ============ 步骤7: 更新账单状态为已开票（非关键步骤） ============
     if (billId) {
       try {
-        console.log('更新账单状态为已开票，billId:', billId, 'status: 2');
         await API.updateBillStatus(billId, 2);
-        console.log('账单状态更新为已开票成功');
       } catch (e) {
-        console.log('更新账单状态失败，不影响开票结果', e);
       }
     }
 
