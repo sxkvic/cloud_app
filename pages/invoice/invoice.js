@@ -486,63 +486,14 @@ Page({
       if (!pdfFile || !pdfFile.FileUrl) {
         wx.hideLoading();
         
-        // 显示开票中状态，提供刷新按钮
+        // 显示提示，引导用户去列表或详情页查看
         wx.showModal({
           title: '发票生成中',
-          content: '您的发票正在后台生成，这可能需要1-2分钟。\n\n您可以点击"刷新状态"查看最新进度，或稍后在发票列表中查看。',
-          confirmText: '刷新状态',
-          cancelText: '稍后查看',
-          success: async (res) => {
-            if (res.confirm) {
-              // 用户选择刷新状态
-              wx.showLoading({ title: '正在查询...', mask: true });
-              
-              // 再次尝试获取发票信息
-              const retryResult = await API.getInvoiceInfo(orderNo);
-              
-              if (retryResult && 
-                  (retryResult.Code == '0' || retryResult.Code == 0) &&
-                  retryResult.InvoiceList && 
-                  retryResult.InvoiceList.length > 0) {
-                
-                const invoice = retryResult.InvoiceList[0];
-                const retryPdfFile = invoice.ElecInvoiceFileList?.find(f => f.FileType == 13 || f.FileType == '13');
-                
-                if (retryPdfFile && retryPdfFile.FileUrl) {
-                  // 找到PDF了，继续后续流程
-                  pdfFile = retryPdfFile;
-                  invoiceInfoResult = retryResult;
-                  
-                  // 继续执行步骤6和7
-                  await this.completeInvoiceProcess(orderNo, pdfFile.FileUrl, billId, receiveEmail);
-                } else {
-                  wx.hideLoading();
-                  wx.showModal({
-                    title: '提示',
-                    content: '发票仍在生成中，请稍后在发票列表查看',
-                    showCancel: false,
-                    confirmText: '确定',
-                    success: () => {
-                      navigation.switchTab('/pages/home/home');
-                    }
-                  });
-                }
-              } else {
-                wx.hideLoading();
-                wx.showModal({
-                  title: '提示',
-                  content: '发票仍在生成中，请稍后在发票列表查看',
-                  showCancel: false,
-                  confirmText: '确定',
-                  success: () => {
-                    navigation.switchTab('/pages/home/home');
-                  }
-                });
-              }
-            } else {
-              // 用户选择稍后查看
-              navigation.switchTab('/pages/home/home');
-            }
+          content: '您的发票正在后台生成，通常需要1-2分钟。\n\n请稍后在账单列表或账单详情页查看开票状态。',
+          showCancel: false,
+          confirmText: '我知道了',
+          success: () => {
+            navigation.switchTab('/pages/home/home');
           }
         });
         return;

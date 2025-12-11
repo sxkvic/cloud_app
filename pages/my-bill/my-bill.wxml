@@ -76,7 +76,19 @@
                 <text class="amount-label">账单金额</text>
                 <text class="amount-value">{{ item.amount }}</text>
               </view>
-              <view class="view-detail">
+              <!-- 开票中状态显示刷新按钮 -->
+              <view wx:if="{{ item.billStatus == 3 }}" class="action-wrapper">
+                <button 
+                  class="refresh-invoice-btn"
+                  catchtap="refreshInvoiceStatus"
+                  data-bill="{{ item }}"
+                >
+                  <text class="refresh-icon">⟳</text>
+                  <text>刷新状态</text>
+                </button>
+              </view>
+              <!-- 其他状态显示查看详情 -->
+              <view wx:else class="view-detail">
                 <text class="detail-text">查看详情</text>
                 <text class="arrow-icon">→</text>
               </view>

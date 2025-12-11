@@ -97,6 +97,21 @@
   background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
 }
 
+.bill-card.invoicing {
+  border-left-color: #f59e0b;
+  background: linear-gradient(135deg, #ffffff 0%, #fef3c7 100%);
+  animation: breathe 2s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% {
+    box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+  }
+  50% {
+    box-shadow: 0 4rpx 20rpx rgba(245, 158, 11, 0.2);
+  }
+}
+
 /* 卡片头部 */
 .card-header {
   margin-bottom: 16rpx;
@@ -119,20 +134,25 @@
 }
 
 .bill-status {
-  padding: 6rpx 16rpx;
-  border-radius: 12rpx;
-  font-size: 22rpx;
+  font-size: 24rpx;
   font-weight: 500;
-}
-
-.bill-status.not_invoiced {
-  background: #fef3c7;
-  color: #f59e0b;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
 }
 
 .bill-status.invoiced {
+  color: #059669;
   background: #d1fae5;
-  color: #10b981;
+}
+
+.bill-status.not_invoiced {
+  color: #9ca3af;
+  background: #f3f4f6;
+}
+
+.bill-status.invoicing {
+  color: #d97706;
+  background: #fef3c7;
 }
 
 .bill-no {
@@ -210,6 +230,93 @@
   font-size: 24rpx;
   color: #3b82f6;
   font-weight: bold;
+}
+
+/* 操作按钮包装器 */
+.action-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+/* 刷新开票状态按钮 */
+.refresh-invoice-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 10rpx 20rpx;
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  color: #ffffff;
+  font-size: 26rpx;
+  font-weight: 600;
+  border-radius: 16rpx;
+  border: none;
+  box-shadow: 0 4rpx 12rpx rgba(16, 185, 129, 0.25);
+  transition: all 0.3s;
+  height: auto;
+  line-height: 1.5;
+  position: relative;
+  overflow: hidden;
+}
+
+.refresh-invoice-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  0% {
+    left: -100%;
+  }
+  50%, 100% {
+    left: 100%;
+  }
+}
+
+.refresh-invoice-btn::after {
+  border: none;
+}
+
+.refresh-invoice-btn:active {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  transform: scale(0.98);
+  box-shadow: 0 2rpx 8rpx rgba(16, 185, 129, 0.3);
+}
+
+/* 刷新图标 */
+.refresh-icon {
+  font-size: 24rpx;
+  font-weight: bold;
+  display: inline-block;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.refresh-invoice-btn:active .refresh-icon {
+  animation: rotate 1s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
 }
 
 /* 空状态 */

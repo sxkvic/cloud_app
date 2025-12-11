@@ -92,14 +92,17 @@ Page({
       const bills = billsList.map(bill => ({
         id: bill.id,
         billNo: bill.bill_no || bill.order_no,
+        orderNo: bill.order_no,  // 保存订单号用于查询发票
         title: bill.package_name || '宽带月费',
         date: bill.created_at || bill.billing_start_date,
         period: bill.billing_start_date && bill.billing_end_date 
           ? `${bill.billing_start_date} 至 ${bill.billing_end_date}` 
           : '月度账单',
         amount: `¥${parseFloat(bill.amount).toFixed(2)}`,
-        status: bill.bill_status == 2 ? 'invoiced' : 'not_invoiced',
-        statusText: bill.bill_status == 2 ? '已开票' : '未开票'
+        rawAmount: bill.amount,  // 保存原始金额
+        billStatus: bill.bill_status,  // 保存原始状态值
+        status: bill.bill_status == 2 ? 'invoiced' : (bill.bill_status == 3 ? 'invoicing' : 'not_invoiced'),
+        statusText: bill.bill_status == 2 ? '已开票' : (bill.bill_status == 3 ? '开票中' : '未开票')
       }));
 
       this.setData({
@@ -190,6 +193,64 @@ Page({
     
     // 跳转到详情页面
     navigation.navigateTo(`/pages/bill-detail/bill-detail?id=${billId}`);
+  },
+
+  // 刷新开票状态
+  async refreshInvoiceStatus(e) {
+    const bill = e.currentTarget.dataset.bill;
+    
+    if (!bill || !bill.orderNo) {
+      message.error('订单信息不完整');
+      return;
+    }
+    
+    wx.showLoading({ title: '正在查询...', mask: true });
+    
+    try {
+      // 查询发票信息
+      const result = await API.getInvoiceInfo(bill.orderNo);
+      
+      if (result && 
+          (result.Code == '0' || result.Code == 0) &&
+          result.InvoiceList && 
+          result.InvoiceList.length > 0) {
+        
+        const invoice = result.InvoiceList[0];
+        const pdfFile = invoice.ElecInvoiceFileList?.find(f => f.FileType == 13 || f.FileType == '13');
+        
+        if (pdfFile && pdfFile.FileUrl) {
+          // 发票已生成，更新账单状态
+          try {
+            await API.updateBillStatus(bill.id, 2); // 更新为已开票
+            
+            // 创建发票记录
+            await API.createInvoiceForOrder({
+              orderNo: bill.orderNo,
+              fileDownloadUrl: pdfFile.FileUrl
+            });
+            
+            wx.hideLoading();
+            message.success('发票已生成完成');
+            
+            // 刷新列表
+            await this.loadBills();
+          } catch (e) {
+            wx.hideLoading();
+            message.error('更新状态失败');
+          }
+        } else {
+          wx.hideLoading();
+          message.info('发票仍在生成中，请稍后再试');
+        }
+      } else {
+        wx.hideLoading();
+        message.info('发票仍在生成中，请稍后再试');
+      }
+    } catch (error) {
+      wx.hideLoading();
+      console.error('查询发票状态失败:', error);
+      message.error('查询失败，请重试');
+    }
   },
 
   // 查看全部账单
