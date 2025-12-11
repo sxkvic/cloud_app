@@ -19,6 +19,12 @@
         </view>
       </view>
     </view>
+    <view class="info-row device-no-row">
+      <view class="info-item">
+        <view class="info-label">设备号</view>
+        <view class="info-value device-no">{{ currentDeviceNo || '未知' }}</view>
+      </view>
+    </view>
   </view>
 
   <!-- 客户信息卡片 -->

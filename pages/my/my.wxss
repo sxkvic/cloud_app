@@ -8,7 +8,7 @@ page {
 
 /* ========== 1. 顶部蓝色装饰背景 ========== */
 .blue-header {
-  height: 320rpx;
+  height: 400rpx;
   background: linear-gradient(135deg, #2B7FF0 0%, #1E64D8 100%);
   border-bottom-left-radius: 40rpx;
   border-bottom-right-radius: 40rpx;
@@ -79,6 +79,18 @@ page {
 .tag-bold {
   font-weight: bold;
   margin-right: 6rpx;
+}
+
+/* 设备号行 */
+.device-no-row {
+  margin-top: 20rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid rgba(255, 255, 255, 0.2);
+}
+
+.device-no {
+  font-size: 28rpx;
+  font-weight: 500;
 }
 
 /* ========== 3. 表单区域 ========== */

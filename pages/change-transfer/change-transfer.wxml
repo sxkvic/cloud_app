@@ -83,8 +83,7 @@
       </view>
       <view class="notes-list">
         <view class="note-item">请确保填写信息真实有效，过户提交后无法撤销。</view>
-        <view class="note-item">过户需要双方身份证原件及在场确认，可能产生相关费用。</view>
-        <view class="note-item">过户申请将在 3-5 个工作日内处理完成，请留意短信通知。</view>
+        <view class="note-item">过户申请将在 3-5 个工作日内处理完成。</view>
       </view>
     </view>
 

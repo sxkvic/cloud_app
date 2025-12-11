@@ -82,8 +82,7 @@
     <!-- 说明文案 -->
     <view class="tips-box">
       <view class="tips-title">充值说明</view>
-      <view class="tips-item">• 充值金额通常在 1-5 分钟内到账。</view>
-      <view class="tips-item">• 赠送金额将直接存入余额，不可提现。</view>
+      <view class="tips-item">• 充值金额如若无快速到账，请联系客服</view>
       <view class="tips-item">• 如遇网络繁忙，到账可能延迟，请耐心等待。</view>
     </view>
 

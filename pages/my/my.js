@@ -56,6 +56,7 @@ Page({
             status_text: statusText
           },
           customerInfo: customer || {},
+          currentDeviceNo: deviceNo,
           loading: false
         });
       } else {
