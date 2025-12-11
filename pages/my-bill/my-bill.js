@@ -36,7 +36,7 @@ Page({
     console.log('读取到设备编号:', device_no);
     
     await this.loadCustomerInfo();
-    await this.loadBills();
+    await this.loadBills(true); // 首次加载，传递true
     
     // 标记首次加载完成
     this.setData({ isFirstLoad: false });
@@ -46,7 +46,7 @@ Page({
     console.log('我的账单页面显示');
     // 只有非首次加载时才刷新数据（从其他页面返回时）
     if (!this.data.isFirstLoad) {
-      await this.loadBills();
+      await this.loadBills(true); // 刷新数据
     }
   },
 
