@@ -46,6 +46,30 @@ Page({
     }
   },
 
+  // 下拉刷新
+  async onPullDownRefresh() {
+    console.log('下拉刷新账单列表');
+    
+    try {
+      // 显示刷新动画
+      wx.showNavigationBarLoading();
+      
+      // 重新加载账单列表
+      await this.loadBills();
+      
+      // 停止下拉刷新
+      wx.stopPullDownRefresh();
+      wx.hideNavigationBarLoading();
+      
+      message.success('刷新成功');
+    } catch (error) {
+      console.error('下拉刷新失败:', error);
+      wx.stopPullDownRefresh();
+      wx.hideNavigationBarLoading();
+      message.error('刷新失败，请重试');
+    }
+  },
+
   // 加载客户信息（每次都从服务器获取最新数据，避免变更过户等场景下数据不一致）
   async loadCustomerInfo() {
     try {
@@ -113,23 +137,7 @@ Page({
     } catch (error) {
       console.error('加载账单失败:', error);
       this.setData({ loading: false });
-
-      // 如果加载失败，使用默认账单数据
-      message.error('加载账单失败，显示默认数据');
-      this.setData({
-        bills: [
-          {
-            id: '60',
-            billNo: 'ZD202511214029561',
-            title: '测试包年卡998',
-            date: '2025-11-21',
-            period: '2025-11-21 至 2026-11-21',
-            amount: '¥998.00',
-            status: 'not_invoiced',
-            statusText: '未开票'
-          }
-        ]
-      });
+      message.error('加载失败，请下拉刷新');
     }
   },
 
@@ -204,7 +212,7 @@ Page({
       return;
     }
     
-    wx.showLoading({ title: '正在查询...', mask: true });
+    wx.showLoading({ title: '刷新中...', mask: true });
     
     try {
       // 查询发票信息
@@ -223,28 +231,28 @@ Page({
           try {
             await API.updateBillStatus(bill.id, 2); // 更新为已开票
             
-            // 创建发票记录
-            await API.createInvoiceForOrder({
+            // 创建发票记录（异步执行）
+            API.createInvoiceForOrder({
               orderNo: bill.orderNo,
               fileDownloadUrl: pdfFile.FileUrl
-            });
+            }).catch(e => console.error('创建发票记录失败:', e));
             
             wx.hideLoading();
             message.success('发票已生成完成');
             
             // 刷新列表
-            await this.loadBills();
+            this.loadBills();
           } catch (e) {
             wx.hideLoading();
             message.error('更新状态失败');
           }
         } else {
           wx.hideLoading();
-          message.info('发票仍在生成中，请稍后再试');
+          message.info('发票还在生成中，请稍后再刷新');
         }
       } else {
         wx.hideLoading();
-        message.info('发票仍在生成中，请稍后再试');
+        message.info('发票还在生成中，请稍后再刷新');
       }
     } catch (error) {
       wx.hideLoading();

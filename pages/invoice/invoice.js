@@ -438,8 +438,8 @@ Page({
       
       let invoiceInfoResult = null;
       let pdfFile = null;
-      const maxRetries = 15; // 增加到15次重试（总共30秒）
-      const retryDelay = 2000; // 每次重试间隔2秒
+      const maxRetries = 3; // 最多查询3次（约5秒）
+      const retryDelay = 1500; // 每次重试间隔1.5秒
       
       for (let i = 0; i < maxRetries; i++) {
         // 动态更新提示文字
@@ -450,15 +450,15 @@ Page({
         const progress = Math.min(Math.floor(((i + 1) / maxRetries) * 90), 90); // 最多显示90%
         
         wx.showLoading({
-          title: `${currentMessage}(${progress}%)`,
+          title: currentMessage,
           mask: true
         });
         
         if (i > 0) {
           await new Promise(resolve => setTimeout(resolve, retryDelay));
         } else {
-          // 第一次查询前等待2秒
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          // 第一次查询前等待1秒
+          await new Promise(resolve => setTimeout(resolve, 1000));
         }
         
         invoiceInfoResult = await API.getInvoiceInfo(orderNo);
@@ -486,14 +486,21 @@ Page({
       if (!pdfFile || !pdfFile.FileUrl) {
         wx.hideLoading();
         
-        // 显示提示，引导用户去列表或详情页查看
+        // 显示提示，引导用户去列表页刷新
         wx.showModal({
-          title: '发票生成中',
-          content: '您的发票正在后台生成，通常需要1-2分钟。\n\n请稍后在账单列表或账单详情页查看开票状态。',
-          showCancel: false,
-          confirmText: '我知道了',
-          success: () => {
-            navigation.switchTab('/pages/home/home');
+          title: '开票处理中',
+          content: '您的开票申请已提交成功！\n\n发票生成需要一些时间，请前往账单列表页面刷新查看最新状态。',
+          showCancel: true,
+          confirmText: '去账单列表',
+          cancelText: '返回首页',
+          success: (res) => {
+            if (res.confirm) {
+              // 跳转到账单列表页
+              navigation.navigateTo('/pages/my-bill/my-bill');
+            } else {
+              // 返回首页
+              navigation.switchTab('/pages/home/home');
+            }
           }
         });
         return;
