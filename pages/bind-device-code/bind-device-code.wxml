@@ -115,18 +115,34 @@
   <view class="contact-modal" wx:if="{{showContactModal}}" catchtouchmove="true">
     <view class="modal-mask" bindtap="hideContactModal"></view>
     <view class="modal-content">
-      <view class="modal-title">联系客服</view>
+      <view class="modal-header">
+        <view class="modal-title">联系客服</view>
+      </view>
       <view class="modal-buttons">
-        <view class="contact-btn" bindtap="callPhone">
-          <text class="contact-icon">📞</text>
-          <text class="contact-text">拨打客服电话</text>
-          <text class="contact-number">4009677726</text>
-        </view>
-        <button class="contact-btn wechat-btn" open-type="contact">
-          <text class="contact-icon">💬</text>
-          <text class="contact-text">微信在线客服</text>
-          <text class="contact-desc">实时对话</text>
+        <!-- 在线客服 -->
+        <button class="contact-card main-contact btn-reset" open-type="contact" hover-class="card-hover">
+          <view class="contact-card-left">
+            <view class="contact-title-row">
+              <text class="contact-title">在线客服</text>
+              <view class="live-badge">在线</view>
+            </view>
+            <text class="contact-desc">7x24小时 智能+人工服务</text>
+          </view>
+          <view class="action-icon-box blue-gradient">
+            <van-icon name="service-o" size="28px" color="#ffffff" />
+          </view>
         </button>
+        <!-- 电话热线 -->
+        <view class="contact-card sub-contact" hover-class="card-hover" bindtap="callPhone">
+          <view class="contact-card-left">
+            <text class="sub-contact-label">客服热线</text>
+            <text class="hotline-number">4009677726</text>
+          </view>
+          <view class="call-btn">
+            <image class="call-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0iIzRENkFGRiIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNNi42MiAxMC43OWMxLjQ0IDIuODMgMy43NiA1LjE0IDYuNTkgNi41OWwyLjItMi4yYy4yNy0uMjcuNjctLjM2IDEuMDItLjI0IDEuMTIuMzcgMi4zMy41NyAzLjU3LjU3LjU1IDAgMSAuNDUgMSAxVjIxYzAgLjU1LS40NSAxLTEgMS0xMC4wMSAwLTE4LTcuOTktMTgtMTggMC0uNTUuNDUtMSAxLTFoMy41Yy41NSAwIDEgLjQ1IDEgMSAwIDEuMjUuMiAyLjQ1LjU3IDMuNTcuMTEuMzUuMDMuNzQtLjI1IDEuMDJsLTIuMiAyLjJ6Ii8+PC9zdmc+" mode="aspectFit"></image>
+            <text>呼叫</text>
+          </view>
+        </view>
       </view>
       <view class="modal-close" bindtap="hideContactModal">取消</view>
     </view>

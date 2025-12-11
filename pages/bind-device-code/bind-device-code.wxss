@@ -305,6 +305,8 @@ page {
   right: 0;
   bottom: 0;
   z-index: 9999;
+  display: flex;
+  align-items: flex-end;
 }
 
 .modal-mask {
@@ -314,92 +316,211 @@ page {
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.25s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
 }
 
 .modal-content {
+  position: relative;
+  width: 100%;
+  background: #f5f6f7;
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 0 32rpx 32rpx;
+  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
+  animation: slideUp 0.3s ease-out;
+}
+
+/* 弹窗顶部拖拽指示条 */
+.modal-content::before {
+  content: '';
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #fff;
-  border-radius: 24rpx 24rpx 0 0;
-  padding: 40rpx;
-  padding-bottom: env(safe-area-inset-bottom);
+  top: 16rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 64rpx;
+  height: 8rpx;
+  background: #ddd;
+  border-radius: 4rpx;
+}
+
+.modal-header {
+  padding: 48rpx 0 32rpx;
+  text-align: center;
 }
 
 .modal-title {
   font-size: 36rpx;
   font-weight: 600;
-  color: #1A1D1F;
-  text-align: center;
-  margin-bottom: 40rpx;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.modal-subtitle {
+  font-size: 26rpx;
+  color: #999;
 }
 
 .modal-buttons {
   display: flex;
   flex-direction: column;
-  gap: 24rpx;
+  gap: 20rpx;
 }
 
-.contact-btn {
+/* 按钮样式重置 */
+.btn-reset {
+  padding: 0;
+  margin: 0;
+  background-color: #fff;
+  border: none;
+  text-align: left;
+  line-height: normal;
+  display: flex;
+}
+.btn-reset::after {
+  border: none;
+}
+
+/* 卡片通用样式 */
+.contact-card {
+  background: #ffffff;
+  border-radius: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+.card-hover {
+  transform: scale(0.99);
+  opacity: 0.9;
+  transition: all 0.1s;
+}
+
+/* 主卡片 (在线客服) */
+.main-contact {
+  padding: 36rpx 28rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+/* 背景装饰圆圈 */
+.main-contact::before {
+  content: '';
+  position: absolute;
+  right: -30rpx;
+  top: -30rpx;
+  width: 140rpx;
+  height: 140rpx;
+  background: radial-gradient(circle, rgba(41, 121, 255, 0.08) 0%, rgba(255,255,255,0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.contact-card-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-title-row {
   display: flex;
   align-items: center;
-  padding: 32rpx;
-  background: #F7F9FC;
-  border-radius: 16rpx;
-  border: none;
-  width: 100%;
-  text-align: left;
-  transition: all 0.2s;
+  margin-bottom: 10rpx;
 }
 
-.contact-btn:active {
-  background: #E8ECF2;
-  transform: scale(0.98);
+.contact-title {
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #333;
 }
 
-.wechat-btn {
-  background: #07C160;
-  color: #fff;
-}
-
-.wechat-btn:active {
-  background: #06AD56;
-}
-
-.contact-icon {
-  font-size: 40rpx;
-  margin-right: 24rpx;
-}
-
-.contact-text {
-  flex: 1;
-  font-size: 32rpx;
-  font-weight: 500;
-}
-
-.contact-number {
-  font-size: 28rpx;
-  color: #6B7588;
-  margin-left: auto;
+.live-badge {
+  font-size: 20rpx;
+  background: #e8edff;
+  color: #2B7FF0;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  margin-left: 14rpx;
 }
 
 .contact-desc {
-  font-size: 28rpx;
-  opacity: 0.9;
-  margin-left: auto;
+  font-size: 24rpx;
+  color: #999;
 }
 
-.wechat-btn .contact-text,
-.wechat-btn .contact-desc {
-  color: #fff;
+.action-icon-box {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 20rpx rgba(77, 106, 255, 0.25);
+}
+
+.blue-gradient {
+  background: linear-gradient(135deg, #2B7FF0 0%, #1E64D8 100%);
+}
+
+/* 次级卡片 (电话) */
+.sub-contact {
+  padding: 28rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sub-contact-label {
+  font-size: 26rpx;
+  color: #666;
+  display: block;
+  margin-bottom: 6rpx;
+}
+
+.hotline-number {
+  font-size: 38rpx;
+  font-weight: bold;
+  color: #2B7FF0;
+  font-family: 'DINAlternate-Bold', sans-serif;
+  letter-spacing: 1rpx;
+}
+
+.call-btn {
+  background: #e8edff;
+  color: #2B7FF0;
+  padding: 12rpx 24rpx;
+  border-radius: 32rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.call-icon {
+  width: 24rpx;
+  height: 24rpx;
+  margin-right: 8rpx;
 }
 
 .modal-close {
-  margin-top: 32rpx;
+  margin-top: 24rpx;
   padding: 24rpx;
   text-align: center;
-  font-size: 32rpx;
-  color: #6B7588;
-  border-top: 1rpx solid #E8ECF2;
+  font-size: 30rpx;
+  color: #999;
+  background: #fff;
+  border-radius: 24rpx;
+}
+
+.modal-close:active {
+  background: #f5f5f5;
 }
