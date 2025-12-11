@@ -21,12 +21,12 @@ Page({
         route: '/pages/package-order/package-order'
       },
       {
-        title: '我的账单',
-        subtitle: '查看消费明细',
-        iconClass: 'icon-zhangdan',
-        bgColor: '#f0f9f3',
-        iconBgColor: '#52c41a',
-        route: '/pages/my-bill/my-bill'
+        title: '订单管理',
+        subtitle: '查看订单状态',
+        iconClass: 'icon-dingdanguanli',
+        bgColor: '#fff7e6',
+        iconBgColor: '#fa8c16',
+        route: '/pages/order-management/order-management'
       },
       {
         title: '在线客服',
@@ -37,12 +37,12 @@ Page({
         route: '/pages/customer-service/customer-service'
       },
       {
-        title: '订单管理',
-        subtitle: '查看订单状态',
-        iconClass: 'icon-dingdanguanli',
-        bgColor: '#fff7e6',
-        iconBgColor: '#fa8c16',
-        route: '/pages/order-management/order-management'
+        title: '我的账单',
+        subtitle: '查看消费明细',
+        iconClass: 'icon-zhangdan',
+        bgColor: '#f0f9f3',
+        iconBgColor: '#52c41a',
+        route: '/pages/my-bill/my-bill'
       }
       // 暂时隐藏业务退订入口
       // {
