@@ -11,7 +11,11 @@ Page({
     customerInfo: null,          // 客户信息
     billDetail: null,            // 当前账单详情
     showDetail: false,           // 是否显示详情页面
-    isFirstLoad: true            // 是否首次加载
+    isFirstLoad: true,           // 是否首次加载
+    currentPage: 1,              // 当前页码
+    pageSize: 10,                // 每页数量
+    hasMore: true,               // 是否有更多数据
+    loadingMore: false           // 是否正在加载更多
   },
 
   async onLoad() {
@@ -53,8 +57,12 @@ Page({
     // 显示刷新动画
     wx.showNavigationBarLoading();
     
-    // 重新加载账单列表
-    const result = await this.loadBills();
+    // 重置页码并重新加载
+    this.setData({ 
+      currentPage: 1,
+      hasMore: true 
+    });
+    const result = await this.loadBills(true); // true表示刷新
     
     // 停止下拉刷新
     wx.stopPullDownRefresh();
@@ -64,6 +72,26 @@ Page({
     if (result && result.success) {
       message.success('刷新成功');
     }
+  },
+
+  // 上拉加载更多
+  async onReachBottom() {
+    console.log('触发上拉加载更多');
+    
+    // 如果正在加载或没有更多数据，直接返回
+    if (this.data.loadingMore || !this.data.hasMore) {
+      return;
+    }
+    
+    // 加载下一页
+    this.setData({ 
+      loadingMore: true,
+      currentPage: this.data.currentPage + 1 
+    });
+    
+    await this.loadBills(false); // false表示加载更多
+    
+    this.setData({ loadingMore: false });
   },
 
   // 加载客户信息（每次都从服务器获取最新数据，避免变更过户等场景下数据不一致）
@@ -91,15 +119,19 @@ Page({
   },
 
   // 加载账单列表
-  async loadBills() {
+  async loadBills(isRefresh = false) {
     try {
-      this.setData({ loading: true });
-      console.log('开始加载账单列表，设备号:', this.data.deviceCode);
+      // 如果是刷新，显示加载状态
+      if (isRefresh) {
+        this.setData({ loading: true });
+      }
+      
+      console.log(`加载账单列表，页码: ${this.data.currentPage}, 设备号: ${this.data.deviceCode}`);
 
       // 使用设备号查询账单列表
       const result = await API.getBillList({
-        page: 1,
-        pageSize: 20,
+        page: this.data.currentPage,
+        pageSize: this.data.pageSize,
         device_no: this.data.deviceCode,
         customer_name: '',
         bill_no: ''
@@ -125,17 +157,47 @@ Page({
         statusText: bill.bill_status == 2 ? '已开票' : (bill.bill_status == 3 ? '开票中' : '未开票')
       }));
 
-      this.setData({
-        bills: bills,
-        loading: false
-      });
+      // 判断是否还有更多数据
+      const hasMore = billsList.length >= this.data.pageSize;
+      
+      // 更新数据
+      if (isRefresh) {
+        // 刷新：替换所有数据
+        this.setData({
+          bills: bills,
+          loading: false,
+          hasMore: hasMore
+        });
+      } else {
+        // 加载更多：追加数据
+        this.setData({
+          bills: [...this.data.bills, ...bills],
+          hasMore: hasMore
+        });
+      }
+      
+      // 如果没有更多数据，显示提示
+      if (!hasMore && !isRefresh && billsList.length > 0) {
+        message.info('已加载全部账单');
+      }
       
       // 返回成功状态
       return { success: true };
 
     } catch (error) {
       console.error('加载账单失败:', error);
-      this.setData({ loading: false });
+      this.setData({ 
+        loading: false,
+        loadingMore: false 
+      });
+      
+      // 如果是加载更多失败，回退页码
+      if (!isRefresh && this.data.currentPage > 1) {
+        this.setData({ 
+          currentPage: this.data.currentPage - 1 
+        });
+      }
+      
       message.error('加载失败，请下拉刷新');
       // 返回失败状态
       return { success: false };
