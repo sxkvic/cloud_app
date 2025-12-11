@@ -7,7 +7,8 @@ Page({
   data: {
     deviceCode: '',
     rechargeAccount: '',
-    isLoading: false
+    isLoading: false,
+    showContactModal: false
   },
 
   onLoad(options) {
@@ -158,23 +159,26 @@ Page({
     }
   },
 
-  // 显示帮助信息
+  // 显示帮助信息 - 显示客服选择弹窗
   showHelp() {
-    wx.showModal({
-      title: '找不到绑定码？',
-      content: '请查看以下位置：\n\n1. 设备背面标签\n2. 设备包装盒\n3. 安装师父提供的单据\n\n如仍无法找到，请联系客服：4009677726',
-      showCancel: true,
-      cancelText: '取消',
-      confirmText: '联系客服',
-      success: (res) => {
-        if (res.confirm) {
-          // 这里可以跳转到客服页面或拨打电话
-          wx.showToast({
-            title: '客服电话：4009677726',
-            icon: 'none',
-            duration: 3000
-          });
-        }
+    this.setData({ showContactModal: true });
+  },
+
+  // 隐藏客服弹窗
+  hideContactModal() {
+    this.setData({ showContactModal: false });
+  },
+
+  // 拨打客服电话
+  callPhone() {
+    this.setData({ showContactModal: false });
+    wx.makePhoneCall({
+      phoneNumber: '4009677726',
+      fail: () => {
+        wx.showToast({
+          title: '拨打失败',
+          icon: 'none'
+        });
       }
     });
   },

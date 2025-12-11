@@ -110,5 +110,26 @@
     </view>
 
   </view>
+  
+  <!-- 客服选择弹窗 -->
+  <view class="contact-modal" wx:if="{{showContactModal}}" catchtouchmove="true">
+    <view class="modal-mask" bindtap="hideContactModal"></view>
+    <view class="modal-content">
+      <view class="modal-title">联系客服</view>
+      <view class="modal-buttons">
+        <view class="contact-btn" bindtap="callPhone">
+          <text class="contact-icon">📞</text>
+          <text class="contact-text">拨打客服电话</text>
+          <text class="contact-number">4009677726</text>
+        </view>
+        <button class="contact-btn wechat-btn" open-type="contact">
+          <text class="contact-icon">💬</text>
+          <text class="contact-text">微信在线客服</text>
+          <text class="contact-desc">实时对话</text>
+        </button>
+      </view>
+      <view class="modal-close" bindtap="hideContactModal">取消</view>
+    </view>
+  </view>
 </view>
 

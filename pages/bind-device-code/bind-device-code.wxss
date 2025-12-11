@@ -296,3 +296,110 @@ page {
   color: #2B7FF0;
   opacity: 0.8;
 }
+
+/* 客服弹窗样式 */
+.contact-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+}
+
+.modal-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 24rpx 24rpx 0 0;
+  padding: 40rpx;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.modal-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #1A1D1F;
+  text-align: center;
+  margin-bottom: 40rpx;
+}
+
+.modal-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.contact-btn {
+  display: flex;
+  align-items: center;
+  padding: 32rpx;
+  background: #F7F9FC;
+  border-radius: 16rpx;
+  border: none;
+  width: 100%;
+  text-align: left;
+  transition: all 0.2s;
+}
+
+.contact-btn:active {
+  background: #E8ECF2;
+  transform: scale(0.98);
+}
+
+.wechat-btn {
+  background: #07C160;
+  color: #fff;
+}
+
+.wechat-btn:active {
+  background: #06AD56;
+}
+
+.contact-icon {
+  font-size: 40rpx;
+  margin-right: 24rpx;
+}
+
+.contact-text {
+  flex: 1;
+  font-size: 32rpx;
+  font-weight: 500;
+}
+
+.contact-number {
+  font-size: 28rpx;
+  color: #6B7588;
+  margin-left: auto;
+}
+
+.contact-desc {
+  font-size: 28rpx;
+  opacity: 0.9;
+  margin-left: auto;
+}
+
+.wechat-btn .contact-text,
+.wechat-btn .contact-desc {
+  color: #fff;
+}
+
+.modal-close {
+  margin-top: 32rpx;
+  padding: 24rpx;
+  text-align: center;
+  font-size: 32rpx;
+  color: #6B7588;
+  border-top: 1rpx solid #E8ECF2;
+}
