@@ -96,8 +96,8 @@
             <text class="amount-label">订单金额：</text>
             <text class="amount-value">¥{{item.order_amount}}</text>
           </view>
-          <!-- 待支付订单显示重新支付按钮 -->
-          <view wx:if="{{item.payment_status === 1}}" class="action-btn-group">
+          <!-- 待支付订单显示重新支付按钮（仅限微信和支付宝） -->
+          <view wx:if="{{item.payment_status === 1 && (item.payment_type === 1 || item.payment_type === 2)}}" class="action-btn-group">
             <view class="repay-btn" catchtap="handleRepayPackageOrder" data-order="{{item}}">
               <text class="repay-btn-text">重新支付</text>
             </view>
@@ -160,8 +160,8 @@
             <text class="amount-label">充值金额：</text>
             <text class="amount-value">¥{{item.recharge_amount}}</text>
           </view>
-          <!-- 待充值订单显示重新支付按钮 -->
-          <view wx:if="{{item.recharge_status === 1}}" class="action-btn-group">
+          <!-- 待充值订单显示重新支付按钮（仅限微信和支付宝） -->
+          <view wx:if="{{item.recharge_status === 1 && (item.payment_type === 1 || item.payment_type === 2)}}" class="action-btn-group">
             <view class="repay-btn" catchtap="handleRepayRechargeOrder" data-order="{{item}}">
               <text class="repay-btn-text">重新支付</text>
             </view>
