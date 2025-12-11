@@ -9,7 +9,11 @@ Page({
     loading: true,
     deviceInfo: {},
     customerInfo: {},
-    isFirstLoad: true
+    isFirstLoad: true,
+    // 设备选择弹窗
+    showDeviceModal: false,
+    currentDeviceNo: '',
+    otherDevices: []
   },
 
   async onLoad() {
@@ -143,47 +147,41 @@ Page({
         return deviceNo !== currentDeviceNo;
       });
       
-      if (otherDevices.length > 0) {
-        // 有其他设备，显示切换选项
-        this.showDeviceSwitchOptions(currentDeviceNo, otherDevices);
-      } else {
-        // 没有其他设备，直接跳转绑定页面
-        this.showBindNewDeviceConfirm(currentDeviceNo);
-      }
+      // 显示自定义设备选择弹窗
+      this.setData({
+        showDeviceModal: true,
+        currentDeviceNo: currentDeviceNo,
+        otherDevices: otherDevices
+      });
       
     } catch (error) {
       wx.hideLoading();
       console.error('获取设备列表失败:', error);
-      // 获取失败时，直接显示绑定新设备选项
-      this.showBindNewDeviceConfirm(currentDeviceNo);
+      // 获取失败时，也显示弹窗，但没有其他设备
+      this.setData({
+        showDeviceModal: true,
+        currentDeviceNo: currentDeviceNo,
+        otherDevices: []
+      });
     }
   },
   
-  // 显示设备切换选项（有多个设备时）
-  showDeviceSwitchOptions(currentDeviceNo, otherDevices) {
-    const currentName = this.data.deviceInfo?.device_name || '当前设备';
-    
-    // 构建选项列表
-    const itemList = otherDevices.map(d => {
-      const name = d.device_name || d.deviceName || '未命名设备';
-      const code = d.deviceCode || d.device_no;
-      return `切换到：${name}（${code}）`;
-    });
-    itemList.push('绑定其他设备码');
-    
-    wx.showActionSheet({
-      itemList: itemList,
-      success: (res) => {
-        if (res.tapIndex < otherDevices.length) {
-          // 切换到其他已绑定的设备
-          const selectedDevice = otherDevices[res.tapIndex];
-          this.switchToDevice(selectedDevice);
-        } else {
-          // 绑定其他设备码
-          navigation.navigateTo('/pages/bind-device-code/bind-device-code?rebind=true');
-        }
-      }
-    });
+  // 隐藏设备选择弹窗
+  hideDeviceModal() {
+    this.setData({ showDeviceModal: false });
+  },
+  
+  // 选择设备
+  onSelectDevice(e) {
+    const device = e.currentTarget.dataset.device;
+    this.hideDeviceModal();
+    this.switchToDevice(device);
+  },
+  
+  // 跳转绑定新设备页面
+  goBindNewDevice() {
+    this.hideDeviceModal();
+    navigation.navigateTo('/pages/bind-device-code/bind-device-code?rebind=true');
   },
   
   // 切换到指定设备
@@ -214,23 +212,7 @@ Page({
     });
   },
   
-  // 显示绑定新设备确认（只有一个设备时）
-  showBindNewDeviceConfirm(currentDeviceNo) {
-    const currentName = this.data.deviceInfo?.device_name || '当前设备';
-    
-    wx.showModal({
-      title: '绑定其他设备',
-      content: `当前绑定：${currentName}\n设备码：${currentDeviceNo || '无'}\n\n确定要绑定其他设备吗？`,
-      confirmText: '去绑定',
-      cancelText: '取消',
-      success: (res) => {
-        if (res.confirm) {
-          navigation.navigateTo('/pages/bind-device-code/bind-device-code?rebind=true');
-        }
-      }
-    });
-  },
-
+  
   // 显示关于信息
   showAboutInfo() {
     wx.showModal({

@@ -137,6 +137,69 @@
 
 </view>
 
+<!-- 设备选择弹窗 -->
+<view class="device-modal" wx:if="{{showDeviceModal}}" catchtouchmove="true">
+  <view class="modal-mask" bindtap="hideDeviceModal"></view>
+  <view class="modal-content">
+    <view class="modal-header">
+      <view class="modal-title">选择设备</view>
+      <view class="modal-subtitle">切换或绑定新设备</view>
+    </view>
+    
+    <!-- 当前设备 -->
+    <view class="current-device-section" wx:if="{{currentDeviceNo}}">
+      <view class="section-label">当前设备</view>
+      <view class="device-card current">
+        <view class="device-icon-box">
+          <van-icon name="desktop-o" size="24px" color="#2B7FF0" />
+        </view>
+        <view class="device-info">
+          <view class="device-name">{{deviceInfo.device_name || '未命名设备'}}</view>
+          <view class="device-code">{{currentDeviceNo}}</view>
+        </view>
+        <view class="device-status">
+          <view class="status-dot"></view>
+          <text>使用中</text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 其他设备列表 -->
+    <view class="other-devices-section" wx:if="{{otherDevices.length > 0}}">
+      <view class="section-label">其他设备</view>
+      <view class="device-list">
+        <view 
+          class="device-card" 
+          wx:for="{{otherDevices}}" 
+          wx:key="index"
+          hover-class="device-card-hover"
+          bindtap="onSelectDevice"
+          data-device="{{item}}"
+        >
+          <view class="device-icon-box gray">
+            <van-icon name="desktop-o" size="24px" color="#999" />
+          </view>
+          <view class="device-info">
+            <view class="device-name">{{item.device_name || item.deviceName || '未命名设备'}}</view>
+            <view class="device-code">{{item.deviceCode || item.device_no}}</view>
+          </view>
+          <view class="switch-arrow">›</view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 绑定新设备按钮 -->
+    <view class="bind-new-btn" hover-class="bind-new-btn-hover" bindtap="goBindNewDevice">
+      <view class="bind-icon-box">
+        <van-icon name="plus" size="20px" color="#2B7FF0" />
+      </view>
+      <text>绑定其他设备码</text>
+    </view>
+    
+    <view class="modal-close" bindtap="hideDeviceModal">取消</view>
+  </view>
+</view>
+
 <!-- 底部导航栏 -->
 <van-tabbar active="{{ 1 }}" bind:change="onTabChange">
   <van-tabbar-item icon="home-o">首页</van-tabbar-item>
