@@ -70,7 +70,6 @@ Page({
   },
 
   async onLoad() {
-    console.log('首页加载');
     try {
       await this.loadBanners();
       await this.loadAccountInfo();
@@ -83,8 +82,6 @@ Page({
   },
 
   async onShow() {
-    console.log('首页显示，刷新数据...');
-    
     // 每次显示页面都获取最新数据，确保数据始终是最新的
     await this.loadAccountInfo();
   },
@@ -96,23 +93,18 @@ Page({
       
       // 检查是否已登录
       if (!app.globalData.isLoggedIn || !app.globalData.token) {
-        console.log('⚠️ 用户未登录，跳过设备验证');
         return;
       }
 
       const deviceNo = DataManager.getDeviceCode();
       if (!deviceNo) {
-        console.log('⚠️ 未绑定设备');
         return;
       }
-
-      console.log('🔍 验证设备绑定状态...');
       
       // 调用接口验证设备码是否有效
       const result = await API.getCustomerByDeviceCode(deviceNo);
       
       if (!result.success || !result.data) {
-        console.log('❌ 设备已解绑或无效，清除本地绑定');
         cacheManager.clearDeviceCache();
         
         // 提示用户并跳转到绑定页面
@@ -125,8 +117,6 @@ Page({
             navigation.navigateTo('/pages/bind-device-code/bind-device-code');
           }
         });
-      } else {
-        console.log('✅ 设备绑定状态正常');
       }
     } catch (error) {
       console.error('❌ 验证设备绑定状态失败:', error);
@@ -139,11 +129,8 @@ Page({
       const deviceNo = DataManager.getDeviceCode();
       
       if (!deviceNo) {
-        console.log('未绑定设备');
         return;
       }
-
-      console.log('📊 实时获取账户信息，设备码:', deviceNo);
       
       // 实时获取完整客户信息
       const result = await DataManager.getCompleteCustomerInfo(deviceNo);
@@ -154,11 +141,6 @@ Page({
         this.setData({
           customerName: customer?.customer_name || '用户名称',
           balance: account?.balance || '0.00'
-        });
-        
-        console.log('✅ 账户信息已更新:', {
-          customerName: customer?.customer_name,
-          balance: account?.balance
         });
       }
       
@@ -175,12 +157,8 @@ Page({
   // 加载Banner轮播图
   async loadBanners() {
     try {
-      console.log('开始加载Banner...');
-
       // 调用API获取Banner列表（传递位置参数 1 = 首页）
       const result = await API.getBannersList(1);
-
-      console.log('Banner加载成功:', result.data);
 
       // 检查是否有数据
       if (result.data && result.data.banners && result.data.banners.length > 0) {
@@ -206,9 +184,7 @@ Page({
         });
 
         this.setData({ slides: slides });
-        console.log('Banner数据已设置:', slides.length, '个');
       } else {
-        console.warn('Banner列表为空，使用默认数据');
         this.loadDefaultBanners();
       }
 

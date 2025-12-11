@@ -19,8 +19,6 @@ Page({
   },
 
   async onLoad() {
-    console.log('我的账单页面加载');
-    
     // 从本地缓存读取设备编号
     const device_no = wx.getStorageSync('device_no') || wx.getStorageSync('deviceCode');
     
@@ -33,7 +31,6 @@ Page({
     }
     
     this.setData({ deviceCode: device_no });
-    console.log('读取到设备编号:', device_no);
     
     await this.loadCustomerInfo();
     await this.loadBills(true); // 首次加载，传递true
@@ -43,7 +40,6 @@ Page({
   },
 
   async onShow() {
-    console.log('我的账单页面显示');
     // 只有非首次加载时才刷新数据（从其他页面返回时）
     if (!this.data.isFirstLoad) {
       await this.loadBills(true); // 刷新数据
@@ -52,7 +48,6 @@ Page({
 
   // 下拉刷新
   async onPullDownRefresh() {
-    console.log('下拉刷新账单列表');
     
     // 显示刷新动画
     wx.showNavigationBarLoading();
@@ -76,7 +71,6 @@ Page({
 
   // 上拉加载更多
   async onReachBottom() {
-    console.log('触发上拉加载更多');
     
     // 如果正在加载或没有更多数据，直接返回
     if (this.data.loadingMore || !this.data.hasMore) {
@@ -97,18 +91,14 @@ Page({
   // 加载客户信息（每次都从服务器获取最新数据，避免变更过户等场景下数据不一致）
   async loadCustomerInfo() {
     try {
-      console.log('📦 加载客户信息，设备码:', this.data.deviceCode);
-      
       // 强制从服务器获取最新数据，不使用缓存
       const result = await DataManager.getCompleteCustomerInfo(this.data.deviceCode, true);
       
       if (result.success && result.data) {
-        console.log('客户信息查询成功:', result.data);
         this.setData({
           customerInfo: result.data.customer || result.data
         });
       } else {
-        console.error('获取客户信息失败:', result.message);
         message.error('无法获取客户信息');
       }
       
@@ -126,8 +116,6 @@ Page({
         this.setData({ loading: true });
       }
       
-      console.log(`加载账单列表，页码: ${this.data.currentPage}, 设备号: ${this.data.deviceCode}`);
-
       // 使用设备号查询账单列表
       const result = await API.getBillList({
         page: this.data.currentPage,
@@ -136,8 +124,6 @@ Page({
         customer_name: '',
         bill_no: ''
       });
-      
-      console.log('账单列表加载成功:', result.data);
 
       // 转换数据格式
       const billsList = result.data.list || result.data.bills || result.data || [];
@@ -178,7 +164,11 @@ Page({
       
       // 如果没有更多数据，显示提示
       if (!hasMore && !isRefresh && billsList.length > 0) {
-        message.info('已加载全部账单');
+        wx.showToast({
+          title: '已加载全部账单',
+          icon: 'none',
+          duration: 1500
+        });
       }
       
       // 返回成功状态
@@ -196,9 +186,13 @@ Page({
         this.setData({ 
           currentPage: this.data.currentPage - 1 
         });
+        // 加载更多失败的提示
+        message.error('加载更多失败，请稍后重试');
+      } else {
+        // 首次加载或刷新失败的提示
+        message.error('加载失败，请下拉刷新');
       }
       
-      message.error('加载失败，请下拉刷新');
       // 返回失败状态
       return { success: false };
     }

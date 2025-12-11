@@ -19,8 +19,6 @@ Page({
   },
 
   async onLoad() {
-    console.log('变更过户页面加载');
-
     // 从本地缓存读取设备编号
     const device_no = wx.getStorageSync('device_no') || wx.getStorageSync('deviceCode');
     
@@ -33,27 +31,22 @@ Page({
     }
     
     this.setData({ deviceCode: device_no });
-    console.log('读取到设备编号:', device_no);
     
     await this.loadCustomerInfo();
   },
 
   onShow() {
-    console.log('变更过户页面显示');
   },
 
   // 加载客户信息（每次都从服务器获取最新数据，避免变更过户等场景下数据不一致）
   async loadCustomerInfo() {
     try {
-      console.log('查询客户信息，设备码:', this.data.deviceCode);
-      
       await message.withMinLoading(
         async () => {
           // 强制从服务器获取最新数据，不使用缓存
           const result = await DataManager.getCompleteCustomerInfo(this.data.deviceCode, true);
           
           if (result.success && result.data) {
-            console.log('客户信息查询成功:', result.data);
             this.setData({
               customerInfo: result.data
             });
@@ -151,8 +144,6 @@ Page({
     this.setData({ submitLoading: true });
 
     try {
-      console.log('创建过户申请');
-
       // 获取用户的openid
       const openid = wx.getStorageSync('openid') || app.globalData.openid;
       
@@ -180,7 +171,6 @@ Page({
       );
 
       this.setData({ submitLoading: false });
-      console.log('过户申请创建成功:', result.data);
 
       message.success('申请提交成功');
       

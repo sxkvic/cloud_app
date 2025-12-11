@@ -41,8 +41,6 @@ Page({
   },
 
   onLoad() {
-    console.log("预充值页面加载");
-
     // 获取系统信息设置状态栏高度
     const systemInfo = wx.getSystemInfoSync();
     const statusBarHeight = systemInfo.statusBarHeight || 0;
@@ -67,14 +65,12 @@ Page({
     }
 
     this.setData({ deviceCode: device_no });
-    console.log("读取到设备编号:", device_no);
 
     // 加载客户信息
     this.loadCustomerInfo();
   },
 
   onShow() {
-    console.log("预充值页面显示");
     // 不需要每次都重新加载，使用登录时缓存的数据即可
   },
 
@@ -82,7 +78,6 @@ Page({
   async loadCustomerInfo() {
     try {
       this.setData({ isLoadingCustomer: true });
-      console.log("📦 加载客户信息，设备码:", this.data.deviceCode);
 
       if (!this.data.deviceCode) {
         message.error("设备码未设置，请重新登录");
@@ -101,11 +96,6 @@ Page({
 
         // 显示客户基本信息
         const customerInfo = result.data;
-        if (customerInfo && customerInfo.customer) {
-          console.log(
-            `客户：${customerInfo.customer.customer_name}, 设备：${customerInfo.device_info?.device_name || '未知'}`
-          );
-        }
       } else {
         console.error("获取客户信息失败:", result.message);
         this.setData({ isLoadingCustomer: false });
@@ -220,7 +210,6 @@ Page({
   // 选择支付方式
   async selectPaymentMethod(e) {
     const method = e.currentTarget.dataset.method;
-    console.log('选择支付方式:', method);
 
     // 关闭支付方式选择弹窗
     this.setData({ showPaymentModal: false });
@@ -262,8 +251,6 @@ Page({
   // 微信小程序支付
   async handleWechatPayment(customerInfo, deviceInfo, rechargeAmount, remark) {
     try {
-      console.log('========== 微信小程序支付（预充值） ==========');
-      
       wx.showLoading({ title: '正在调起支付...' });
 
       // 获取微信 code
@@ -275,7 +262,6 @@ Page({
       });
 
       const code = loginRes.code;
-      console.log('获取微信code:', code);
 
       if (!code) {
         wx.hideLoading();
@@ -286,7 +272,6 @@ Page({
 
       // 获取用户的openid
       const openid = wx.getStorageSync('openid') || app.globalData.openid;
-      console.log('获取openid:', openid);
 
       if (!openid) {
         wx.hideLoading();
@@ -308,17 +293,11 @@ Page({
         remark: remark || ''
       };
 
-      console.log('支付参数:', paymentParams);
-
       const payResult = await API.createMiniprogramPayment(paymentParams);
 
       wx.hideLoading();
 
-      console.log('========== 支付接口返回 ==========');
-      console.log('完整返回数据:', JSON.stringify(payResult, null, 2));
-
-      if (payResult.success && payResult.data) {
-        console.log('========== 准备调起微信支付 ==========');
+      if (payResult.success && payResult.data){
         
         // 检查必需的支付参数
         const requiredParams = ['timeStamp', 'nonceStr', 'package', 'signType', 'paySign'];
@@ -330,8 +309,6 @@ Page({
           return;
         }
 
-        console.log('支付参数验证通过，调起微信支付...');
-
         wx.requestPayment({
           timeStamp: payResult.data.timeStamp,
           nonceStr: payResult.data.nonceStr,
@@ -339,7 +316,6 @@ Page({
           signType: payResult.data.signType,
           paySign: payResult.data.paySign,
           success: (payRes) => {
-            console.log('========== 支付成功 ==========', payRes);
             wx.showToast({
               title: '支付成功',
               icon: 'success',
@@ -376,7 +352,6 @@ Page({
 
   // 微信二维码支付
   async handleQrcodePayment(customerInfo, deviceInfo, rechargeAmount, remark) {
-    console.log('========== 微信二维码支付（预充值） ==========');
     
     try {
       // 显示二维码弹窗（加载状态）
@@ -400,16 +375,11 @@ Page({
         remark: remark || ''
       };
 
-      console.log('创建预充值订单参数:', orderData);
       const orderResponse = await API.createPreRechargeOrder(orderData);
-      console.log('订单创建成功:', orderResponse);
       
       if (orderResponse.success && orderResponse.data && orderResponse.data.qr_code_url) {
         const qrCodeUrl = orderResponse.data.qr_code_url;
         const orderNo = orderResponse.data.order_no;
-        
-        console.log('二维码链接:', qrCodeUrl);
-        console.log('订单号:', orderNo);
         
         this.setData({
           qrcodeUrl: qrCodeUrl,
@@ -438,14 +408,10 @@ Page({
   // 生成二维码
   async generateQRCode(url) {
     try {
-      console.log('开始生成二维码:', url);
-      
       await QRCode.generateQRCode('qrcode-canvas', url, {
         width: 200,
         height: 200
       }, this);
-      
-      console.log('二维码生成成功');
     } catch (error) {
       console.error('二维码生成失败:', error);
     }
@@ -453,7 +419,6 @@ Page({
 
   // 支付宝支付
   async handleAlipayPayment(customerInfo, deviceInfo, rechargeAmount, remark) {
-    console.log('========== 支付宝支付（预充值） ==========');
     
     try {
       // 显示二维码弹窗（加载状态）
@@ -477,16 +442,11 @@ Page({
         remark: remark || ''
       };
 
-      console.log('创建支付宝预充值订单参数:', orderData);
       const orderResponse = await API.createPreRechargeOrder(orderData);
-      console.log('支付宝订单创建成功:', orderResponse);
       
       if (orderResponse.success && orderResponse.data && orderResponse.data.qr_code_url) {
         const qrCodeUrl = orderResponse.data.qr_code_url;
         const orderNo = orderResponse.data.order_no;
-        
-        console.log('支付宝二维码链接:', qrCodeUrl);
-        console.log('订单号:', orderNo);
         
         this.setData({
           qrcodeUrl: qrCodeUrl,
@@ -514,7 +474,6 @@ Page({
 
   // 线下支付
   async handleOfflinePayment(customerInfo, deviceInfo, rechargeAmount, remark) {
-    console.log('========== 线下支付（预充值） ==========');
     
     try {
       wx.showLoading({ title: '创建订单中...' });
@@ -531,9 +490,7 @@ Page({
         remark: remark || ''
       };
 
-      console.log('创建线下支付订单参数:', orderData);
       const orderResponse = await API.createOfflineRechargeOrder(orderData);
-      console.log('线下支付订单创建成功:', orderResponse);
       
       wx.hideLoading();
       
@@ -622,7 +579,6 @@ Page({
 
   // 支付成功回调
   onPaymentSuccess(orderNo) {
-    console.log("支付成功，订单号:", orderNo);
     message.success("充值成功！");
   },
 

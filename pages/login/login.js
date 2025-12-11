@@ -11,55 +11,42 @@ Page({
   },
 
   onLoad() {
-    console.log('登录页加载');
     // 每次进入登录页都要求用户重新登录，不做自动跳转
   },
 
   onShow() {
-    console.log('登录页显示');
   },
 
   // 隐私协议勾选变化
   onAgreeChange(e) {
     const agreed = e.detail.value.length > 0;
     this.setData({ agreed });
-    console.log('隐私协议同意状态:', agreed);
   },
 
   // 跳转到用户协议
   navigateToUserAgreement(e) {
-    console.log('🔗 点击用户协议链接', e);
     if (e && e.stopPropagation) {
       e.stopPropagation();
     }
     
-    console.log('🚀 准备跳转到用户协议页面');
     wx.navigateTo({
       url: '/pages/user-agreement/user-agreement',
-      success: () => {
-        console.log('✅ 跳转用户协议成功');
-      },
       fail: (err) => {
-        console.error('❌ 跳转用户协议失败:', err);
+        console.error('跳转用户协议失败:', err);
       }
     });
   },
 
   // 跳转到隐私政策
   navigateToPrivacyPolicy(e) {
-    console.log('🔗 点击隐私政策链接', e);
     if (e && e.stopPropagation) {
       e.stopPropagation();
     }
     
-    console.log('🚀 准备跳转到隐私政策页面');
     wx.navigateTo({
       url: '/pages/privacy-policy/privacy-policy',
-      success: () => {
-        console.log('✅ 跳转隐私政策成功');
-      },
       fail: (err) => {
-        console.error('❌ 跳转隐私政策失败:', err);
+        console.error('跳转隐私政策失败:', err);
       }
     });
   },
@@ -78,11 +65,9 @@ Page({
 
     // 防止重复调用
     if (this.data.loading) {
-      console.log('登录进行中，忽略重复调用');
       return;
     }
 
-    console.log("Starting WeChat Login...");
     this.setData({ loading: true });
 
     try {
@@ -99,12 +84,10 @@ Page({
       }
 
       const code = loginRes.code;
-      console.log('获取到微信code:', code);
 
       // 2. 通过code获取openid
       const openidResult = await API.getOpenidByCode(code);
       const openid = openidResult.data.openid;
-      console.log('获取到openid:', openid);
 
       // 保存openid
       app.globalData.openid = openid;
@@ -114,7 +97,6 @@ Page({
       try {
         const tokenResult = await API.generateTokenByOpenid(openid);
         const token = tokenResult.data.token;
-        console.log('用户已存在，获取到token');
 
         // 保存token
         app.globalData.token = token;
@@ -131,7 +113,6 @@ Page({
 
       } catch (tokenError) {
         // 用户不存在，创建新用户
-        console.log('用户不存在，创建新用户');
 
         const createUserResult = await API.createUser({
           openid: openid,
@@ -175,14 +156,9 @@ Page({
   // 检查设备绑定状态并导航（简化版：只保存设备码）
   async checkDeviceBindingAndNavigate() {
     try {
-      console.log('🔍 检查用户设备绑定状态...');
-      
       // 调用API获取用户绑定的设备列表
       const devicesResult = await API.getUserDevices();
       const devices = devicesResult.data.devices || [];
-      
-      console.log('📋 服务器返回的设备列表:', devices);
-      console.log('📊 设备数量:', devices.length);
       
       if (devices.length > 0) {
         // 用户已绑定设备，只保存设备码
@@ -194,8 +170,6 @@ Page({
         app.globalData.deviceBound = true;
         app.globalData.device_no = deviceCode;
         
-        console.log('✅ 设备码已保存:', deviceCode);
-        
         // 跳转首页
         setTimeout(() => {
           this.setData({ loading: false });
@@ -203,7 +177,6 @@ Page({
         }, 300);
       } else {
         // 用户未绑定设备
-        console.log('⚠️ 用户未绑定设备');
         cacheManager.clearDeviceCache();
         
         setTimeout(() => {

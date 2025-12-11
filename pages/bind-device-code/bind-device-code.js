@@ -11,8 +11,6 @@ Page({
   },
 
   onLoad(options) {
-    console.log('绑定设备码页面加载', options);
-
     // 检查是否是重新绑定（从"我的"页面跳转过来）
     const isRebind = options.rebind === 'true';
     
@@ -38,8 +36,6 @@ Page({
       // 重新绑定时，立即清除旧的设备缓存数据
       const currentDeviceNo = wx.getStorageSync('device_no');
       if (currentDeviceNo) {
-        console.log('当前绑定的设备码:', currentDeviceNo);
-        console.log('🗑️ 重新绑定：清除旧设备缓存...');
         cacheManager.clearDeviceCache();
         wx.showToast({
           title: '可以重新绑定设备',
@@ -51,7 +47,6 @@ Page({
   },
 
   onShow() {
-    console.log('绑定设备码页面显示');
   },
 
   // 输入框内容变化
@@ -76,7 +71,6 @@ Page({
     wx.scanCode({
       scanType: ['barCode', 'qrCode'], // 支持条形码和二维码
       success: (res) => {
-        console.log('扫码成功:', res);
         // 将扫码结果填入输入框，去除空格并转换为大写
         const cleanCode = res.result.replace(/\s+/g, '').toUpperCase();
         this.setData({
@@ -122,14 +116,12 @@ Page({
     }
 
     this.setData({ isLoading: true });
-    console.log('开始绑定设备，设备码:', deviceCode, '充值账号:', rechargeAccount);
 
     try {
       // 清除旧的设备绑定
       cacheManager.clearDeviceCache();
       
       // 直接调用绑定接口，后端会处理所有验证逻辑
-      console.log('调用绑定接口...');
       await API.bindDevice(deviceCode, rechargeAccount);
 
       // 绑定成功后，只保存设备码（不缓存其他数据，所有数据实时获取）
@@ -140,8 +132,6 @@ Page({
       app.globalData.deviceBound = true;
       app.globalData.device_no = deviceCode;
       
-      console.log('✅ 设备绑定成功，设备码:', deviceCode);
-
       this.setData({ isLoading: false });
       message.success('设备绑定成功！');
 

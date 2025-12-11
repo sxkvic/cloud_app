@@ -13,13 +13,11 @@ Page({
   },
 
   async onLoad() {
-    console.log('我的页面加载');
     await this.loadDeviceAndCustomerInfo();
     this.setData({ isFirstLoad: false });
   },
 
   async onShow() {
-    console.log('我的页面显示');
     // 非首次加载时刷新数据
     if (!this.data.isFirstLoad) {
       await this.loadDeviceAndCustomerInfo();
@@ -33,12 +31,9 @@ Page({
       
       const deviceNo = DataManager.getDeviceCode();
       if (!deviceNo) {
-        console.log('未绑定设备');
         this.setData({ loading: false });
         return;
       }
-
-      console.log('📊 实时获取设备和客户信息...');
       
       // 实时获取完整客户信息
       const result = await DataManager.getCompleteCustomerInfo(deviceNo);
@@ -58,14 +53,11 @@ Page({
           customerInfo: customer || {},
           loading: false
         });
-        
-        console.log('✅ 设备和客户信息已更新');
       } else {
         throw new Error(result.message || '获取设备信息失败');
       }
 
     } catch (error) {
-      console.error('加载设备信息失败:', error);
       this.setData({ loading: false });
       message.error('加载信息失败');
     }
@@ -97,23 +89,18 @@ Page({
       
       // 检查是否已登录
       if (!app.globalData.isLoggedIn || !app.globalData.token) {
-        console.log('⚠️ 用户未登录，跳过设备验证');
         return;
       }
 
       const deviceNo = DataManager.getDeviceCode();
       if (!deviceNo) {
-        console.log('⚠️ 未绑定设备');
         return;
       }
-
-      console.log('🔍 验证设备绑定状态...');
       
       // 调用接口验证设备码是否有效
       const result = await API.getCustomerByDeviceCode(deviceNo);
       
       if (!result.success || !result.data) {
-        console.log('❌ 设备已解绑或无效，清除本地绑定');
         cacheManager.clearDeviceCache();
         
         // 提示用户并跳转到绑定页面
@@ -126,11 +113,9 @@ Page({
             navigation.navigateTo('/pages/bind-device-code/bind-device-code');
           }
         });
-      } else {
-        console.log('✅ 设备绑定状态正常');
       }
     } catch (error) {
-      console.error('❌ 验证设备绑定状态失败:', error);
+      message.error('验证设备绑定状态失败');
     }
   },
 
@@ -138,7 +123,6 @@ Page({
   navigateToService(e) {
     const url = e.currentTarget.dataset.url;
     if (url) {
-      console.log('导航到:', url);
       navigation.navigateTo(url);
     }
   },
@@ -155,8 +139,6 @@ Page({
       const devices = devicesResult.data?.devices || [];
       
       wx.hideLoading();
-      
-      console.log('用户绑定的设备列表:', devices);
       
       // 过滤掉当前设备，获取其他可切换的设备
       const otherDevices = devices.filter(d => {

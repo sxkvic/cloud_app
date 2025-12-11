@@ -59,7 +59,7 @@ async function getCompleteCustomerInfo(deviceCode) {
       return { success: false, message: '未绑定设备', data: null };
     }
 
-    console.log('📊 实时获取客户信息...', { device_no });
+    console.log('📊 获取客户信息...', { device_no });
 
     // 1. 先调用基本接口获取 recharge_account
     const basicResult = await API.getCustomerByDeviceCode(device_no);

@@ -52,8 +52,6 @@ Page({
   },
 
   onLoad(options) {
-    console.log('📄 电子协议页面加载', options);
-    
     // 清理旧的缓存数据，确保数据最新
     this.clearOldCache();
     
@@ -82,7 +80,6 @@ Page({
   },
 
   onShow() {
-    console.log('业务登记单页面显示');
   },
 
   // 清理旧缓存
@@ -90,7 +87,6 @@ Page({
     try {
       // 清理可能存在的旧缓存
       wx.removeStorageSync('complete_customer_info');
-      console.log('✅ 已清理旧缓存');
     } catch (error) {
       console.error('清理缓存失败:', error);
     }
@@ -100,13 +96,11 @@ Page({
   async loadCustomerInfo() {
     try {
       this.setData({ loading: true });
-      console.log('📦 加载客户信息...');
       
       // 直接从DataManager获取最新数据，不依赖旧缓存
       let customerInfo = null;
       
       if (this.data.deviceCode) {
-        console.log('⚠️ 重新获取最新客户信息...');
         const result = await DataManager.getCompleteCustomerInfo(this.data.deviceCode, true);
         customerInfo = result.data;
       }
@@ -116,8 +110,6 @@ Page({
         this.setData({ loading: false });
         return;
       }
-      
-      console.log('✅ 客户信息:', customerInfo);
       
       // 填充订单数据
       const orderData = this.fillOrderDataFromCustomer(customerInfo);

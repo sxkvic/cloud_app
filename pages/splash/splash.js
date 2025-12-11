@@ -14,7 +14,6 @@ Page({
   },
 
   onLoad() {
-    console.log('启动页加载');
     this.startLoadingAnimation();
     this.startSplashSequence();
   },
