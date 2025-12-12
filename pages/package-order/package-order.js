@@ -65,21 +65,21 @@ Page({
             .filter(pkg => pkg.status === 1)  // 只保留status为1的有效套餐
             .sort((a, b) => (a.sort || 0) - (b.sort || 0))  // 根据sort字段从小到大排序
             .map((pkg, index) => {
-              // 处理流量字段,提取数字和单位(如 "1000M" -> speed: "1000", unit: "M")
+              // 处理流量字段,提取数字和单位(如 "1000M" -> speed: "1000", unit: "Mbps")
               let speed = '100';
-              let speedUnit = 'M';
+              let speedUnit = 'Mbps';
               if (pkg.flow) {
                 const match = pkg.flow.match(/(\d+)([A-Za-z]*)/);
                 if (match) {
                   speed = match[1];
-                  speedUnit = match[2] || 'M';  // 如果没有单位，默认M
+                  speedUnit = 'Mbps';  // 统一使用Mbps作为单位
                 }
               }
 
               // 构建特性列表
               const features = [];
               if (pkg.flow) {
-                features.push(`流量: ${pkg.flow}`);
+                features.push(`带宽: ${speed}Mbps`);
               }
               if (pkg.remark) {
                 features.push(pkg.remark);

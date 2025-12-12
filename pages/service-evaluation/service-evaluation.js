@@ -33,7 +33,7 @@ Page({
     
     // 工单信息
     orderInfo: {
-      serviceType: '宽带安装服务',
+      serviceType: '售后人员服务评价',
       orderNo: '',
       completeTime: ''
     },

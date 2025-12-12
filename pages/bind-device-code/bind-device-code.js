@@ -98,21 +98,15 @@ Page({
     deviceCode = deviceCode.replace(/\s+/g, '').toUpperCase();
     rechargeAccount = rechargeAccount.trim();
 
-    // 验证设备码是否为空
-    if (!deviceCode || deviceCode.length === 0) {
+    // 验证设备码是否为空（只校验必填）
+    if (!deviceCode || deviceCode.length == 0) {
       message.error('请输入设备绑定码');
       return;
     }
 
-    // 验证设备码格式（可选，根据实际需求调整）
-    if (deviceCode.length < 6) {
-      message.error('设备码格式不正确，请检查后重试');
-      return;
-    }
-
-    // 验证充值账号（可选）
-    if (rechargeAccount && !/^1[3-9]\d{9}$/.test(rechargeAccount)) {
-      message.error('请输入正确的手机号码');
+    // 验证缴费账号是否为空（只校验必填）
+    if (!rechargeAccount || rechargeAccount.length == 0) {
+      message.error('请输入缴费账号');
       return;
     }
 

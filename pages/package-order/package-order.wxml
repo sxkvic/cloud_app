@@ -32,7 +32,7 @@
                             <text class="data-num">{{ item.speed }}</text>
                             <text class="data-unit">{{ item.speedUnit }}</text>
                         </view>
-                        <view class="data-type">宽带</view>
+                        <view class="data-type">带宽</view>
                     </view>
                 </view>
                 

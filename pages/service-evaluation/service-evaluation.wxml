@@ -20,7 +20,7 @@
         <image src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgdmlld0JveD0iMCAwIDY0IDY0Ij48Y2lyY2xlIGN4PSIzMiIgY3k9IjIwIiByPSIxMiIgZmlsbD0iIzRENkFGRiIvPjxwYXRoIGQ9Ik0xMCA0OGMwLTEyIDEwLTIwIDIyLTIwczIyIDggMjIgMjAiIGZpbGw9IiM0RDZBRkYiLz48L3N2Zz4=" class="avatar-img"></image>
       </view>
       <view class="order-detail">
-        <text class="order-type">{{orderInfo.serviceType || '宽带安装服务'}}</text>
+        <text class="order-type">{{orderInfo.serviceType || '售后人员服务评价'}}</text>
         <text class="order-sn">工单号：{{orderInfo.orderNo || device_no || '暂无'}}</text>
         <text class="order-time">完成时间：{{orderInfo.completeTime || currentTime}}</text>
       </view>
