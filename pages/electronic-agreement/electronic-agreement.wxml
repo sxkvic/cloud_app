@@ -1,237 +1,274 @@
-<!--pages/electronic-agreement/electronic-agreement.wxml-->
 <view class="container">
-  
-  <!-- 加载状态 -->
-  <view wx:if="{{loading}}" class="loading-container">
-    <view class="loading-text">正在加载客户信息...</view>
-  </view>
-  
-  <!-- 内容区域 -->
-  <view wx:else>
-  
-  <!-- 顶部服务热线 -->
-  <view class="service-line">服务热线 400-96777-26 &nbsp;&nbsp; 关注云网宽带微信小程序</view>
-  
-  <!-- 顶部横线 -->
-  <view class="header-line"></view>
-  
-  <!-- 头部元信息 -->
-  <view class="header-meta">
-    <text>订单编号：{{orderData.orderNo}}</text>
-    <text>第 {{orderData.currentPage}} 页 (共 {{orderData.totalPages}} 页)</text>
-    <text>受理日期：{{orderData.acceptDate}}</text>
+  <!-- 页面头部 -->
+  <view class="header">
+    <view class="service-line">服务热线 400-96777-26</view>
+    <view class="wechat-tip">关注云网宽带微信小程序，查产品、套餐订购、自主继包等便捷服务</view>
   </view>
 
-  <!-- 页面标题 -->
-  <view class="page-title">业 务 登 记 单</view>
+  <!-- 订单信息栏 -->
+  <view class="order-info">
+    <view class="order-row">
+      <text class="order-number">订单编号：1220250529000220903492</text>
+      <text class="page-number">第1页(共3页)</text>
+    </view>
+    <text class="accept-date">受理日期：2025年05月29日</text>
+  </view>
 
-  <!-- 客户信息区 -->
-  <view class="info-block">
-    <view class="row">
-      <view class="field" style="width: 60%;">
-        <text class="label">客户名称：</text>
-        <text class="value">{{orderData.customerName}}</text>
-      </view>
-      <view class="field" style="width: 35%;">
-        <text class="label">联系电话：</text>
-        <text class="value">{{orderData.contactPhone}}</text>
-      </view>
+  <!-- 标题 -->
+  <view class="title">业务登记单</view>
+
+  <!-- 客户信息 -->
+  <view class="section">
+    <view class="info-row">
+      <text class="label">客户名称：</text>
+      <text class="value">杭州意丰歌服饰有限公司</text>
     </view>
-    <view class="row">
-      <view class="field" style="width: 40%;">
-        <text class="label">证件类型：</text>
-        <text class="value">{{orderData.idType}}</text>
-      </view>
-      <view class="field" style="width: 55%;">
-        <text class="label">证件号码：</text>
-        <text class="value">{{orderData.idNumber}}</text>
-      </view>
+    <view class="info-row">
+      <text class="label">联系电话：</text>
+      <text class="value">13915514486</text>
     </view>
-    <view class="row">
-      <view class="field" style="width: 100%;">
-        <text class="label">证件地址：</text>
-        <text class="value">{{orderData.idAddress}}</text>
-      </view>
+    <view class="info-row">
+      <text class="label">证件类型：</text>
+      <text class="value">统一信用代码</text>
+      <text class="label ml">证件号码：</text>
+      <text class="value">913************71A</text>
     </view>
-    <view class="row">
-      <view class="field" style="width: 100%;">
-        <text class="label">业务订购单：</text>
-        <text class="value">{{orderData.businessOrderNo}}</text>
-      </view>
+    <view class="info-row">
+      <text class="label">证件地址：</text>
+      <text class="value">浙江省杭州市余杭区余杭经济开发区超峰东路2号南楼5楼515室</text>
+    </view>
+    <view class="info-row">
+      <text class="label">业务订购单：</text>
+      <text class="value">0620250529106777781</text>
     </view>
   </view>
 
   <!-- 登记信息 -->
-  <view class="section-title">登记信息: 一、【业务订购】 {{orderData.packageName}}</view>
+  <view class="section">
+    <view class="section-title">登记信息:</view>
+    <view class="subsection-title">一、【业务订购】礼包云网300M包年套餐(立即生效)</view>
+    <view class="subsection-title">业务说明：</view>
+    <view class="content">
+      <text class="text-line">一、月基本费：300M云宽带原价120元/月，礼包有效期内优惠至998元/年。</text>
+      <text class="text-line">二、基础内容包含：</text>
+      <text class="text-indent">（一）1条支持下行300M基础宽带；1部云路由功能。</text>
+      <text class="text-line">三、可选内容包括：</text>
+      <text class="text-indent">（一）加装电话卡：套餐自选，/元/张/月。</text>
+      <text class="text-indent">（二）可选最高20元云盘服务。</text>
+      <text class="text-indent">（三）固定电话：18元/月/部。</text>
+      <text class="text-line">以上可选内容会随着云网公司政策变动、业务调整、合作方能力等情况进行调整，以礼包受理时可选范围为准。</text>
+      <text class="text-line">四、礼包业务规则：</text>
+      <text class="text-indent">（一）订购规则：用户订购礼包立即生效，详见对应商品业务说明。</text>
+      <text class="text-indent">（二）变更、退订规则：礼包退订次月生效，退订当月已产生的礼包费用不退。退订后剩余商品按商品业务说明内收费规则及约定期限执行，详见对应商品业务说明。</text>
+      <text class="text-line">五、协议期及违约规则：</text>
+      <text class="text-indent">（一）礼包协议期12个完整自然月，如双方在协议期届满前30日均未提出异议的，到期自动续展，每次续展期限同上述协议期。</text>
+      <text class="text-indent">（二）若用户在承诺的协议期内发生停机、离网、提前终止、变更礼包等任何方式导致礼包解体、退订的情况，应向云网公司支付违约金。可选商品退出礼包，应向电信公司支付可选商品违约金。违约金按照"*元/月×用户已履行月份数"计算。</text>
+      <text class="text-indent">（三）若用户退订带有协议条款的可选商品，则按照各商品的合约要求内容收取违约金。</text>
+      <text class="text-line">六、其他说明：</text>
+      <text class="text-indent">（一）您所办理的礼包为固移融合礼包，礼包内各商品地位平等，如发生商品变更会影响礼包存在或其他商品业务的使用，请商品发生变更（包括取消、离网等）前办理相关礼包变更。</text>
+      <text class="text-indent">（二）包年礼包办理当月立即生效。</text>
+      <text class="text-indent">（三）协议期满后，礼包年基本费继续有效，如双方无异议有效期自动续展。</text>
+      <text class="text-indent">（四）如用户欠费，将暂停礼包内的移动业务、宽带等业务服务，直至用户缴清费用。</text>
+      <text class="text-indent">（五）若当前礼包已下架，则变更后无法回退办理原礼包，可选择办理其他在售礼包。</text>
+      <text class="text-indent">（六）老用户迁改至新礼包后，如原业务内容则失效，新包年次日生效。</text>
+      <text class="text-indent">（七）礼包内商品若有单独签订的协议，若发生商品的退订、拆机、离网、提前终止，会涉及商品合约的违约金、终端折旧费、终端赔偿费等其他费用，收取规则详见对应商品信息。</text>
+      <text class="text-indent">（八）用户礼包订购期间（含协议期内），因云网公司的业务范围、业务种类发生改变，或云网公司对通信网络进行整体换代升级、技术进步、国家政策变动、业务调整等，云网有权提前30天通过用户电话或公告的方式通知用户终止本业务，最终解释权归云联网公司。</text>
+      <text class="text-line">礼包合约：</text>
+    </view>
+  </view>
+
+  <!-- 第2页 -->
+  <view class="page-break"></view>
   
-  <view class="indent-block">
-    <text class="bold">业务说明：</text>
-    <view class="ordered-list">
-      <view class="list-item">
-        <text class="list-number">一、</text>
-        <text class="list-content"><text class="bold">月基本费：</text>{{orderData.packageSpeed}}云宽带原价<text class="highlight">{{orderData.originalPrice}}元/月</text>，礼包有效期内优惠至<text class="highlight">{{orderData.discountPrice}}元/年</text>。</text>
+  <!-- 页面头部 - 第2页 -->
+  <view class="header">
+    <view class="service-line">服务热线 400-96777-26</view>
+    <view class="wechat-tip">关注云网宽带微信小程序，查产品、套餐订购、自主继包等便捷服务</view>
+  </view>
+
+  <view class="order-info">
+    <view class="order-row">
+      <text class="order-number">订单编号：1220250529000220903492</text>
+      <text class="page-number">第2页(共3页)</text>
+    </view>
+    <text class="accept-date">受理日期：2025年05月29日</text>
+  </view>
+
+  <view class="section">
+    <view class="content">
+      <text class="text-line">若用户在承诺的协议期内发生停机、拆机、离网、提前终止，变更礼包等任何方式导致礼包解体、退订的情况，应向云网公司支付礼包级违约金。若发生礼包内可选商品退出礼包，应向云网公司支付可选商品违约金。</text>
+    </view>
+  </view>
+
+  <!-- 产品信息 -->
+  <view class="section">
+    <view class="section-title">产品信息：</view>
+    <view class="product-item">
+      <text class="product-title">宽带：2312260076(新开户)【新办】基础宽带</text>
+      <view class="subsection-title">【订购】300M宽带(立即生效)</view>
+      <view class="subsection-title">业务说明：</view>
+      <view class="content">
+        <text class="text-line">有线宽带500M不限时使用费120元/月(提供动态分配的IP地址），办理融合宽带礼包或宽带包年业务，将享受更多优惠。下行最高可达速率为300M、上行最高可达速率20M（包含宽带上网和宽带应用，宽带速率均为接入速率，客户感知速率受客户网络使用环境和设备影响）。如客户欠费，将对有线宽带业务暂停服务，直至缴清费用，因用户欠费而暂停服务期间的有线宽带业务费用将照常收取并将按照《电信条例》规定收取相应的违约金。云网提供宽带上网终端，产权归云网公司所有，拆机时需归还上网终端；如上网终端损坏或丢失，需赔偿终端违约金，具体金额对照按照官网终端价格。</text>
       </view>
-      <view class="list-item">
-        <text class="list-number">二、</text>
-        <text class="list-content"><text class="bold">基础内容包含：</text>（一）1 条支持下行{{orderData.packageSpeed}}基础宽带；1部云路由功能。</text>
+    </view>
+
+    <view class="product-item">
+      <view class="subsection-title">【订购】宽带光猫调测费(立即生效)</view>
+      <view class="subsection-title">业务说明：</view>
+      <view class="content">
+        <text class="text-line">用户新装宽带，100元调测费，优惠至0元，电信提供宽带上网设备。设备产权归云网所有，用户在使用宽带过程中应妥善保管设备，宽带拆机时应将上网设备归还云网，如遗失或损坏需照价赔偿。</text>
       </view>
-      <view class="list-item">
-        <text class="list-number">三、</text>
-        <view class="list-content">
-          <text class="bold">可选内容包括：</text>
-          <view class="sub-list">
-            <text class="sub-item">（一）加装电话卡： 套餐自选， / 元/张/月。</text>
-            <text class="sub-item">（二）可选最高20元云盘服务。</text>
-            <text class="sub-item">（三）固定电话：18元/月/部。</text>
-          </view>
-          <text class="sub-note">以上可选内容会随着云网公司政策变动、业务调整、合作方能力等情况进行调整，以礼包受理时可选范围为准。</text>
-        </view>
+    </view>
+
+    <view class="product-item">
+      <view class="subsection-title">【订购】全光主路由租用包(立即生效)</view>
+      <view class="subsection-title">业务说明：</view>
+      <view class="content">
+        <text class="text-line">1、全光主路由租用包/12个月，标准资费60元/月，用户办理指定业务享受优惠至0元/月，包含1台全光主路由终端，由智慧家庭工程师上门安装。</text>
+        <text class="text-line">2、若用户在承诺的协议期内发生停机、离网(终止云网公司提供的网络服务)、退订套餐、提前终止合约、以任何方式降低礼包/商品月基本费的情况，应向云网公司支付违约金。违约金按每月20元/月*已优惠月份数计算。</text>
+        <text class="text-line">3、协议期满，用户如不退订可继续租用该终端。</text>
+        <text class="text-line">4、设备产权归属云网公司。用户离网时需归还设备。如终端设备被人为损坏或未能归还，需赔偿800元终端款。</text>
+      </view>
+      <view class="subsection-title">合约信息：</view>
+      <view class="content">
+        <text class="text-line">1、若用户在承诺的协议期内发生停机、拆机、离网(终止电信公司提供的网络服务)、过户、退订套餐、提前终止合约、以任何方式降低礼包/商品月基本费的情况，应向云网公司支付设备违约金。违约金按每月优惠费用20元/月*已优惠月份数计算。</text>
+        <text class="text-line">2、协议期满，用户如不退订可继续租用该终端。</text>
+        <text class="text-line">3、设备产权归属电信。用户离网时需归还设备。如终端设备被人为损坏或未能归还，需赔偿800元终端款。</text>
+      </view>
+    </view>
+
+    <view class="product-item">
+      <view class="subsection-title">【订购】上门服务安装调测（合约）(立即生效)</view>
+      <view class="subsection-title">业务说明：</view>
+      <view class="content">
+        <text class="text-line">1、用户办理云网宽带等业务，并承诺持续在网12个月（完整月），可享受到点服务（1信息点）费用优惠。</text>
+        <text class="text-line">2、调测到点服务（1信息点），价值300元，为用户提供1个光路由器所在位置的网络布线服务。</text>
+        <text class="text-line">3、若用户办理的宽带或业务在承诺的合约期内发生停机、拆机、离网（终止电信公司提供的网络服务）、过户、退订套餐、提前终止合约、以任何方式降低月费/年费的情况，应向电信公司支付违约金。违约金为"已优惠金额（300元）"。</text>
+      </view>
+      <view class="subsection-title">合约信息：</view>
+      <view class="content">
+        <text class="text-line">1、用户办理运完宽带等业务，并承诺持续在网12个月（完整月）。</text>
       </view>
     </view>
   </view>
 
-  <!-- 礼包业务规则 -->
-  <view class="section-title">四、礼包业务规则：</view>
-  <view class="indent-block">
-    <text>（一）订购规则：用户订购礼包立即生效，详见对应商品业务说明。\n</text>
-    <text>（二）变更、退订规则：礼包退订次月生效，退订当月已产生的礼包费用不退。退订后剩余商品按商品业务说明内收费规则及约定期限执行，详见对应商品业务说明。</text>
+  <!-- 第3页 -->
+  <view class="page-break"></view>
+  
+  <!-- 页面头部 - 第3页 -->
+  <view class="header">
+    <view class="service-line">服务热线 400-96777-26</view>
+    <view class="wechat-tip">关注云网宽带微信小程序，查产品、套餐订购、自主继包等便捷服务</view>
   </view>
 
-  <!-- 协议期及违约规则 -->
-  <view class="section-title">五、协议期及违约规则：</view>
-  <view class="indent-block">
-    <text>（一）礼包协议期{{orderData.contractMonths}}个完整自然月，如双方在协议期届满前30日均未提出异议的，到期自动续展，每次续展期限同上述协议期。\n</text>
-    <text>（二）若用户在承诺的协议期内发生停机、离网、提前终止、变更礼包等任何方式导致礼包解体、退订的情况，应向云网公司支付违约金。违约金按照 <text class="bold">"*元/月×用户已履行月份数"</text> 计算。\n</text>
-    <text>（三）若用户退订带有协议条款的可选商品，则按照各商品的合约要求内容收取违约金。</text>
+  <view class="order-info">
+    <view class="order-row">
+      <text class="order-number">订单编号：1220250529000220903492</text>
+      <text class="page-number">第3页(共3页)</text>
+    </view>
+    <text class="accept-date">受理日期：2024年05月29日</text>
   </view>
 
-  <!-- 其他说明 -->
-  <view class="section-title">六、其他说明：</view>
-  <view class="indent-block">
-    <text>（一）您所办理的礼包为固移融合礼包，礼包内各商品地位平等，如发生商品变更会影响礼包存在或其他商品业务的使用。\n</text>
-    <text>（二）包年礼包办理当月立即生效。\n</text>
-    <text>（三）协议期满后，礼包年基本费继续有效，如双方无异议有效期自动续展。\n</text>
-    <text>（四）如用户欠费，将暂停礼包内的移动业务、宽带等业务服务，直至用户缴清费用。\n</text>
-    <text>（五）若当前礼包已下架，则变更后无法回退办理原礼包，可选择办理其他在售礼包。\n</text>
-    <text>（六）老用户迁改至新礼包后，如原业务内容则失效，新包年次日生效。\n</text>
-    <text>（七）礼包内商品若有单独签订的协议，若发生商品的退订、拆机、离网、提前终止，会涉及商品合约的违约金、终端折旧费、终端赔偿费等其他费用，收取规则详见对应商品信息。\n</text>
-    <text>（八）云网有权提前30天通过用户电话或公告的方式通知用户终止本业务，最终解释权归云联网公司。</text>
+  <view class="section">
+    <view class="content">
+      <text class="text-line">2、到点服务（1信息点），价值300元，为用户提供1个光路由器所在位置的布线服务。</text>
+      <text class="text-line">3、若用户办理的宽带或业务在承诺的合约期内发生停机、拆机、离网（终止电信公司提供的网络服务）、过户、退订套餐、提前终止合约、以任何方式降低月费/年费的情况，应向电信公司支付违约金。违约金为"已优惠金额（300元）"。</text>
+    </view>
   </view>
-
-  <!-- 分割线 -->
-  <view class="divider-line"></view>
-
-  <!-- 产品信息 -->
-  <view class="section-title">产品信息：</view>
-  <view class="indent-block">
-    <text>宽带：<text class="bold">{{orderData.broadbandNo}}</text>(新开户)【新办】基础宽带</text>
-  </view>
-
-  <view class="indent-block product-detail">
-    <text class="bold">【订购】{{orderData.packageSpeed}}宽带(立即生效)\n</text>
-    <text>业务说明：有线宽带{{orderData.packageSpeed}}不限时使用费{{orderData.originalPrice}}元/月。下行最高可达速率为<text class="bold">{{orderData.downloadSpeed}}</text>、上行最高可达速率<text class="bold">{{orderData.uploadSpeed}}</text>。如客户欠费，将对有线宽带业务暂停服务。云网提供宽带上网终端，产权归云网公司所有，拆机时需归还；如上网终端损坏或丢失，需赔偿终端违约金，具体金额对照按照官网终端价格。</text>
-  </view>
-
-  <view class="indent-block product-detail">
-    <text class="bold">【订购】宽带光猫调测费(立即生效)\n</text>
-    <text>业务说明：用户新装宽带，100元调测费，优惠至 <text class="bold">0元</text>。设备产权归云网所有，宽带拆机时应将上网设备归还云网，如遗失或损坏需照价赔偿。</text>
-  </view>
-
-  <view class="indent-block product-detail">
-    <text class="bold">【订购】全光主路由租用包(立即生效)\n</text>
-    <text>1、全光主路由租用包/{{orderData.contractMonths}}个月，标准资费60元/月，优惠至0元/月，包含1台全光主路由终端。\n</text>
-    <text>2、若用户在承诺的协议期内发生停机、离网、退订套餐、提前终止合约，应支付违约金。违约金按每月20元/月*已优惠月份数计算。\n</text>
-    <text>3、协议期满，用户如不退订可继续租用该终端。\n</text>
-    <text>4、设备产权归属云网公司。用户离网时需归还设备。如终端设备被人为损坏或未能归还，需赔偿800元终端款。</text>
-  </view>
-
-  <view class="indent-block product-detail">
-    <text class="bold">【订购】上门服务安装调测（合约）(立即生效)\n</text>
-    <text>业务说明：\n</text>
-    <text>1、用户办理云网宽带等业务，并承诺持续在网{{orderData.contractMonths}}个月（完整月），可享受到点服务（1信息点）费用优惠。\n</text>
-    <text>2、调测到点服务（1信息点），价值300元，为用户提供1个光路由器所在位置的网络布线服务。\n</text>
-    <text>3、若用户办理的宽带或业务在承诺的合约期内发生停机、拆机、离网、退订套餐、提前终止合约，应向电信公司支付违约金。违约金为"已优惠金额（300元）"。</text>
-  </view>
-
-  <!-- 分割线 -->
-  <view class="divider-line"></view>
 
   <!-- 产品属性 -->
-  <view class="section-title">产品属性：</view>
-  <view class="indent-block">
-    <text>宽带：{{orderData.broadbandNo}}： 上行最高可达速率：{{orderData.uploadSpeed}}；下行最高可达速率：{{orderData.downloadSpeed}}\n</text>
-    <text>智慧路由网关：{{orderData.gatewayNo}}： 产权归属：云网；是否上门安装：是</text>
+  <view class="section">
+    <view class="section-title">产品属性：</view>
+    <view class="content">
+      <text class="text-line">宽带：2312260076：上行最高可达速率：20M；下行最高可达速率：300M</text>
+      <text class="text-line">智慧路由网关：05122312260076：产权归属：云网；是否上门安装：是</text>
+    </view>
   </view>
 
   <!-- 其他信息 -->
-  <view class="section-title">其他信息：</view>
-  <view class="indent-block">
-    <text>宽带：{{orderData.broadbandNo}}：【装机地址】{{orderData.installAddress}}</text>
+  <view class="section">
+    <view class="section-title">其他信息：</view>
+    <view class="content">
+      <text class="text-line">宽带：2312260076：【装机地址】苏州市高新区金鹰国际购物中心二楼伊芙丽专厅</text>
+    </view>
   </view>
 
-  <!-- 费用明细 -->
-  <view class="section-title">1、本次订单费用</view>
-  <view class="indent-block">
-    <text>营收_手工预存款：{{orderData.prepayAmount}}元 &nbsp;&nbsp; 营收_调测费：{{orderData.debugFee}}元 &nbsp;&nbsp; <text class="bold">实付款：{{orderData.actualPayment}}元</text></text>
+  <!-- 费用信息 -->
+  <view class="section">
+    <view class="section-title">1、本次订单费用</view>
+    <view class="content">
+      <text class="text-line">营收_手工预存款：998元</text>
+      <text class="text-line">营收_调测费：0元</text>
+      <text class="text-line">实付款：998元</text>
+    </view>
   </view>
 
-  <view class="section-title">2、月使用费付费方式</view>
-  <view class="indent-block">
-    <text>【付费模式】预付费 &nbsp;&nbsp; 【关联号码】宽带：{{orderData.broadbandNo}}；</text>
+  <view class="section">
+    <view class="section-title">2、月使用费付费方式</view>
+    <view class="content">
+      <text class="text-line">【付费模式】预付费【关联号码】宽带：2312260076；</text>
+    </view>
   </view>
 
-  <view class="section-title">3、礼包标配应收</view>
-  <view class="indent-block">
-    <text>礼包{{orderData.packageName}}内宽带商品基本资费合计{{orderData.originalPrice}}元/月，本次礼包一次性订购后礼包标配应收{{orderData.discountPrice}}元/年\n</text>
-    <text class="sub-note">说明：礼包标配应收金额不包含用户订购的其他可选业务使用费用。</text>
+  <view class="section">
+    <view class="section-title">3、礼包标配应收</view>
+    <view class="content">
+      <text class="text-line">礼包云网300M包年套餐内宽带商品基本资费合计120元/月，本次礼包一次性订购后礼包标配应收998元/年</text>
+      <text class="text-line">说明：礼包标配应收金额不包含用户订购的其他可选业务使用费用，例如：手机卡短信额外收费、通话额外收费、流量超出额外收费、国际漫游使用额外收费、固话额外收费、云盘业务额外收费等。</text>
+    </view>
   </view>
 
   <!-- 物品清单 -->
-  <view class="section-title">物品清单：</view>
-  <view class="table-container">
-    <view class="table-row table-header">
-      <view class="table-cell">物品名称</view>
-      <view class="table-cell">数量</view>
-    </view>
-    <view class="table-row" wx:for="{{orderData.itemList}}" wx:key="index">
-      <view class="table-cell">{{item.name}}</view>
-      <view class="table-cell">{{item.quantity}}</view>
+  <view class="section">
+    <view class="section-title">物品清单：</view>
+    <view class="content">
+      <text class="text-line">1、物品名称：千兆网关路由；数量：1；</text>
     </view>
   </view>
 
   <!-- 备注 -->
-  <view class="section-title">备 注：</view>
-  <view class="indent-block remark-list">
-    <text>1. 宽带：{{orderData.broadbandNo}} 预约装机时间：{{orderData.appointmentTime}} 联系人：{{orderData.contactPerson}} 联系电话：{{orderData.contactPhone}}\n</text>
-    <text>2. 智慧路由网关：{{orderData.gatewayNo}} 预约装机时间：{{orderData.appointmentTime}} 联系人：{{orderData.contactPerson}} 联系电话：{{orderData.contactPhone}}</text>
+  <view class="section">
+    <view class="section-title">备注：</view>
+    <view class="content">
+      <text class="text-line">1、宽带：2312260076预约装机时间：2025-05-29 8:00:00--2025-05-29 18:00:00 联系人：王琴 联系电话：13915514486</text>
+      <text class="text-line">2、智慧路由网关：05122312260076预约装机时间：2025-05-29 8:00:00--2025-05-29 18:00:00 联系人：王琴 联系电话：13915514486</text>
+    </view>
   </view>
 
   <!-- 温馨提示 -->
-  <view class="tips-section">
-    <text class="bold">温馨提示：\n</text>
-    <text>1、自主查询或缴费：您可以"云网宽带"微信小程序渠道自助查询业务资费或缴费。\n</text>
-    <text>2、为保障对您的及时服务，您会收到电话、电子邮件、公开媒体等方式发送的云网服信息、缴费等提醒。\n</text>
-    <text>3、套餐变更相关关注事项：若用户原套餐为已停售套餐，一旦新套餐办理成功，则不可迁回原套餐。</text>
-  </view>
-
-  <!-- 红色提示 -->
-  <view class="red-alert">
-    <text>本人同意所办理的业务采用电子协议模式。\n</text>
-    <text>本人确认上述资料属实，并已详尽阅读及同意本《业务登记单》</text>
-  </view>
-
-  <!-- 签署区 -->
-  <view class="signature-area">
-    <view class="sign-box">
-      <view class="sign-line">经办人证件类型：</view>
-      <view class="sign-line">经办人证件号码：</view>
-      <view class="sign-line">申请人/经办人(签字)：</view>
-    </view>
-    <view class="sign-box">
-      <view class="sign-line">业务受理工号(签章)：</view>
+  <view class="section">
+    <view class="section-title">温馨提示：</view>
+    <view class="content">
+      <text class="text-line">1、自主查询或缴费：您可以"云网宽带"微信小程序渠道自助查询业务资费或缴费。</text>
+      <text class="text-line">2、为保障对您的及时服务，您会收到电话、电子邮件、公开媒体等方式发送的云网服信息、缴费等提醒。</text>
+      <text class="text-line">3、套餐变更相关关注事项：若用户原套餐为已停售套餐，一旦新套餐办理成功，则不可迁回原套餐。</text>
     </view>
   </view>
-  
-  </view><!-- 结束 wx:else -->
 
+  <!-- 签字确认 -->
+  <view class="section red-section">
+    <view class="content">
+      <text class="text-line">本人同意所办理的业务采用电子协议模式。</text>
+      <text class="text-line">本人确认上述资料属实，并已详尽阅读及同意本《业务登记单》</text>
+    </view>
+  </view>
+
+  <view class="signature-section">
+    <view class="signature-row">
+      <text class="signature-label">经办人证件类型：</text>
+      <view class="signature-line"></view>
+    </view>
+    <view class="signature-row">
+      <text class="signature-label">经办人证件号码：</text>
+      <view class="signature-line"></view>
+    </view>
+    <view class="signature-row">
+      <text class="signature-label">业务受理工号(签章)：</text>
+      <view class="signature-line"></view>
+    </view>
+    <view class="signature-row">
+      <text class="signature-label">申请人/经办人(签字)：</text>
+      <view class="signature-line long"></view>
+    </view>
+  </view>
 </view>
