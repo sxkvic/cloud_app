@@ -88,17 +88,12 @@ Page({
                 features.push('包月套餐');
               }
 
-              // 构建特性标签(用于显示在卡片上)
+              // 构建特性标签(用于显示在卡片上) - 只保留套餐类型标签
               const featureTags = [];
               if (pkg.package_type === '0') {
                 featureTags.push('包月套餐');
-              }
-              if (pkg.package_type === '3') {
-                featureTags.push('热销TOP1');
-              }
-              featureTags.push('不限速');
-              if (speed >= 1000) {
-                featureTags.push('千兆光纤');
+              } else if (pkg.package_type === '1') {
+                featureTags.push('包年套餐');
               }
 
               return {

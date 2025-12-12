@@ -174,7 +174,7 @@
   <view class="section">
     <view class="section-title">产品属性：</view>
     <view class="content">
-      <text class="text-line">宽带：{{orderData.deviceNo}}：上行最高可达速率：{{orderData.uploadSpeed}}；下行最高可达速率：{{orderData.packageFlow}}</text>
+      <text class="text-line">宽带：{{orderData.deviceNo}}：上行最高可达速率：20M；下行最高可达速率：300M</text>
       <text class="text-line">设备名称：{{orderData.deviceName}}：产权归属：云网；是否上门安装：是</text>
     </view>
   </view>
