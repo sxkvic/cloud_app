@@ -129,9 +129,30 @@ Page({
   // 导航到服务页面
   navigateToService(e) {
     const url = e.currentTarget.dataset.url;
-    if (url) {
-      navigation.navigateTo(url);
+    if (!url) {
+      message.error('功能开发中，敬请期待');
+      return;
     }
+
+    // 绑定设备码相关页面不需要验证设备绑定
+    const noAuthPages = ['/pages/bind-device-code/bind-device-code'];
+    
+    if (!noAuthPages.includes(url)) {
+      // 其他页面需要验证设备绑定
+      const deviceNo = wx.getStorageSync('device_no') || wx.getStorageSync('deviceCode');
+      
+      if (!deviceNo) {
+        wx.showToast({
+          title: '未绑定设备，无此权限',
+          icon: 'none',
+          duration: 2000
+        });
+        return;
+      }
+    }
+    
+    // 统一使用直接跳转
+    navigation.navigateTo(url);
   },
 
   // 重新绑定设备（先查询用户绑定的设备列表）
@@ -221,6 +242,18 @@ Page({
   
   // 显示解绑设备弹窗
   async showUnbindModal() {
+    // 验证设备绑定状态
+    const deviceNo = wx.getStorageSync('device_no') || wx.getStorageSync('deviceCode');
+    
+    if (!deviceNo) {
+      wx.showToast({
+        title: '未绑定设备，无此权限',
+        icon: 'none',
+        duration: 2000
+      });
+      return;
+    }
+    
     const currentDeviceNo = this.data.currentDeviceNo;
     
     try {

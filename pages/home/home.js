@@ -38,7 +38,7 @@ Page({
       },
       {
         title: '我的账单',
-        subtitle: '消费明细/开票',
+        subtitle: '消费明细/发票',
         iconClass: 'icon-zhangdan',
         bgColor: '#f0f9f3',
         iconBgColor: '#52c41a',
