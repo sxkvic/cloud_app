@@ -34,6 +34,18 @@
           </view>
         </view>
       </view>
+      <view class="info-row">
+        <view class="info-item">
+          <view class="info-label">设备编码</view>
+          <view class="info-value">{{deviceCode || '未知'}}</view>
+        </view>
+        <view class="info-item right-align">
+          <view class="info-label">缴费账号</view>
+          <view class="device-tag">
+            {{bindingInfo.recharge_account || '未知'}}
+          </view>
+        </view>
+      </view>
     </view>
 
     <!-- 续费确认 -->

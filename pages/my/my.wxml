@@ -21,8 +21,12 @@
     </view>
     <view class="info-row device-no-row">
       <view class="info-item">
-        <view class="info-label">设备号</view>
+        <view class="info-label">设备编码</view>
         <view class="info-value device-no">{{ currentDeviceNo || '未知' }}</view>
+      </view>
+      <view class="info-item right-align">
+        <view class="info-label">缴费账号</view>
+        <view class="info-value">{{ bindingInfo.recharge_account || '未知' }}</view>
       </view>
     </view>
   </view>

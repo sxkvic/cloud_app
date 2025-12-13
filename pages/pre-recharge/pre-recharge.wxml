@@ -15,14 +15,22 @@
     </view>
 
     <!-- 账户信息 -->
-    <view class="account-info" wx:if="{{customerInfo && !isLoadingCustomer}}">
-      <view class="info-left">
-        <text class="label">当前宽带账户</text>
-        <text class="phone">{{customerInfo.customer.customer_name || '未知'}}</text>
+    <view class="account-card" wx:if="{{customerInfo && !isLoadingCustomer}}">
+      <view class="account-row">
+        <view class="account-item">
+          <text class="account-label">开户名称</text>
+          <text class="account-value">{{customerInfo.customer.customer_name || '未知'}}</text>
+        </view>
+        <view class="account-item">
+          <text class="account-label">设备编码</text>
+          <text class="account-value mono">{{customerInfo.device_info.device_no || deviceCode || '未绑定'}}</text>
+        </view>
       </view>
-      <view class="info-right">
-        <text class="label">设备信息</text>
-        <text class="device">{{customerInfo.device_info.device_name || '未绑定'}}</text>
+      <view class="account-row">
+        <view class="account-item full">
+          <text class="account-label">缴费账号</text>
+          <text class="account-value mono">{{customerInfo.binding_info.recharge_account || '未知'}}</text>
+        </view>
       </view>
     </view>
 

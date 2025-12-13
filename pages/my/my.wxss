@@ -45,7 +45,7 @@ page {
 .info-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .info-item {
@@ -53,14 +53,15 @@ page {
 }
 
 .info-label {
-  font-size: 26rpx;
-  opacity: 0.9;
+  font-size: 24rpx;
+  opacity: 0.8;
   margin-bottom: 8rpx;
 }
 
 .info-value {
-  font-size: 40rpx;
-  font-weight: 600;
+  font-size: 28rpx;
+  font-weight: 500;
+  font-family: 'SF Mono', Monaco, monospace;
 }
 
 .right-align {
@@ -71,9 +72,10 @@ page {
   background: rgba(255, 255, 255, 0.25);
   padding: 8rpx 16rpx;
   border-radius: 8rpx;
-  font-size: 24rpx;
+  font-size: 28rpx;
   display: inline-flex;
   align-items: center;
+  font-family: 'SF Mono', Monaco, monospace;
 }
 
 .tag-bold {
@@ -91,6 +93,7 @@ page {
 .device-no {
   font-size: 28rpx;
   font-weight: 500;
+  font-family: 'SF Mono', Monaco, monospace;
 }
 
 /* ========== 3. 表单区域 ========== */

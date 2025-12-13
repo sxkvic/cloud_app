@@ -9,6 +9,7 @@ Page({
     loading: true,
     deviceInfo: {},
     customerInfo: {},
+    bindingInfo: {},
     isFirstLoad: true,
     // 设备选择弹窗
     showDeviceModal: false,
@@ -44,7 +45,7 @@ Page({
       const result = await DataManager.getCompleteCustomerInfo(deviceNo);
       
       if (result.success && result.data) {
-        const { customer, device_info, device } = result.data;
+        const { customer, device_info, device, binding_info } = result.data;
         const deviceData = device_info || device || {};
         
         // 设置设备状态文本
@@ -56,6 +57,7 @@ Page({
             status_text: statusText
           },
           customerInfo: customer || {},
+          bindingInfo: binding_info || {},
           currentDeviceNo: deviceNo,
           loading: false
         });
