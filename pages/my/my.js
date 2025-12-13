@@ -14,7 +14,10 @@ Page({
     // 设备选择弹窗
     showDeviceModal: false,
     currentDeviceNo: '',
-    otherDevices: []
+    otherDevices: [],
+    // 解绑设备弹窗
+    showUnbindModal: false,
+    unbindDeviceList: []
   },
 
   async onLoad() {
@@ -216,6 +219,118 @@ Page({
   },
   
   
+  // 显示解绑设备弹窗
+  async showUnbindModal() {
+    const currentDeviceNo = this.data.currentDeviceNo;
+    
+    try {
+      wx.showLoading({ title: '加载中...' });
+      
+      // 查询用户绑定的所有设备
+      const devicesResult = await API.getUserDevices();
+      const devices = devicesResult.data?.devices || [];
+      
+      wx.hideLoading();
+      
+      // 过滤掉当前设备，获取其他设备
+      const unbindDeviceList = devices.filter(d => {
+        const deviceNo = d.deviceCode || d.device_no;
+        return deviceNo !== currentDeviceNo;
+      });
+      
+      this.setData({
+        showUnbindModal: true,
+        unbindDeviceList: unbindDeviceList
+      });
+      
+    } catch (error) {
+      wx.hideLoading();
+      console.error('获取设备列表失败:', error);
+      // 获取失败时，也显示弹窗，但没有其他设备
+      this.setData({
+        showUnbindModal: true,
+        unbindDeviceList: []
+      });
+    }
+  },
+  
+  // 隐藏解绑设备弹窗
+  hideUnbindModal() {
+    this.setData({ showUnbindModal: false });
+  },
+  
+  // 执行解绑设备
+  onUnbindDevice(e) {
+    const { deviceNo, rechargeAccount } = e.currentTarget.dataset;
+    
+    if (!deviceNo) {
+      message.error('设备信息不完整，无法解绑');
+      return;
+    }
+    
+    // 缴费账号为空时提示无法解绑
+    if (!rechargeAccount) {
+      wx.showToast({
+        title: '没有缴费账号无法解绑',
+        icon: 'none',
+        duration: 2000
+      });
+      return;
+    }
+    
+    this.hideUnbindModal();
+    
+    // 构建确认内容
+    let confirmContent = `确定要解绑该设备吗？\n\n设备编码：${deviceNo}`;
+    if (rechargeAccount) {
+      confirmContent += `\n缴费账号：${rechargeAccount}`;
+    }
+    
+    wx.showModal({
+      title: '确认解绑',
+      content: confirmContent,
+      confirmText: '确定',
+      cancelText: '取消',
+      success: async (res) => {
+        if (res.confirm) {
+          try {
+            wx.showLoading({ title: '解绑中...' });
+            
+            const result = await API.unbindDevice(rechargeAccount || '', deviceNo);
+            
+            wx.hideLoading();
+            
+            if (result.success) {
+              // 如果解绑的是当前设备，清除本地缓存
+              if (deviceNo === this.data.currentDeviceNo) {
+                wx.removeStorageSync('device_no');
+                wx.removeStorageSync('deviceCode');
+                
+                const app = getApp();
+                app.globalData.device_no = '';
+                
+                message.success('解绑成功');
+                
+                // 跳转到绑定设备页面
+                setTimeout(() => {
+                  navigation.navigateTo('/pages/bind-device-code/bind-device-code');
+                }, 1500);
+              } else {
+                message.success('解绑成功');
+              }
+            } else {
+              message.error(result.message || '解绑失败，请重试');
+            }
+          } catch (error) {
+            wx.hideLoading();
+            console.error('解绑设备失败:', error);
+            message.error('解绑失败，请重试');
+          }
+        }
+      }
+    });
+  },
+
   // 显示关于信息
   showAboutInfo() {
     wx.showModal({

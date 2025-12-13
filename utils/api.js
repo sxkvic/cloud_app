@@ -693,6 +693,24 @@ const API = {
   },
 
   /**
+   * 解绑设备
+   * @param {String} rechargeAccount 缴费账号
+   * @param {String} deviceNo 设备编码
+   * @returns {Promise} { success, message }
+   */
+  unbindDevice(rechargeAccount, deviceNo) {
+    return request({
+      url: '/api/v1/wx/unbindDevice',
+      method: 'POST',
+      data: {
+        recharge_account: rechargeAccount,
+        device_no: deviceNo
+      },
+      needAuth: true
+    });
+  },
+
+  /**
    * 创建预充值订单（微信/二维码支付）
    * @param {Object} params 订单参数
    * @returns {Promise} { success, data: { qr_code_url, order_no }, message }

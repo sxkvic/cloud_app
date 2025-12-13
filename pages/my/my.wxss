@@ -163,6 +163,15 @@ page {
   padding: 24rpx 20rpx;
 }
 
+/* 危险操作菜单项 */
+.menu-item-danger .menu-name {
+  color: #EF4444;
+}
+
+.menu-item-danger .menu-icon .iconfont {
+  color: #EF4444;
+}
+
 /* 分享按钮特殊样式 - 去除button默认样式 */
 .share-button {
   background: transparent;
@@ -455,6 +464,33 @@ page {
   font-size: 24rpx;
   color: #999;
   font-family: 'SF Mono', Consolas, monospace;
+}
+
+.device-account {
+  font-size: 22rpx;
+  color: #bbb;
+  margin-top: 4rpx;
+}
+
+/* 解绑文字 */
+.unbind-text {
+  font-size: 26rpx;
+  color: #2B7FF0;
+  margin-left: 16rpx;
+}
+
+.unbind-text.disabled {
+  color: #ccc;
+}
+
+/* 无缴费账号样式 */
+.device-account.no-account {
+  color: #ccc;
+}
+
+/* 禁用状态的设备卡片 */
+.device-card.disabled {
+  opacity: 0.6;
 }
 
 /* 当前设备状态 */

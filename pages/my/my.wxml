@@ -47,7 +47,7 @@
       </view>
       <view class="info-row-simple">
         <view class="label">安装地址</view>
-        <view class="value">{{ customerInfo.install_address || '未知' }}</view>
+        <view class="value">{{ customerInfo.city || '' }} {{ customerInfo.install_address || '未知' }}</view>
       </view>
     </view>
   </view>
@@ -115,6 +115,17 @@
         <view class="menu-info">
           <view class="menu-name">重新绑定设备</view>
           <view class="menu-desc">更换设备绑定</view>
+        </view>
+        <view class="menu-arrow">›</view>
+      </view>
+
+      <view class="menu-item" bindtap="showUnbindModal">
+        <view class="menu-icon">
+          <text class="iconfont icon-jiebang"></text>
+        </view>
+        <view class="menu-info">
+          <view class="menu-name">解绑设备</view>
+          <view class="menu-desc">解除设备绑定</view>
         </view>
         <view class="menu-arrow">›</view>
       </view>
@@ -207,6 +218,61 @@
     </view>
     
     <view class="modal-close" bindtap="hideDeviceModal">取消</view>
+  </view>
+</view>
+
+<!-- 解绑设备弹窗 -->
+<view class="device-modal" wx:if="{{showUnbindModal}}" catchtouchmove="true">
+  <view class="modal-mask" bindtap="hideUnbindModal"></view>
+  <view class="modal-content">
+    <view class="modal-header">
+      <view class="modal-title">解绑设备</view>
+      <view class="modal-subtitle">选择要解绑的设备</view>
+    </view>
+    
+    <!-- 当前设备 -->
+    <view class="current-device-section" wx:if="{{currentDeviceNo}}">
+      <view class="section-label">当前设备</view>
+      <view class="device-card {{!bindingInfo.recharge_account ? 'disabled' : ''}}" hover-class="{{bindingInfo.recharge_account ? 'device-card-hover' : ''}}" bindtap="onUnbindDevice" data-device-no="{{currentDeviceNo}}" data-recharge-account="{{bindingInfo.recharge_account}}">
+        <view class="device-icon-box {{!bindingInfo.recharge_account ? 'gray' : ''}}">
+          <van-icon name="desktop-o" size="24px" color="{{bindingInfo.recharge_account ? '#2B7FF0' : '#999'}}" />
+        </view>
+        <view class="device-info">
+          <view class="device-name">{{deviceInfo.device_name || '未命名设备'}}</view>
+          <view class="device-code">{{currentDeviceNo}}</view>
+          <view class="device-account {{!bindingInfo.recharge_account ? 'no-account' : ''}}">缴费账号：{{bindingInfo.recharge_account || '暂无缴费账号'}}</view>
+        </view>
+        <view class="unbind-text {{!bindingInfo.recharge_account ? 'disabled' : ''}}">解绑</view>
+      </view>
+    </view>
+    
+    <!-- 其他设备列表 -->
+    <view class="other-devices-section" wx:if="{{unbindDeviceList.length > 0}}">
+      <view class="section-label">其他设备</view>
+      <view class="device-list">
+        <view 
+          class="device-card {{!item.recharge_account ? 'disabled' : ''}}" 
+          wx:for="{{unbindDeviceList}}" 
+          wx:key="index"
+          hover-class="{{item.recharge_account ? 'device-card-hover' : ''}}"
+          bindtap="onUnbindDevice"
+          data-device-no="{{item.device_no}}"
+          data-recharge-account="{{item.recharge_account}}"
+        >
+          <view class="device-icon-box gray">
+            <van-icon name="desktop-o" size="24px" color="#999" />
+          </view>
+          <view class="device-info">
+            <view class="device-name">{{item.device_name || '未命名设备'}}</view>
+            <view class="device-code">{{item.device_no}}</view>
+            <view class="device-account {{!item.recharge_account ? 'no-account' : ''}}">缴费账号：{{item.recharge_account || '暂无缴费账号'}}</view>
+          </view>
+          <view class="unbind-text {{!item.recharge_account ? 'disabled' : ''}}">解绑</view>
+        </view>
+      </view>
+    </view>
+    
+    <view class="modal-close" bindtap="hideUnbindModal">取消</view>
   </view>
 </view>
 
