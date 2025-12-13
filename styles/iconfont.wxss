@@ -1,14 +1,14 @@
 /* 阿里巴巴图标库样式文件 */
 /* 项目ID: 5075390 */
-/* 在线链接: //at.alicdn.com/t/c/font_5075390_t58jzpioai.css */
-/* 更新时间: 2025-12-08 20:04 */
+/* 在线链接: //at.alicdn.com/t/c/font_5075390_gw43zii5zuw.css */
+/* 更新时间: 2025-12-13 14:29 */
 
 /* 基础图标字体 */
 @font-face {
   font-family: "iconfont"; /* Project id 5075390 */
-  src: url('//at.alicdn.com/t/c/font_5075390_t58jzpioai.woff2?t=1733664240000') format('woff2'),
-       url('//at.alicdn.com/t/c/font_5075390_t58jzpioai.woff?t=1733664240000') format('woff'),
-       url('//at.alicdn.com/t/c/font_5075390_t58jzpioai.ttf?t=1733664240000') format('truetype');
+  src: url('//at.alicdn.com/t/c/font_5075390_gw43zii5zuw.woff2?t=1734073740000') format('woff2'),
+       url('//at.alicdn.com/t/c/font_5075390_gw43zii5zuw.woff?t=1734073740000') format('woff'),
+       url('//at.alicdn.com/t/c/font_5075390_gw43zii5zuw.ttf?t=1734073740000') format('truetype');
 }
 
 /* 图标基础类 */
@@ -187,6 +187,14 @@
 .icon-tongzhi:before { content: "\e60e"; } /* 通知 */
 .icon-guanyu:before { content: "\e609"; } /* 关于我们 */
 .icon-tuiding:before { content: "\e60d"; } /* 业务退订 */
+
+/* ========== 解绑图标 ⭐️ 新增 ========== */
+.icon-jiebang:before {
+  content: "\e66b";
+}
+.icon-unlink:before {
+  content: "\e66b";
+}
 
 /* 
   ✅ 已更新到最新版本 (font_5075390_t58jzpioai)
