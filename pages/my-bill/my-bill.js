@@ -313,10 +313,18 @@ Page({
             }).catch(e => console.error('创建发票记录失败:', e));
             
             wx.hideLoading();
-            message.success('发票已生成完成');
             
-            // 刷新列表（不需要再显示提示）
-            await this.loadBills();
+            // 刷新列表（传 true 表示刷新，替换数据而不是追加）
+            this.setData({ currentPage: 1 });
+            await this.loadBills(true);
+            
+            // 弹窗提示用户查看邮箱
+            wx.showModal({
+              title: '开票成功',
+              content: '电子发票已发送至您的邮箱，请注意查收。如未收到，请检查垃圾邮件。',
+              showCancel: false,
+              confirmText: '知道了'
+            });
           } catch (e) {
             wx.hideLoading();
             message.error('更新状态失败');
