@@ -61,7 +61,7 @@
               placeholder-class="input-placeholder"
               value="{{deviceCode}}"
               bindinput="onInputChange"
-              maxlength="10"
+              maxlength="15"
             />
             <!-- 输入框右侧图标 -->
             <image class="input-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRDFEMT1EIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTkgMTJsMiAyIDQtNG06IDJhOSA5IDAgMTEtMTggMCA5IDkgMCAwMTE4IDB6Ii8+PC9zdmc+" mode="aspectFit"></image>
@@ -79,7 +79,7 @@
               placeholder-class="input-placeholder"
               value="{{rechargeAccount}}"
               bindinput="onRechargeAccountChange"
-              maxlength="10"
+              maxlength="15"
             />
             <!-- 输入框右侧图标 -->
             <image class="input-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRDFEMT1EIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTUgNGgxNGEyIDIgMCAwMTIgMnYxNGEyIDIgMCAwMS0yIDJINWEyIDIgMCAwMS0yLTJWNmEyIDIgMCAwMTItMnptOCA1djZtLTMtM2g2Ii8+PC9zdmc+" mode="aspectFit"></image>
