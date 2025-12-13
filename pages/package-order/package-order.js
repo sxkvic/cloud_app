@@ -603,7 +603,7 @@ Page({
   // 点击立即订购时请求订阅
   requestSubscribeBeforeOrder(selectedPackage, customer) {
     // 订阅模板ID
-    const templateId = 'ugRcEid6E2eLMnhmtPQa6qRO_goBNSaOf77PzznvRME';
+    const templateId = 'EgwcdroQr4DpmONEj7zC2L-NWcQy9V9rQlCNeecpYmk';
     
     wx.requestSubscribeMessage({
       tmplIds: [templateId],
