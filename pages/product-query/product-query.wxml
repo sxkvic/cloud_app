@@ -149,7 +149,7 @@
   <!-- 空状态 -->
   <view class="empty-state" wx:if="{{!showResult && !isLoading}}">
     <view class="empty-icon">🔍</view>
-    <text class="empty-text">请输入设备编号或宽带账号进行查询</text>
+    <text class="empty-text">请输入设备编号或缴费账号进行查询</text>
     <view class="help-link" bindtap="showHelp">
       <text class="help-icon">❓</text>
       如何找到我的设备码？

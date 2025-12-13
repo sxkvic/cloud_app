@@ -177,7 +177,7 @@ Page({
     showHelp() {
         wx.showModal({
             title: '如何找到我的设备码？',
-            content: '1. 查看光猫设备上的标签\n2. 查看路由器背面的标识\n3. 查看宽带安装时提供的单据\n4. 联系客服获取设备码',
+            content: '1. 查看无线路由猫设备上的标签\n2. 查看无线路由猫背面的标识\n3. 查看工作人员安装时提供的单据\n4. 联系客服获取设备码',
             showCancel: false,
             confirmText: '知道了'
         });

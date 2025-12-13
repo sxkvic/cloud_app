@@ -21,12 +21,12 @@ Page({
         route: '/pages/package-order/package-order'
       },
       {
-        title: '订单管理',
-        subtitle: '查看订单状态',
-        iconClass: 'icon-dingdanguanli',
-        bgColor: '#fff7e6',
-        iconBgColor: '#fa8c16',
-        route: '/pages/order-management/order-management'
+        title: '业务申请',
+        subtitle: '新装宽带申请',
+        iconClass: 'icon-shenqing',
+        bgColor: '#e6f4ff',
+        iconBgColor: '#3071a9',
+        route: '/pages/business-application/business-application'
       },
       {
         title: '在线客服',
@@ -59,7 +59,7 @@ Page({
       { iconClass: 'icon-chongzhi', text: '预充值', color: '#52c41a', route: '/pages/pre-recharge/pre-recharge' },
       { iconClass: 'icon-guohu', text: '变更过户', color: '#722ed1', route: '/pages/change-transfer/change-transfer' },
       { iconClass: 'icon-xufei', text: '自助续费', color: '#f5222d', route: '/pages/self-renewal/self-renewal' },
-      { iconClass: 'icon-shenqing', text: '业务申请', color: '#3071a9', route: '/pages/business-application/business-application' },
+      { iconClass: 'icon-dingdanguanli', text: '订单管理', color: '#fa8c16', route: '/pages/order-management/order-management' },
       { iconClass: 'icon-xieyi', text: '电子协议', color: '#13c2c2', route: '/pages/electronic-agreement/electronic-agreement' },
       { iconClass: 'icon-tousu', text: '举报投诉', color: '#8c8c8c', route: '/pages/complaint/complaint' },
       { iconClass: 'icon-pingjia', text: '服务评价', color: '#faad14', route: '/pages/service-evaluation/service-evaluation' }
