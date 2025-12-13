@@ -227,14 +227,32 @@ Page({
   },
 
   // 导航到指定页面
-  navigateToPage(e) {
+  async navigateToPage(e) {
     const route = e.currentTarget.dataset.route;
-    if (route) {
-      // 统一使用直接跳转
-      navigation.navigateTo(route);
-    } else {
+    if (!route) {
       message.error('功能开发中，敬请期待');
+      return;
     }
+
+    // 业务申请页面不需要验证设备绑定
+    const noAuthPages = ['/pages/business-application/business-application'];
+    
+    if (!noAuthPages.includes(route)) {
+      // 其他页面需要验证设备绑定
+      const deviceNo = wx.getStorageSync('device_no') || wx.getStorageSync('deviceCode');
+      
+      if (!deviceNo) {
+        wx.showToast({
+          title: '未绑定设备，无此权限',
+          icon: 'none',
+          duration: 2000
+        });
+        return;
+      }
+    }
+    
+    // 统一使用直接跳转
+    navigation.navigateTo(route);
   },
 
   // Tabbar切换事件
