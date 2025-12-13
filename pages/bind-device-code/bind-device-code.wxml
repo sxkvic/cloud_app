@@ -145,6 +145,26 @@
           </view>
         </view>
       </view>
+      
+      <!-- 设备编码查找提示 -->
+      <view class="modal-tips">
+        <text class="modal-tips-title">找不到设备编码和缴费账号？</text>
+        <view class="modal-tips-list">
+          <view class="modal-tips-item">
+            <text class="modal-tips-number">1.</text>
+            <text class="modal-tips-content">请查看设备底部或背面标签</text>
+          </view>
+          <view class="modal-tips-item">
+            <text class="modal-tips-number">2.</text>
+            <text class="modal-tips-content">联系当时安装受理的工作人员</text>
+          </view>
+          <view class="modal-tips-item">
+            <text class="modal-tips-number">3.</text>
+            <text class="modal-tips-content">查看设备包装盒上面设备编码</text>
+          </view>
+        </view>
+      </view>
+      
       <view class="modal-close" bindtap="hideContactModal">取消</view>
     </view>
   </view>

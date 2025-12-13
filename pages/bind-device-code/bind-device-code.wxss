@@ -285,6 +285,51 @@ page {
   font-family: monospace;
 }
 
+/* 弹窗内的提示信息 */
+.modal-tips {
+  padding: 28rpx 32rpx;
+  margin: 0 32rpx 24rpx;
+  background: #F7F8FA;
+  border-radius: 16rpx;
+}
+
+.modal-tips-title {
+  display: block;
+  font-size: 26rpx;
+  color: #666;
+  font-weight: 500;
+  margin-bottom: 16rpx;
+  text-align: center;
+}
+
+.modal-tips-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  align-items: center;
+}
+
+.modal-tips-item {
+  display: flex;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.modal-tips-number {
+  font-size: 22rpx;
+  color: #999;
+  margin-right: 8rpx;
+  flex-shrink: 0;
+  line-height: 1.6;
+}
+
+.modal-tips-content {
+  font-size: 22rpx;
+  color: #999;
+  line-height: 1.6;
+  flex: 1;
+}
+
 /* 底部文字 */
 .footer-link {
   text-align: center;
