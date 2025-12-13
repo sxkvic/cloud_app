@@ -342,6 +342,17 @@ page {
   opacity: 0.8;
 }
 
+/* 底部Logo */
+.footer-logo {
+  text-align: center;
+  margin-top: 40rpx;
+}
+
+.footer-logo image {
+  width: 200rpx;
+  height: 60rpx;
+}
+
 /* 客服弹窗样式 */
 .contact-modal {
   position: fixed;

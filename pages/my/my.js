@@ -334,22 +334,41 @@ Page({
             wx.hideLoading();
             
             if (result.success) {
-              // 如果解绑的是当前设备，清除本地缓存
-              if (deviceNo === this.data.currentDeviceNo) {
+              const isCurrentDevice = deviceNo === this.data.currentDeviceNo;
+              
+              if (isCurrentDevice) {
+                // 解绑的是当前设备，先清除本地缓存
                 wx.removeStorageSync('device_no');
                 wx.removeStorageSync('deviceCode');
                 
                 const app = getApp();
                 app.globalData.device_no = '';
+              }
+              
+              // 使用 getValidDeviceCode 自动切换到下一个可用设备
+              const nextDeviceNo = await DataManager.getValidDeviceCode();
+              
+              if (nextDeviceNo) {
+                // 还有其他设备，自动切换
+                const app = getApp();
+                app.globalData.device_no = nextDeviceNo;
                 
-                message.success('解绑成功');
+                message.success('解绑成功，已切换到其他设备');
                 
-                // 跳转到绑定设备页面
-                setTimeout(() => {
-                  navigation.navigateTo('/pages/bind-device-code/bind-device-code');
-                }, 1500);
+                // 刷新页面数据
+                await this.loadDeviceAndCustomerInfo();
               } else {
+                // 没有其他设备了，清除绑定状态并跳转到绑定页面
+                wx.removeStorageSync('deviceBound');
+                
+                const app = getApp();
+                app.globalData.deviceBound = false;
+                
                 message.success('解绑成功');
+                
+                setTimeout(() => {
+                  navigation.redirectTo('/pages/bind-device-code/bind-device-code');
+                }, 1500);
               }
             } else {
               message.error(result.message || '解绑失败，请重试');

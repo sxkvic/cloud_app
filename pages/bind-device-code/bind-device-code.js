@@ -39,7 +39,7 @@ Page({
       if (currentDeviceNo) {
         cacheManager.clearDeviceCache();
         wx.showToast({
-          title: '可以重新绑定设备',
+          title: '请输入新设备信息',
           icon: 'none',
           duration: 2000
         });

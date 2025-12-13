@@ -110,6 +110,11 @@
       <text>遇到问题？联系客服</text>
     </view>
 
+    <!-- 底部Logo -->
+    <view class="footer-logo">
+      <image src="/images/logo2.png" mode="aspectFit"></image>
+    </view>
+
   </view>
   
   <!-- 客服选择弹窗 -->

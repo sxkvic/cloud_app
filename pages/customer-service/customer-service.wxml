@@ -72,8 +72,7 @@
 
     <!-- 底部版权 -->
     <view class="footer">
-      <text class="footer-brand">CLOUD BROADBAND</text>
-      <text class="footer-slogan">全心全意为您服务</text>
+      <image class="footer-logo" src="/images/logo2.png" mode="aspectFit"></image>
     </view>
 
   </view>
