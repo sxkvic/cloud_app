@@ -21,8 +21,7 @@
       </view>
       <view class="order-detail">
         <text class="order-type">{{orderInfo.serviceType || '售后人员服务评价'}}</text>
-        <text class="order-sn">工单号：{{orderInfo.orderNo || device_no || '暂无'}}</text>
-        <text class="order-time">完成时间：{{orderInfo.completeTime || currentTime}}</text>
+        <text class="order-sn">设备码：{{orderInfo.orderNo || device_no || '暂无'}}</text>
       </view>
     </view>
   </view>

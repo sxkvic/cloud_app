@@ -134,9 +134,17 @@ Page({
       if (result.success && result.data) {
         const { customer, account } = result.data;
         
+        // 计算总余额 = balance + recharge_amount
+        let totalBalance = '0.00';
+        if (account) {
+          const balance = parseFloat(account.balance) || 0;
+          const rechargeAmount = parseFloat(account.recharge_amount) || 0;
+          totalBalance = (balance + rechargeAmount).toFixed(2);
+        }
+        
         this.setData({
           customerName: customer?.customer_name || '用户名称',
-          balance: account?.balance || '0.00'
+          balance: totalBalance
         });
       }
       
