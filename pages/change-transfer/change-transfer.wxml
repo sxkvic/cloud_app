@@ -26,7 +26,7 @@
     <view class="card info-card">
       <view class="info-row">
         <view class="info-item">
-          <view class="info-label">当前户主</view>
+          <view class="info-label">当前开户名</view>
           <view class="info-value">{{customerInfo.customer.customer_name || '未知'}}</view>
         </view>
         <view class="info-item right-align">
@@ -40,39 +40,86 @@
 
     <!-- 表单区域 -->
     <view class="card form-card">
-      <view class="form-title">新户主信息</view>
-      <view class="form-subtitle">请填写真实有效的身份信息，需与身份证一致</view>
-
-      <!-- 姓名输入 -->
-      <view class="form-group">
-        <view class="label">新户主姓名</view>
-        <view class="input-wrapper">
-          <input 
-            class="weui-input" 
-            type="text" 
-            placeholder="请输入姓名" 
-            placeholder-class="placeholder-style"
-            value="{{formData.customerName}}"
-            bindinput="onCustomerNameInput"
-          />
+      <!-- 个人/企业切换Tab -->
+      <view class="user-type-tabs">
+        <view class="tab-item {{userType === 'personal' ? 'active' : ''}}" bindtap="switchUserType" data-type="personal">
+          <text>个人</text>
+        </view>
+        <view class="tab-item {{userType === 'enterprise' ? 'active' : ''}}" bindtap="switchUserType" data-type="enterprise">
+          <text>企业</text>
         </view>
       </view>
 
-      <!-- 身份证输入 -->
-      <view class="form-group">
-        <view class="label">身份证号</view>
-        <view class="input-wrapper">
-          <input 
-            class="weui-input" 
-            type="idcard" 
-            placeholder="请输入18位身份证号码" 
-            maxlength="18" 
-            placeholder-class="placeholder-style"
-            value="{{formData.idNumber}}"
-            bindinput="onIdNumberInput"
-          />
+      <view class="form-title">{{userType === 'personal' ? '新户主信息' : '企业信息'}}</view>
+      <view class="form-subtitle">{{userType === 'personal' ? '请填写真实有效的身份信息，需与身份证一致' : '请填写真实有效的企业信息，需与营业执照一致'}}</view>
+
+      <!-- 个人模式 -->
+      <block wx:if="{{userType === 'personal'}}">
+        <!-- 姓名输入 -->
+        <view class="form-group">
+          <view class="label">新户主姓名</view>
+          <view class="input-wrapper">
+            <input 
+              class="weui-input" 
+              type="text" 
+              placeholder="请输入姓名" 
+              placeholder-class="placeholder-style"
+              value="{{formData.customerName}}"
+              bindinput="onCustomerNameInput"
+            />
+          </view>
         </view>
-      </view>
+
+        <!-- 身份证输入 -->
+        <view class="form-group">
+          <view class="label">身份证号</view>
+          <view class="input-wrapper">
+            <input 
+              class="weui-input" 
+              type="idcard" 
+              placeholder="请输入18位身份证号码" 
+              maxlength="18" 
+              placeholder-class="placeholder-style"
+              value="{{formData.idNumber}}"
+              bindinput="onIdNumberInput"
+            />
+          </view>
+        </view>
+      </block>
+
+      <!-- 企业模式 -->
+      <block wx:else>
+        <!-- 企业名称输入 -->
+        <view class="form-group">
+          <view class="label">企业名称</view>
+          <view class="input-wrapper">
+            <input 
+              class="weui-input" 
+              type="text" 
+              placeholder="请输入企业全称" 
+              placeholder-class="placeholder-style"
+              value="{{formData.customerName}}"
+              bindinput="onCustomerNameInput"
+            />
+          </view>
+        </view>
+
+        <!-- 营业执照号/统一社会信用代码输入 -->
+        <view class="form-group">
+          <view class="label">统一社会信用代码</view>
+          <view class="input-wrapper">
+            <input 
+              class="weui-input" 
+              type="text" 
+              placeholder="请输入营业执照号或统一社会信用代码" 
+              maxlength="18" 
+              placeholder-class="placeholder-style"
+              value="{{formData.idNumber}}"
+              bindinput="onIdNumberInput"
+            />
+          </view>
+        </view>
+      </block>
     </view>
 
     <!-- 注意事项 -->
@@ -83,7 +130,7 @@
       </view>
       <view class="notes-list">
         <view class="note-item">请确保填写信息真实有效，过户提交后无法撤销。</view>
-        <view class="note-item">过户申请将在 3-5 个工作日内处理完成。</view>
+        <view class="note-item">过户申请将在 1-2 个工作日内处理完成。</view>
       </view>
     </view>
 

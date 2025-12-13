@@ -233,16 +233,19 @@ page {
   padding: 0 30rpx;
 }
 
+.faq-item-wrapper {
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.faq-item-wrapper:last-child {
+  border-bottom: none;
+}
+
 .faq-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 30rpx 0;
-  border-bottom: 1rpx solid #f0f0f0;
-}
-
-.faq-item:last-child {
-  border-bottom: none;
 }
 
 .faq-text {
@@ -252,13 +255,47 @@ page {
   padding-right: 20rpx;
 }
 
-/* CSS绘制右箭头 */
-.arrow-right {
+/* 箭头图标 */
+.arrow-icon {
   width: 16rpx;
   height: 16rpx;
   border-top: 3rpx solid #ccc;
   border-right: 3rpx solid #ccc;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.arrow-right {
   transform: rotate(45deg);
+}
+
+.arrow-down {
+  transform: rotate(135deg);
+}
+
+/* 答案区域 */
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+.faq-answer-show {
+  max-height: 500rpx;
+}
+
+.faq-answer-content {
+  background: linear-gradient(135deg, #f0f7ff 0%, #e8f4fd 100%);
+  border-radius: 16rpx;
+  padding: 24rpx 28rpx;
+  margin-bottom: 24rpx;
+  border-left: 6rpx solid #2B7FF0;
+}
+
+.faq-answer-content text {
+  font-size: 26rpx;
+  color: #555;
+  line-height: 1.8;
 }
 
 /* 底部 */

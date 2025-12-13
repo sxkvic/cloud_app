@@ -11,6 +11,7 @@ Page({
     loading: true,
     submitLoading: false,
     customerInfo: null,
+    userType: 'personal', // 'personal' 或 'enterprise'
     formData: {
       customerName: '',
       idNumber: ''
@@ -68,6 +69,21 @@ Page({
     }
   },
 
+  // 切换用户类型（个人/企业）
+  switchUserType(e) {
+    const type = e.currentTarget.dataset.type;
+    if (type !== this.data.userType) {
+      this.setData({
+        userType: type,
+        formData: {
+          customerName: '',
+          idNumber: ''
+        },
+        canSubmit: false
+      });
+    }
+  },
+
   // 输入客户名称
   onCustomerNameInput(e) {
     this.setData({
@@ -117,7 +133,10 @@ Page({
     //   return;
     // }
 
-    const content = `新户主：${formData.customerName}\n身份证号：${formData.idNumber}\n\n确认提交过户申请？`;
+    const { userType } = this.data;
+    const nameLabel = userType === 'personal' ? '新户主' : '企业名称';
+    const idLabel = userType === 'personal' ? '身份证号' : '统一社会信用代码';
+    const content = `${nameLabel}：${formData.customerName}\n${idLabel}：${formData.idNumber}\n\n确认提交过户申请？`;
 
     wx.showModal({
       title: '确认过户',
@@ -174,10 +193,11 @@ Page({
 
       message.success('申请提交成功');
       
+      const successNameLabel = this.data.userType === 'personal' ? '新户主' : '企业名称';
       setTimeout(() => {
         wx.showModal({
           title: '申请已受理',
-          content: `您的过户申请已成功提交！\n\n新户主：${formData.customerName}\n设备号：${deviceCode}\n处理时间：3-5个工作日\n\n我们会在24小时内联系您确认申请详情，请保持电话畅通。`,
+          content: `您的过户申请已成功提交！\n\n${successNameLabel}：${formData.customerName}\n设备号：${deviceCode}\n处理时间：3-5个工作日\n\n我们会在24小时内联系您确认申请详情，请保持电话畅通。`,
           showCancel: false,
           confirmText: '知道了',
           success: () => {

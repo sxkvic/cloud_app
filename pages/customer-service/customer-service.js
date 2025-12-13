@@ -7,10 +7,10 @@ Page({
     data: {
         statusBarHeight: 0,
         faqList: [
-            { id: 1, title: '宽带无法上网怎么办？' },
-            { id: 2, title: '如何修改我的WiFi密码？' },
-            { id: 3, title: '如何申请电子发票？' },
-            { id: 4, title: '光猫指示灯亮红灯什么意思？' }
+            { id: 1, title: '宽带无法上网怎么办？', answer: '重启无线路由电源或拨打客服热线4009677726联系售后人员上门。', expanded: false },
+            { id: 2, title: '如何修改我的WiFi密码？', answer: '不同的无线路由登录IP地址不一样，详情咨询客服。', expanded: false },
+            { id: 3, title: '如何申请电子发票？', answer: '首页我的账单里面。', expanded: false },
+            { id: 4, title: '无线路由猫指示灯亮红灯什么意思？', answer: '无信号或设备故障。', expanded: false }
         ]
     },
 
@@ -101,16 +101,12 @@ Page({
      */
     onFaqTap(e) {
         const index = e.currentTarget.dataset.index;
-        const item = this.data.faqList[index];
+        const faqList = this.data.faqList;
         
-        // 实际场景：跳转到具体的文章页面
-        wx.showModal({
-            title: '问题详情',
-            content: `您点击了：${item.title}\n此处应跳转至具体解决方案页面。`,
-            showCancel: false,
-            confirmText: '知道了',
-            confirmColor: '#2979ff'
-        });
+        // 切换当前项的展开状态
+        faqList[index].expanded = !faqList[index].expanded;
+        
+        this.setData({ faqList });
     },
 
     /**

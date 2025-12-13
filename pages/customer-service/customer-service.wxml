@@ -14,7 +14,7 @@
     <!-- 头部欢迎语 -->
     <view class="header-text">
       <view class="h1">您好，欢迎咨询</view>
-      <view class="p">云联网智慧客服为您服务</view>
+      <view class="p">云宽带智慧客服为您服务</view>
     </view>
   </view>
 
@@ -42,7 +42,7 @@
       <!-- 2. 电话热线 -->
       <view class="card sub-card" hover-class="card-hover" bindtap="handleCall">
         <view class="card-left">
-          <text class="sub-card-label">宽带专线热线</text>
+          <text class="sub-card-label">报修热线</text>
           <text class="hotline-number">4009677726</text>
         </view>
         <view class="call-btn">
@@ -56,9 +56,16 @@
     <view class="section-title">常见问题</view>
     <view class="faq-list">
       <block wx:for="{{faqList}}" wx:key="id">
-        <view class="faq-item" bindtap="onFaqTap" data-index="{{index}}">
-          <text class="faq-text">{{item.title}}</text>
-          <view class="arrow-right"></view>
+        <view class="faq-item-wrapper">
+          <view class="faq-item" bindtap="onFaqTap" data-index="{{index}}">
+            <text class="faq-text">{{item.title}}</text>
+            <view class="arrow-icon {{item.expanded ? 'arrow-down' : 'arrow-right'}}"></view>
+          </view>
+          <view class="faq-answer {{item.expanded ? 'faq-answer-show' : ''}}">
+            <view class="faq-answer-content">
+              <text>{{item.answer}}</text>
+            </view>
+          </view>
         </view>
       </block>
     </view>

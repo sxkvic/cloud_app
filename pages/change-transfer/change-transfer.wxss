@@ -81,7 +81,34 @@ page {
   margin-right: 6rpx;
 }
 
-/* ========== 3. 表单区域 ========== */
+/* ========== 3. 个人/企业切换Tab ========== */
+.user-type-tabs {
+  display: flex;
+  background: #F5F6F8;
+  border-radius: 16rpx;
+  padding: 6rpx;
+  margin-bottom: 32rpx;
+}
+
+.tab-item {
+  flex: 1;
+  height: 72rpx;
+  line-height: 72rpx;
+  text-align: center;
+  font-size: 28rpx;
+  color: #666;
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+}
+
+.tab-item.active {
+  background: #fff;
+  color: #2B7FF0;
+  font-weight: 600;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+/* ========== 4. 表单区域 ========== */
 .form-title {
   font-size: 34rpx;
   font-weight: 600;
