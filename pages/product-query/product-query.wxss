@@ -57,54 +57,171 @@ page {
   display: none;
 }
 
-/* 搜索框 */
-.search-wrapper {
-  padding: 0 32rpx;
+/* 搜索表单卡片 */
+.search-card {
+  margin: 0 32rpx;
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.12);
 }
 
-.search-box {
-  background: #fff;
-  height: 80rpx;
-  border-radius: 16rpx;
+.form-row {
+  display: flex;
+  gap: 24rpx;
+}
+
+.form-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
   display: flex;
   align-items: center;
-  padding: 0 24rpx;
-  box-shadow: 0 8rpx 24rpx rgba(77, 106, 255, 0.15);
+  font-size: 24rpx;
+  color: #6B7280;
+  margin-bottom: 12rpx;
 }
 
-.icon-search {
-  width: 40rpx;
-  height: 40rpx;
+.label-icon {
+  font-size: 28rpx;
+  margin-right: 8rpx;
 }
 
-.search-input {
-  flex: 1;
-  margin-left: 16rpx;
+.form-input {
+  height: 72rpx;
+  background: #F3F4F6;
+  border-radius: 12rpx;
+  padding: 0 20rpx;
   font-size: 28rpx;
   color: #333;
+}
+
+.form-divider {
+  width: 2rpx;
+  background: linear-gradient(180deg, transparent 0%, #E5E7EB 20%, #E5E7EB 80%, transparent 100%);
+  margin: 0 8rpx;
 }
 
 .placeholder {
   color: #9CA3AF;
 }
 
-.divider {
-  width: 2rpx;
-  height: 32rpx;
-  background: #E5E7EB;
-  margin: 0 16rpx;
+/* 查询按钮 */
+.query-btn {
+  background: linear-gradient(135deg, #2B7FF0 0%, #1E64D8 100%);
+  height: 88rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  color: #fff;
+  font-weight: bold;
+  margin-top: 32rpx;
+  box-shadow: 0 8rpx 24rpx rgba(43, 127, 240, 0.35);
 }
 
-.search-btn {
-  font-size: 28rpx;
-  color: #2B7FF0;
-  font-weight: bold;
-  padding: 0 8rpx;
+.query-btn:active {
+  opacity: 0.9;
+  transform: scale(0.98);
 }
 
 .loading-icon {
-  font-size: 28rpx;
+  font-size: 32rpx;
   animation: spin 1s linear infinite;
+}
+
+/* 历史记录区域 */
+.history-section {
+  margin: 24rpx 32rpx;
+  background: #fff;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 28rpx;
+  background: #F9FAFB;
+  border-bottom: 1rpx solid #E5E7EB;
+}
+
+.history-title {
+  font-size: 28rpx;
+  color: #374151;
+  font-weight: 600;
+}
+
+.history-clear {
+  font-size: 24rpx;
+  color: #EF4444;
+  padding: 8rpx 16rpx;
+}
+
+.history-list {
+  max-height: 500rpx;
+  overflow-y: auto;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 28rpx;
+  border-bottom: 1rpx solid #F3F4F6;
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.history-item:active {
+  background: #F0F7FF;
+}
+
+.history-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.history-name {
+  font-size: 30rpx;
+  color: #1F2937;
+  font-weight: 500;
+  margin-bottom: 8rpx;
+}
+
+.history-info {
+  font-size: 24rpx;
+  color: #6B7280;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history-right {
+  display: flex;
+  align-items: center;
+  margin-left: 20rpx;
+}
+
+.history-time {
+  font-size: 22rpx;
+  color: #9CA3AF;
+}
+
+.history-arrow {
+  font-size: 32rpx;
+  color: #9CA3AF;
+  margin-left: 12rpx;
 }
 
 @keyframes spin {
@@ -197,6 +314,14 @@ page {
 .currency { font-size: 22rpx; color: #9CA3AF; margin-right: 2rpx; }
 .amount { font-size: 36rpx; font-weight: bold; color: #EF4444; }
 
+/* 余额标签 */
+.balance-label {
+  font-size: 20rpx;
+  color: #9CA3AF;
+  text-align: right;
+  margin-top: 4rpx;
+}
+
 /* 核心数据区 */
 .core-data-box {
   background: #F9FAFB;
@@ -225,6 +350,19 @@ page {
 .value { font-size: 28rpx; color: #374151; font-weight: 500; }
 .value-mono { font-size: 28rpx; color: #374151; font-family: monospace; font-weight: 500; }
 .text-red { color: #EF4444; }
+.text-warning { color: #FA8C16; }
+.highlight-blue { color: #2B7FF0; font-weight: 600; }
+.highlight-green { color: #22C55E; font-weight: 600; }
+
+/* 小标题 */
+.section-title-small {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #6B7280;
+  margin-bottom: 16rpx;
+  padding-bottom: 8rpx;
+  border-bottom: 1rpx solid #E5E7EB;
+}
 
 /* SN 行 */
 .sn-row {
@@ -265,6 +403,24 @@ page {
   border-radius: 8rpx;
   border: 1rpx solid #E5E7EB;
   line-height: 1.6;
+}
+
+/* 套餐信息区 */
+.package-info-box {
+  background: linear-gradient(135deg, #f0f7ff 0%, #e8f4fd 100%);
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-top: 24rpx;
+  border-left: 6rpx solid #2B7FF0;
+}
+
+/* 账户信息区 */
+.account-info-box {
+  background: linear-gradient(135deg, #f0fff4 0%, #e6ffed 100%);
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-top: 24rpx;
+  border-left: 6rpx solid #22C55E;
 }
 
 /* 额外信息区域 */

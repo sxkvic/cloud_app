@@ -9,10 +9,13 @@ Page({
      */
     data: {
         statusBarHeight: 20,
-        queryInput: '',
+        deviceNo: '',
+        rechargeAccount: '',
         isLoading: false,
         queryResult: null,
-        showResult: false
+        showResult: false,
+        historyList: [],
+        showHistory: false
     },
 
     /**
@@ -22,6 +25,101 @@ Page({
         // 适配刘海屏
         const sys = wx.getSystemInfoSync();
         this.setData({ statusBarHeight: sys.statusBarHeight });
+        
+        // 加载历史记录
+        this.loadHistory();
+    },
+
+    /**
+     * 加载历史查询记录
+     */
+    loadHistory() {
+        try {
+            const history = wx.getStorageSync('product_query_history') || [];
+            this.setData({ historyList: history });
+            
+            // 如果有历史记录，自动填充最近一条
+            if (history.length > 0) {
+                const latest = history[0];
+                this.setData({
+                    deviceNo: latest.deviceNo || '',
+                    rechargeAccount: latest.rechargeAccount || ''
+                });
+            }
+        } catch (e) {
+            console.error('加载历史记录失败:', e);
+        }
+    },
+
+    /**
+     * 保存查询记录到历史
+     */
+    saveToHistory(deviceNo, rechargeAccount, customerName) {
+        try {
+            let history = wx.getStorageSync('product_query_history') || [];
+            
+            // 检查是否已存在相同记录
+            const existIndex = history.findIndex(item => 
+                item.deviceNo === deviceNo && item.rechargeAccount === rechargeAccount
+            );
+            
+            // 如果存在，先移除旧记录
+            if (existIndex > -1) {
+                history.splice(existIndex, 1);
+            }
+            
+            // 添加新记录到开头
+            history.unshift({
+                deviceNo,
+                rechargeAccount,
+                customerName: customerName || '未知客户',
+                time: new Date().toLocaleString()
+            });
+            
+            // 最多保留10条记录
+            if (history.length > 10) {
+                history = history.slice(0, 10);
+            }
+            
+            wx.setStorageSync('product_query_history', history);
+            this.setData({ historyList: history });
+        } catch (e) {
+            console.error('保存历史记录失败:', e);
+        }
+    },
+
+    /**
+     * 选择历史记录并自动查询
+     */
+    selectHistory(e) {
+        const index = e.currentTarget.dataset.index;
+        const item = this.data.historyList[index];
+        if (!item) return;
+        
+        this.setData({
+            deviceNo: item.deviceNo,
+            rechargeAccount: item.rechargeAccount
+        }, () => {
+            // 自动触发查询
+            this.onSubmit();
+        });
+    },
+
+    /**
+     * 清空历史记录
+     */
+    clearHistory() {
+        wx.showModal({
+            title: '提示',
+            content: '确定要清空所有历史记录吗？',
+            success: (res) => {
+                if (res.confirm) {
+                    wx.removeStorageSync('product_query_history');
+                    this.setData({ historyList: [], showHistory: false });
+                    message.success('历史记录已清空');
+                }
+            }
+        });
     },
 
     /**
@@ -67,11 +165,20 @@ Page({
     },
 
     /**
-     * 输入框内容变化
+     * 设备码输入变化
      */
-    onInputChange(event) {
+    onDeviceNoChange(event) {
         this.setData({
-            queryInput: event.detail.value
+            deviceNo: event.detail.value
+        });
+    },
+
+    /**
+     * 缴费账号输入变化
+     */
+    onRechargeAccountChange(event) {
+        this.setData({
+            rechargeAccount: event.detail.value
         });
     },
 
@@ -79,8 +186,15 @@ Page({
      * 提交查询表单
      */
     async onSubmit() {
-        if (!this.data.queryInput.trim()) {
-            message.error('请输入设备码或宽带账号');
+        const deviceNo = this.data.deviceNo.trim();
+        const rechargeAccount = this.data.rechargeAccount.trim();
+        
+        if (!deviceNo) {
+            message.error('请输入设备编码');
+            return;
+        }
+        if (!rechargeAccount) {
+            message.error('请输入缴费账号');
             return;
         }
         
@@ -90,36 +204,44 @@ Page({
         });
 
         try {
-            console.log('查询设备信息:', this.data.queryInput);
+            console.log('查询客户信息:', { deviceNo, rechargeAccount });
             
-            // 调用设备查询接口
-            const response = await API.getDevicesList({
-                page: 1,
-                pageSize: 10,
-                deviceNo: this.data.queryInput.trim()
-            });
+            // 调用客户和套餐查询接口
+            const response = await API.getCustomerAndPackageByDeviceNo(deviceNo, rechargeAccount);
 
             console.log('查询结果:', response);
 
-            if (response.data && response.data.list && response.data.list.length > 0) {
+            if (response.success && response.data) {
+                const { customer, device, package: pkg, account, binding_info } = response.data;
+                
+                // 计算总余额
+                const balance = parseFloat(account?.balance) || 0;
+                const rechargeAmount = parseFloat(account?.recharge_amount) || 0;
+                const totalBalance = (balance + rechargeAmount).toFixed(2);
+                
                 this.setData({
                     queryResult: {
-                        data: response.data.list,
-                        total: response.data.total || response.data.list.length,
-                        page: response.data.page || 1,
-                        pageSize: response.data.pageSize || 10
+                        customer,
+                        device,
+                        package: pkg,
+                        account,
+                        binding_info,
+                        totalBalance
                     },
                     showResult: true,
                     isLoading: false
                 });
-                message.success(`查询成功！找到 ${response.data.list.length} 条设备信息`);
+                
+                // 保存到历史记录
+                this.saveToHistory(deviceNo, rechargeAccount, customer?.customer_name);
+                message.success('查询成功');
             } else {
                 this.setData({
                     queryResult: null,
                     showResult: false,
                     isLoading: false
                 });
-                message.info('未找到相关设备信息');
+                message.info(response.message || '未找到相关信息');
             }
         } catch (error) {
             console.error('查询失败:', error);
@@ -136,7 +258,8 @@ Page({
      */
     resetQuery() {
         this.setData({
-            queryInput: '',
+            deviceNo: '',
+            rechargeAccount: '',
             queryResult: null,
             showResult: false
         });

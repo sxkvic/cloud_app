@@ -15,15 +15,46 @@
       <view class="nav-placeholder"></view>
     </view>
 
-    <!-- 搜索框 -->
-    <view class="search-wrapper">
-      <view class="search-box">
-        <image class="icon-search" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOUNBM0FGIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTIxIDIxbC02LTZtMi01YTcgNyAwIDExLTE0IDAgNyA3IDAgMDExNCAweiIvPjwvc3ZnPg=="></image>
-        <input class="search-input" placeholder="请输入设备码..." placeholder-class="placeholder" value="{{queryInput}}" bindinput="onInputChange" confirm-type="search" bindconfirm="onSubmit" />
-        <view class="divider"></view>
-        <view class="search-btn" bindtap="onSubmit">
-          <text wx:if="{{isLoading}}" class="loading-icon">⟳</text>
-          <text wx:else>搜索</text>
+    <!-- 搜索表单卡片 -->
+    <view class="search-card">
+      <view class="form-row">
+        <view class="form-item">
+          <view class="form-label">
+            <text>设备编码</text>
+          </view>
+          <input class="form-input" placeholder="请输入设备编码" placeholder-class="placeholder" value="{{deviceNo}}" bindinput="onDeviceNoChange" />
+        </view>
+        <view class="form-divider"></view>
+        <view class="form-item">
+          <view class="form-label">
+            <text>缴费账号</text>
+          </view>
+          <input class="form-input" placeholder="请输入缴费账号" placeholder-class="placeholder" value="{{rechargeAccount}}" bindinput="onRechargeAccountChange" />
+        </view>
+      </view>
+      <!-- 查询按钮 -->
+      <view class="query-btn" bindtap="onSubmit">
+        <text wx:if="{{isLoading}}" class="loading-icon">⟳</text>
+        <text wx:else>立即查询</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 历史记录区域 - 只在未显示结果时展示 -->
+  <view class="history-section" wx:if="{{!showResult && !isLoading && historyList.length > 0}}">
+    <view class="history-header">
+      <text class="history-title">历史记录</text>
+      <text class="history-clear" catchtap="clearHistory">清空</text>
+    </view>
+    <view class="history-list">
+      <view class="history-item" wx:for="{{historyList}}" wx:key="index" catchtap="selectHistory" data-index="{{index}}">
+        <view class="history-left">
+          <text class="history-name">{{item.customerName}}</text>
+          <text class="history-info">{{item.deviceNo}} · {{item.rechargeAccount}}</text>
+        </view>
+        <view class="history-right">
+          <text class="history-time">{{item.time}}</text>
+          <text class="history-arrow">›</text>
         </view>
       </view>
     </view>
@@ -31,7 +62,7 @@
 
   <!-- 2. 统计条 -->
   <view class="stats-bar" wx:if="{{showResult}}">
-    <text class="stats-text">共 {{queryResult ? queryResult.total : 0}} 条记录</text>
+    <text class="stats-text">查询结果</text>
     <view class="tag-update">实时数据</view>
   </view>
 
@@ -68,87 +99,137 @@
     </view>
   </view>
 
-  <!-- 3. 设备列表 -->
+  <!-- 3. 查询结果 -->
   <view class="list-container" wx:if="{{showResult && queryResult && !isLoading}}">
-    <block wx:for="{{queryResult.data}}" wx:key="id">
-      
-      <view class="card">
-        <!-- 顶部彩色条 (根据状态变色) -->
-        <view class="status-stripe {{item.status === '2' ? 'bg-green' : 'bg-orange'}}"></view>
-        
-        <view class="card-body">
-          <!-- 头部信息 -->
-          <view class="card-header">
-            <view class="header-left">
-              <view class="title-row">
-                <text class="device-name">{{item.device_name || item.created_by_username || '未命名设备'}}</text>
-                <view class="status-tag {{item.status === '2' ? 'tag-using' : 'tag-pending'}}">
-                  {{item.status == '2' ? '运行中' : '待分配'}}
-                </view>
-              </view>
-            </view>
-            <view class="header-right">
-              <view class="price-box">
-                <text class="currency">¥</text>
-                <text class="amount">{{item.amount || '0.00'}}</text>
+    
+    <!-- 客户信息卡片 -->
+    <view class="card">
+      <view class="status-stripe {{queryResult.binding_info.status === '1' ? 'bg-green' : 'bg-orange'}}"></view>
+      <view class="card-body">
+        <!-- 头部信息 -->
+        <view class="card-header">
+          <view class="header-left">
+            <view class="title-row">
+              <text class="device-name">{{queryResult.customer.customer_name || '未知客户'}}</text>
+              <view class="status-tag {{queryResult.binding_info.status === '1' ? 'tag-using' : 'tag-pending'}}">
+                {{queryResult.binding_info.status === '1' ? '正常' : '停用'}}
               </view>
             </view>
           </view>
-
-          <!-- 核心数据区 (灰色背景) -->
-          <view class="core-data-box">
-            <view class="grid-layout">
-              <!-- SN 码 -->
-              <view class="grid-item col-span-2">
-                <text class="label">设备编号 (SN)</text>
-                <view class="sn-row">
-                  <text class="value-mono">{{item.device_no}}</text>
-                  <view class="copy-btn" bindtap="handleCopy" data-text="{{item.device_no}}">
-                    <image class="icon-copy" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDc3MkZGIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTggMTZINmEyIDIgMCAwMS0yLTJWNmEyIDIgMCAwMTItMmg4YTIgMiAwIDAxMiAydjJtLTYgMTJoOGEyIDIgMCAwMDItMnYtOGEyIDIgMCAwMC0yLTJoLThhMiAyIDAgMDAtMiAydjhhMiAyIDAgMDAyIDJ6Ii8+PC9zdmc+"></image>
-                    <text>复制</text>
-                  </view>
-                </view>
-              </view>
-              
-              <!-- 规格 -->
-              <view class="grid-item">
-                <text class="label">规格配置</text>
-                <text class="value">{{item.specification || '-'}}</text>
-              </view>
-              
-              <!-- 时间 -->
-              <view class="grid-item">
-                <text class="label">创建时间</text>
-                <text class="value">{{item.created_at || '-'}}</text>
-              </view>
+          <view class="header-right">
+            <view class="price-box">
+              <text class="currency">¥</text>
+              <text class="amount">{{queryResult.totalBalance}}</text>
             </view>
-
-            <!-- 额外信息 -->
-            <view class="extra-info" wx:if="{{item.description || item.created_by_username}}">
-              <view class="grid-layout">
-                <view class="grid-item col-span-2" wx:if="{{item.created_by_username}}">
-                  <text class="label">创建人</text>
-                  <text class="value">{{item.created_by_username}}</text>
-                </view>
-                <view class="grid-item col-span-2" wx:if="{{item.description}}">
-                  <text class="label">备注说明</text>
-                  <view class="remark-box">
-                    {{item.description}}
-                  </view>
-                </view>
-              </view>
-            </view>
+            <text class="balance-label">账户余额</text>
           </view>
-
         </view>
-      </view>
 
-    </block>
+        <!-- 核心信息区 -->
+        <view class="core-data-box">
+          <view class="section-title-small">基本信息</view>
+          <view class="grid-layout">
+            <!-- 设备编码 -->
+            <view class="grid-item col-span-2">
+              <text class="label">设备编码</text>
+              <view class="sn-row">
+                <text class="value-mono">{{queryResult.device.device_no}}</text>
+                <view class="copy-btn" bindtap="handleCopy" data-text="{{queryResult.device.device_no}}">
+                  <image class="icon-copy" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNDc3MkZGIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTggMTZINmEyIDIgMCAwMS0yLTJWNmEyIDIgMCAwMTItMmg4YTIgMiAwIDAxMiAydjJtLTYgMTJoOGEyIDIgMCAwMDItMnYtOGEyIDIgMCAwMC0yLTJoLThhMiAyIDAgMDAtMiAydjhhMiAyIDAgMDAyIDJ6Ii8+PC9zdmc+"></image>
+                  <text>复制</text>
+                </view>
+              </view>
+            </view>
+            
+            <!-- 缴费账号 -->
+            <view class="grid-item">
+              <text class="label">缴费账号</text>
+              <text class="value">{{queryResult.binding_info.recharge_account || '-'}}</text>
+            </view>
+            
+            <!-- 联系电话 -->
+            <view class="grid-item">
+              <text class="label">联系电话</text>
+              <text class="value">{{queryResult.customer.contact_phone || '-'}}</text>
+            </view>
+
+            <!-- 入网品牌 -->
+            <view class="grid-item">
+              <text class="label">入网品牌</text>
+              <text class="value">{{queryResult.customer.brand || '-'}}</text>
+            </view>
+
+            <!-- 入网申请人 -->
+            <view class="grid-item">
+              <text class="label">入网申请经办人</text>
+              <text class="value">{{queryResult.binding_info.created_by || '-'}}</text>
+            </view>
+
+            <!-- 安装地点 -->
+            <view class="grid-item col-span-2">
+              <text class="label">安装地点</text>
+              <text class="value">{{queryResult.customer.city}} {{queryResult.customer.install_address || '-'}}</text>
+            </view>
+
+            <!-- 安装竣工时间 -->
+            <view class="grid-item">
+              <text class="label">安装竣工时间</text>
+              <text class="value">{{queryResult.binding_info.completion_time || '-'}}</text>
+            </view>
+
+            <!-- 到期时间 -->
+            <view class="grid-item">
+              <text class="label">到期时间</text>
+              <text class="value text-warning">{{queryResult.binding_info.expire_time || '-'}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 套餐信息 -->
+        <view class="package-info-box" wx:if="{{queryResult.package}}">
+          <view class="section-title-small">套餐信息</view>
+          <view class="grid-layout">
+            <view class="grid-item">
+              <text class="label">套餐名称</text>
+              <text class="value highlight-blue">{{queryResult.package.package_name || '-'}}</text>
+            </view>
+            <view class="grid-item">
+              <text class="label">套餐价格</text>
+              <text class="value">¥{{queryResult.package.price || '0.00'}}</text>
+            </view>
+            <view class="grid-item">
+              <text class="label">流量/带宽</text>
+              <text class="value">{{queryResult.package.flow || '-'}}</text>
+            </view>
+            <view class="grid-item">
+              <text class="label">套餐类型</text>
+              <text class="value">{{queryResult.package.package_type === '0' ? '包月' : '流量'}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 其他信息 -->
+        <view class="extra-info" wx:if="{{queryResult.customer.install_requirement || queryResult.package.remark}}">
+          <view class="section-title-small">其他信息</view>
+          <view class="grid-layout">
+            <view class="grid-item col-span-2" wx:if="{{queryResult.customer.install_requirement}}">
+              <text class="label">安装要求</text>
+              <view class="remark-box">{{queryResult.customer.install_requirement}}</view>
+            </view>
+            <view class="grid-item col-span-2" wx:if="{{queryResult.package.remark}}">
+              <text class="label">套餐备注</text>
+              <view class="remark-box">{{queryResult.package.remark}}</view>
+            </view>
+          </view>
+        </view>
+
+      </view>
+    </view>
+
   </view>
 
   <!-- 空状态 -->
   <view class="empty-state" wx:if="{{!showResult && !isLoading}}">
-    <view class="empty-icon">🔍</view>
     <text class="empty-text">请输入设备编号或缴费账号进行查询</text>
     <view class="help-link" bindtap="showHelp">
       <text class="help-icon">❓</text>
